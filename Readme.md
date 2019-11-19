@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Екатерина Киреева](https://up.htmlacademy.ru/ecmascript/10/user/130585).
-* Наставник: `Неизвестно`.
+* Наставник: [Илья Задонский](https://up.htmlacademy.ru/ecmascript/10/user/1265237).
 
 ---
 
