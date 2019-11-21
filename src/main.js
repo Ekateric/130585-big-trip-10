@@ -194,3 +194,20 @@ const createCardFormTemplate = () => {
     </form>`
   );
 };
+
+const render = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+const siteHeaderElement = document.querySelector(`.page-header`);
+const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
+render(headerInfoElement, createInfoTemplate(), `afterbegin`);
+
+const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
+render(headerControlsElement.querySelector(`h2`), createMenuTemplate(), `afterend`);
+render(headerControlsElement, createFiltersTemplate());
+
+const siteEventsElement = document.querySelector(`.trip-events`);
+render(siteEventsElement, createCardFormTemplate());
+
+
