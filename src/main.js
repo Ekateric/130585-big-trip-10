@@ -1,4 +1,6 @@
 'use strict';
+const DAYS_COUNT = 3;
+const CARDS_COUNT = 3;
 
 const createInfoTemplate = () => {
   return (
@@ -42,7 +44,20 @@ const createFiltersTemplate = () => {
   );
 };
 
-const createCardsListTemplate = () => `<ul class="trip-events__list"></ul>`;
+const createDaysListTemplate = () => `<ul class="trip-days"></ul>`;
+
+const createDayTemplate = () => {
+  return (
+    `<li class="trip-days__item  day">
+      <div class="day__info">
+        <span class="day__counter">1</span>
+        <time class="day__date" datetime="2019-03-18">MAR 18</time>
+      </div>
+
+      <ul class="trip-events__list"></ul>
+    </li>`
+  );
+};
 
 const createCardTemplate = () => {
   return (
@@ -207,7 +222,24 @@ const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
 render(headerControlsElement.querySelector(`h2`), createMenuTemplate(), `afterend`);
 render(headerControlsElement, createFiltersTemplate());
 
-const siteEventsElement = document.querySelector(`.trip-events`);
-render(siteEventsElement, createCardFormTemplate());
+const eventsElement = document.querySelector(`.trip-events`);
+render(eventsElement, createCardFormTemplate());
+render(eventsElement, createDaysListTemplate());
+
+const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
+
+new Array(DAYS_COUNT)
+  .fill(``)
+  .forEach(
+      (it, index) => {
+        render(eventsDaysElement, createDayTemplate());
+        const dayEventsListElement = eventsDaysElement.querySelector(`.trip-days__item:nth-child(${index + 1}) .trip-events__list`);
+        new Array(CARDS_COUNT)
+          .fill(``)
+          .forEach(
+              () => render(dayEventsListElement, createCardTemplate())
+          );
+      }
+  );
 
 
