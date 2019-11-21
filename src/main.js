@@ -228,18 +228,15 @@ render(eventsElement, createDaysListTemplate());
 
 const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
 
-new Array(DAYS_COUNT)
-  .fill(``)
-  .forEach(
-      (it, index) => {
-        render(eventsDaysElement, createDayTemplate());
-        const dayEventsListElement = eventsDaysElement.querySelector(`.trip-days__item:nth-child(${index + 1}) .trip-events__list`);
-        new Array(CARDS_COUNT)
-          .fill(``)
-          .forEach(
-              () => render(dayEventsListElement, createCardTemplate())
-          );
-      }
-  );
+for (let daysCounter = 0; daysCounter < DAYS_COUNT; daysCounter++) {
+  const dayContentElement = document.createElement(`div`);
+  render(dayContentElement, createDayTemplate());
+
+  const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
+  for (let eventsCounter = 0; eventsCounter < CARDS_COUNT; eventsCounter++) {
+    render(dayEventsListElement, createCardTemplate());
+  }
+  render(eventsDaysElement, dayContentElement.innerHTML);
+}
 
 
