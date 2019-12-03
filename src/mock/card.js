@@ -44,11 +44,29 @@ const getRandomDescription = (paragraphs) => {
     }).join(`.`);
 };
 
+const getRandomDate = () => {
+  let dateFrom = new Date();
+  let dateTo = new Date();
+
+  /* Стартовой датой делаем дату, идущую после сегодняшнего дня в диапазоне 30 дней.
+  * Далее устанавливаем диапазон для поиска конечной даты от 1 до 5 дней от стартовой.
+  * В конце ищем рандомное количество миллисекунд в заданном диапазоне для конечной даты
+  * */
+  dateFrom.setDate(dateFrom.getDate() + getRandomInt(0, 30));
+  dateTo.setDate(dateFrom.getDate() + getRandomInt(1, 5));
+  dateTo = new Date(getRandomInt(dateFrom.getTime(), dateTo.getTime()));
+
+  return {dateFrom, dateTo};
+};
+
 export const createCardData = () => {
+  const {dateFrom, dateTo} = getRandomDate();
   return {
     type: MockTypes[getRandomInt(0, MockTypes.length - 1)],
     city: MockCities[getRandomInt(0, MockCities.length - 1)],
     photos: getRandomPhotos(),
-    description: getRandomDescription(MockDescription)
+    description: getRandomDescription(MockDescription),
+    dateFrom,
+    dateTo
   };
 };
