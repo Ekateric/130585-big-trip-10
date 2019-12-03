@@ -1,6 +1,7 @@
 import {createInfoTemplate} from "./components/info";
 import {createMenuTemplate} from "./components/menu";
 import {createFiltersTemplate} from "./components/filters";
+import {createCardData} from "./mock/card";
 import {createDaysListTemplate} from "./components/days-list";
 import {createDayTemplate} from "./components/day";
 import {createCardTemplate} from "./components/card";
@@ -33,7 +34,7 @@ for (let daysCounter = 0; daysCounter < DAYS_COUNT; daysCounter++) {
 
   const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
   for (let eventsCounter = 0; eventsCounter < CARDS_COUNT; eventsCounter++) {
-    render(dayEventsListElement, createCardTemplate());
+    render(dayEventsListElement, createCardTemplate(createCardData()));
   }
   render(eventsDaysElement, dayContentElement.innerHTML);
 }
