@@ -13,8 +13,18 @@ const MockTypes = [
   `restaurant`
 ];
 
+const MockCities = [
+  `Rome`,
+  `Genoa`,
+  `Verona`,
+  `Parma`,
+  `Syracuse`,
+  `La Spezia`
+];
+
 export const createCardData = () => {
   return {
-    type: MockTypes[getRandomInt(0, MockTypes.length - 1)]
+    type: MockTypes[getRandomInt(0, MockTypes.length - 1)],
+    city: MockCities[getRandomInt(0, MockCities.length - 1)]
   };
 };
