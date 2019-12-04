@@ -17,7 +17,7 @@ export const Months = [
 // Utilities
 export const getRandomInt = (min, max) => min + Math.floor(Math.random() * (max + 1 - min));
 
-const castTimeFormat = (value) => {
+export const castTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
 

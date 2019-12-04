@@ -1,9 +1,31 @@
-import {getCorrectTime} from "../helpers";
+import {castTimeFormat, getCorrectTime} from "../helpers";
+
+const countDuration = (dateFrom, dateTo) => {
+  let durationString = `00M`;
+  const durationInMinutes = Math.floor((dateTo - dateFrom) / (1000 * 60));
+
+  if (durationInMinutes > 0) {
+    durationString = `${castTimeFormat(durationInMinutes % 60)}M`;
+  }
+
+  if (durationInMinutes >= 60) {
+    const durationInHours = Math.floor(durationInMinutes / 60);
+    durationString = `${castTimeFormat(durationInHours % 24)}H ${durationString}`;
+
+    if (durationInHours >= 24) {
+      const durationInDays = Math.floor(durationInHours / 24);
+      durationString = `${castTimeFormat(durationInDays)}D ${durationString}`;
+    }
+  }
+
+  return durationString;
+};
 
 export const createCardTemplate = (card) => {
   const {type, city, dateFrom, dateTo} = card;
   const correctDateFrom = getCorrectTime(dateFrom);
   const correctDateTo = getCorrectTime(dateTo);
+  const duration = countDuration(dateFrom, dateTo);
 
   return (
     `<li class="trip-events__item">
@@ -19,7 +41,7 @@ export const createCardTemplate = (card) => {
             &mdash;
             <time class="event__end-time" datetime="${correctDateTo.stringISO}">${correctDateTo.time}</time>
           </p>
-          <p class="event__duration">1H 30M</p>
+          <p class="event__duration">${duration}</p>
         </div>
       
         <p class="event__price">
