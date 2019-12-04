@@ -1,16 +1,46 @@
 import {getRandomInt} from "../helpers";
 
 const MockTypes = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `flight`,
-  `drive`,
-  `transport`,
-  `check-in`,
-  `sightseeing`,
-  `restaurant`
+  {
+    type: `Taxi`,
+    icon: `taxi`
+  },
+  {
+    type: `Bus`,
+    icon: `bus`
+  },
+  {
+    type: `Train`,
+    icon: `train`
+  },
+  {
+    type: `Ship`,
+    icon: `ship`
+  },
+  {
+    type: `Flight`,
+    icon: `flight`
+  },
+  {
+    type: `Drive`,
+    icon: `drive`
+  },
+  {
+    type: `Transport`,
+    icon: `transport`
+  },
+  {
+    type: `Check`,
+    icon: `check-in`
+  },
+  {
+    type: `Sightseeing`,
+    icon: `sightseeing`
+  },
+  {
+    type: `Restaurant`,
+    icon: `restaurant`
+  }
 ];
 
 const MockCities = [
@@ -56,11 +86,13 @@ const getRandomDate = (fromDate, daysAfter) => {
 };
 
 export const createCardData = () => {
+  const typeIndex = getRandomInt(0, MockTypes.length - 1);
   const dateFrom = getRandomDate(new Date(), 25);
   const dateTo = getRandomDate(dateFrom, 2);
 
   return {
-    type: MockTypes[getRandomInt(0, MockTypes.length - 1)],
+    type: MockTypes[typeIndex].type,
+    icon: MockTypes[typeIndex].icon,
     city: MockCities[getRandomInt(0, MockCities.length - 1)],
     photos: getRandomPhotos(),
     description: getRandomDescription(MockDescription),
