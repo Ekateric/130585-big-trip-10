@@ -22,7 +22,7 @@ const countDuration = (dateFrom, dateTo) => {
 };
 
 export const createCardTemplate = (card) => {
-  const {type, city, dateFrom, dateTo} = card;
+  const {type, city, dateFrom, dateTo, price} = card;
   const correctDateFrom = getCorrectTime(dateFrom);
   const correctDateTo = getCorrectTime(dateTo);
   const duration = countDuration(dateFrom, dateTo);
@@ -45,7 +45,7 @@ export const createCardTemplate = (card) => {
         </div>
       
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
       
         <h4 class="visually-hidden">Offers:</h4>

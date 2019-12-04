@@ -65,6 +65,7 @@ export const createCardData = () => {
     photos: getRandomPhotos(),
     description: getRandomDescription(MockDescription),
     dateFrom,
-    dateTo
+    dateTo,
+    price: getRandomInt(0, 1000)
   };
 };
