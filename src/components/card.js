@@ -1,5 +1,9 @@
+import {getCorrectTime} from "../helpers";
+
 export const createCardTemplate = (card) => {
-  const {type, city} = card;
+  const {type, city, dateFrom, dateTo} = card;
+  const correctDateFrom = getCorrectTime(dateFrom);
+  const correctDateTo = getCorrectTime(dateTo);
 
   return (
     `<li class="trip-events__item">
@@ -11,9 +15,9 @@ export const createCardTemplate = (card) => {
       
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="${correctDateFrom.stringISO}">${correctDateFrom.time}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="${correctDateTo.stringISO}">${correctDateTo.time}</time>
           </p>
           <p class="event__duration">1H 30M</p>
         </div>

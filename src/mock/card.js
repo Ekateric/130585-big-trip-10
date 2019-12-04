@@ -44,23 +44,21 @@ const getRandomDescription = (paragraphs) => {
     }).join(`.`);
 };
 
-const getRandomDate = () => {
-  let dateFrom = new Date();
-  let dateTo = new Date();
+// Получаем рандомную дату в промежутке между заданной датой fromDate и заданным количеством дней после нее daysAfter
+const getRandomDate = (fromDate, daysAfter) => {
+  let toDate = new Date(fromDate);
 
-  /* Стартовой датой делаем дату, идущую после сегодняшнего дня в диапазоне 30 дней.
-  * Далее устанавливаем диапазон для поиска конечной даты от 1 до 5 дней от стартовой.
-  * В конце ищем рандомное количество миллисекунд в заданном диапазоне для конечной даты
-  * */
-  dateFrom.setDate(dateFrom.getDate() + getRandomInt(0, 30));
-  dateTo.setDate(dateFrom.getDate() + getRandomInt(1, 5));
-  dateTo = new Date(getRandomInt(dateFrom.getTime(), dateTo.getTime()));
+  toDate.setDate(toDate.getDate() + daysAfter);
+  fromDate = fromDate.getTime();
+  toDate = toDate.getTime();
 
-  return {dateFrom, dateTo};
+  return new Date(getRandomInt(fromDate, toDate));
 };
 
 export const createCardData = () => {
-  const {dateFrom, dateTo} = getRandomDate();
+  const dateFrom = getRandomDate(new Date(), 25);
+  const dateTo = getRandomDate(dateFrom, 2);
+
   return {
     type: MockTypes[getRandomInt(0, MockTypes.length - 1)],
     city: MockCities[getRandomInt(0, MockCities.length - 1)],
