@@ -21,11 +21,25 @@ const countDuration = (dateFrom, dateTo) => {
   return durationString;
 };
 
+const createOffersTemplate = (offers) => {
+  return Array.from(offers)
+    .map((offer) => {
+      return (
+        `<li class="event__offer">
+          <span class="event__offer-title">${offer.name}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </li>`
+      );
+    }).join(`\n`);
+};
+
 export const createCardTemplate = (card) => {
-  const {type, icon, city, dateFrom, dateTo, price} = card;
+  const {type, icon, city, dateFrom, dateTo, price, offers} = card;
   const correctDateFrom = getCorrectTime(dateFrom);
   const correctDateTo = getCorrectTime(dateTo);
   const duration = countDuration(dateFrom, dateTo);
+  const offersTemplate = createOffersTemplate(offers);
 
   return (
     `<li class="trip-events__item">
@@ -50,11 +64,7 @@ export const createCardTemplate = (card) => {
       
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">20</span>
-           </li>
+          ${offersTemplate}
         </ul>
       
         <button class="event__rollup-btn" type="button">

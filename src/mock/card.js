@@ -61,6 +61,39 @@ const MockDescription = (`Lorem ipsum dolor sit amet, consectetur adipiscing eli
   .replace(/\r?\n/g, ``)
   .split(`.`);
 
+const MockOffers = [
+  {
+    type: `Taxi`,
+    name: `Order Uber`,
+    price: 10
+  },
+  {
+    type: `Flight`,
+    name: `Add luggage`,
+    price: 4
+  },
+  {
+    type: `Transport`,
+    name: `Rent a car`,
+    price: 26
+  },
+  {
+    type: `Check`,
+    name: `Add breakfast`,
+    price: 150
+  },
+  {
+    type: `Sightseeing`,
+    name: `Book tickets`,
+    price: 25
+  },
+  {
+    type: `Sightseeing`,
+    name: `Lunch in city`,
+    price: 10
+  }
+];
+
 const getRandomPhotos = () => {
   return new Array(getRandomInt(0, 10))
     .fill(`http://picsum.photos/300/150?r=${Math.random()}`);
@@ -85,6 +118,14 @@ const getRandomDate = (fromDate, daysAfter) => {
   return new Date(getRandomInt(fromDate, toDate));
 };
 
+const getRandomOffers = (offers) => {
+  return new Array(getRandomInt(0, 2))
+    .fill(``)
+    .map(() => {
+      return offers[getRandomInt(0, offers.length - 1)];
+    });
+};
+
 export const createCardData = () => {
   const typeIndex = getRandomInt(0, MockTypes.length - 1);
   const dateFrom = getRandomDate(new Date(), 25);
@@ -98,6 +139,7 @@ export const createCardData = () => {
     description: getRandomDescription(MockDescription),
     dateFrom,
     dateTo,
-    price: getRandomInt(0, 1000)
+    price: getRandomInt(0, 1000),
+    offers: getRandomOffers(MockOffers)
   };
 };
