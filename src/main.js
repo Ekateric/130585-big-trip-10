@@ -2,13 +2,17 @@ import {createInfoTemplate} from "./components/info";
 import {createMenuTemplate} from "./components/menu";
 import {createFiltersTemplate} from "./components/filters";
 import {createCardsData} from "./mock/cards";
-import {createDaysListTemplate} from "./components/days-list";
+import {createDays, createDaysListTemplate} from "./components/days-list";
 import {createDayTemplate} from "./components/day";
 import {createCardTemplate} from "./components/card";
 import {createCardFormTemplate} from "./components/card-form";
 
 const DAYS_COUNT = 3;
-const CARDS_COUNT = 3;
+const CARDS_COUNT = 4;
+
+const cards = createCardsData(CARDS_COUNT);
+cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
+// const days = createDays(cards);
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -32,7 +36,6 @@ for (let daysCounter = 0; daysCounter < DAYS_COUNT; daysCounter++) {
   const dayContentElement = document.createElement(`div`);
   render(dayContentElement, createDayTemplate());
 
-  const cards = createCardsData(CARDS_COUNT);
   const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
   cards.forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
 
