@@ -7,11 +7,12 @@ export const createDays = (cards) => {
     const dateString = card.dateFrom.toDateString();
 
     if (typeof days.find((day) => day.string === dateString) === `undefined`) {
-      const {day, monthText, year} = getCorrectTime(card.dateFrom);
+      const {day, month, monthText, year} = getCorrectTime(card.dateFrom);
 
       days.push({
         string: dateString,
         day,
+        month,
         monthText,
         year
       });

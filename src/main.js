@@ -6,13 +6,13 @@ import {createDays, createDaysListTemplate} from "./components/days-list";
 import {createDayTemplate} from "./components/day";
 import {createCardTemplate} from "./components/card";
 import {createCardFormTemplate} from "./components/card-form";
+import {getRandomInt} from "./helpers";
 
-const DAYS_COUNT = 3;
-const CARDS_COUNT = 4;
+const CARDS_COUNT = getRandomInt(1, 10);
 
 const cards = createCardsData(CARDS_COUNT);
 cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
-// const days = createDays(cards);
+const days = createDays(cards);
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -32,14 +32,15 @@ render(eventsElement, createDaysListTemplate());
 
 const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
 
-for (let daysCounter = 0; daysCounter < DAYS_COUNT; daysCounter++) {
+days.forEach((day) => {
   const dayContentElement = document.createElement(`div`);
-  render(dayContentElement, createDayTemplate());
+  render(dayContentElement, createDayTemplate(day));
 
   const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-  cards.forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
+  cards
+    .filter((card) => card.dateFrom.toDateString() === day.string)
+    .forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
 
   render(eventsDaysElement, dayContentElement.innerHTML);
-}
-
+});
 
