@@ -4,7 +4,7 @@ import {createMenuTemplate} from "./components/menu";
 import {createFilterData} from "./mock/filters";
 import {createFiltersTemplate} from "./components/filters";
 import {createCardsData} from "./mock/cards";
-import {createDays, createDaysListTemplate} from "./components/days-list";
+import {createDaysAndCities, createDaysListTemplate} from "./components/days-list";
 import {createDayTemplate} from "./components/day";
 import {createCardTemplate} from "./components/card";
 import {createCardFormTemplate} from "./components/card-form";
@@ -16,7 +16,7 @@ const menuItems = createMenuData();
 const filters = createFilterData();
 const cards = createCardsData(CARDS_COUNT);
 cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
-const days = createDays(cards);
+const {days, cities} = createDaysAndCities(cards);
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -24,7 +24,7 @@ const render = (container, template, place = `beforeend`) => {
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
-render(headerInfoElement, createInfoTemplate(), `afterbegin`);
+render(headerInfoElement, createInfoTemplate(days, cities), `afterbegin`);
 
 const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
 render(headerControlsElement.querySelector(`h2`), createMenuTemplate(menuItems), `afterend`);

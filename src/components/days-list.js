@@ -1,7 +1,8 @@
 import {getCorrectTime} from "../helpers";
 
-export const createDays = (cards) => {
+export const createDaysAndCities = (cards) => {
   let days = [];
+  let cities = [];
 
   cards.forEach((card) => {
     const dateString = card.dateFrom.toDateString();
@@ -17,8 +18,14 @@ export const createDays = (cards) => {
         year
       });
     }
+
+    const city = card.city;
+
+    if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
+      cities.push(city);
+    }
   });
-  return days;
+  return {days, cities};
 };
 
 export const createDaysListTemplate = () => `<ul class="trip-days"></ul>`;
