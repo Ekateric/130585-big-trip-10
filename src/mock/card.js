@@ -1,6 +1,4 @@
-import {getRandomInt} from "../helpers";
-
-const MockTypes = [
+export const MockTypes = [
   {
     type: `Taxi`,
     icon: `taxi`
@@ -43,7 +41,7 @@ const MockTypes = [
   }
 ];
 
-const MockCities = [
+export const MockCities = [
   `Rome`,
   `Genoa`,
   `Verona`,
@@ -52,7 +50,7 @@ const MockCities = [
   `La Spezia`
 ];
 
-const MockDescription = (`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, 
+export const MockDescription = (`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, 
   non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius 
   viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum 
   sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu 
@@ -61,7 +59,7 @@ const MockDescription = (`Lorem ipsum dolor sit amet, consectetur adipiscing eli
   .replace(/\r?\n/g, ``)
   .split(`.`);
 
-const MockOffers = [
+export const MockOffers = [
   {
     type: `Taxi`,
     name: `Order Uber`,
@@ -93,53 +91,3 @@ const MockOffers = [
     price: 10
   }
 ];
-
-const getRandomPhotos = () => {
-  return new Array(getRandomInt(0, 10))
-    .fill(`http://picsum.photos/300/150?r=${Math.random()}`);
-};
-
-const getRandomDescription = (paragraphs) => {
-  return new Array(getRandomInt(1, 3))
-    .fill(``)
-    .map(() => {
-      return paragraphs[getRandomInt(0, paragraphs.length - 1)];
-    }).join(`.`);
-};
-
-// Получаем рандомную дату в промежутке между заданной датой fromDate и заданным количеством дней после нее daysAfter
-const getRandomDate = (fromDate, daysAfter) => {
-  let toDate = new Date(fromDate);
-
-  toDate.setDate(toDate.getDate() + daysAfter);
-  fromDate = fromDate.getTime();
-  toDate = toDate.getTime();
-
-  return new Date(getRandomInt(fromDate, toDate));
-};
-
-const getRandomOffers = (offers) => {
-  return new Array(getRandomInt(0, 2))
-    .fill(``)
-    .map(() => {
-      return offers[getRandomInt(0, offers.length - 1)];
-    });
-};
-
-export const createCardData = () => {
-  const typeIndex = getRandomInt(0, MockTypes.length - 1);
-  const dateFrom = getRandomDate(new Date(), 25);
-  const dateTo = getRandomDate(dateFrom, 2);
-
-  return {
-    type: MockTypes[typeIndex].type,
-    icon: MockTypes[typeIndex].icon,
-    city: MockCities[getRandomInt(0, MockCities.length - 1)],
-    photos: getRandomPhotos(),
-    description: getRandomDescription(MockDescription),
-    dateFrom,
-    dateTo,
-    price: getRandomInt(0, 1000),
-    offers: getRandomOffers(MockOffers)
-  };
-};

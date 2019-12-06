@@ -1,7 +1,7 @@
-import {createCardData} from "./card";
+import {CardModel} from "../models/card";
 
 export const createCardsData = (cardsCount) => {
   return new Array(cardsCount)
     .fill(``)
-    .map(createCardData);
+    .map(() => new CardModel());
 };
