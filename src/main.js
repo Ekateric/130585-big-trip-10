@@ -24,7 +24,7 @@ const render = (container, template, place = `beforeend`) => {
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
-render(headerInfoElement, createInfoTemplate(cities, cards[0].dateFrom, cards[cards.length - 1].dateTo), `afterbegin`);
+render(headerInfoElement, createInfoTemplate(cities, cards), `afterbegin`);
 
 const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
 render(headerControlsElement.querySelector(`h2`), createMenuTemplate(menuItems), `afterend`);

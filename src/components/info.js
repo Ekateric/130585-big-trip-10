@@ -40,15 +40,34 @@ const calcInfoDates = (dateFrom, dateTo) => {
   return intervalText;
 };
 
-export const createInfoTemplate = (cities, dateFrom, dateTo) => {
+const countTripSum = (cards) => {
+  let tripSum = 0;
+
+  cards.forEach((card) => {
+    tripSum += card.price;
+
+    card.offers.forEach((offer) => {
+      tripSum += offer.price;
+    });
+  });
+
+  return tripSum;
+};
+
+export const createInfoTemplate = (cities, cards) => {
   const infoTitle = calcInfoTitle(cities);
-  const infoDates = calcInfoDates(dateFrom, dateTo);
+  const infoDates = calcInfoDates(cards[0].dateFrom, cards[cards.length - 1].dateTo);
+  const tripSum = countTripSum(cards);
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">${infoTitle}</h1>
   
       <p class="trip-info__dates">${infoDates}</p>
-    </div>`
+    </div>
+    
+    <p class="trip-info__cost">
+      Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripSum}</span>
+    </p>`
   );
 };
