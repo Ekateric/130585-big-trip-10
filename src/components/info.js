@@ -1,3 +1,5 @@
+import {getCorrectTime} from "../helpers";
+
 const calcInfoTitle = (points) => {
   const pointsLength = points.length;
   let title = ``;
@@ -12,14 +14,41 @@ const calcInfoTitle = (points) => {
   return title;
 };
 
-export const createInfoTemplate = (days, cities) => {
+const calcInfoDates = (dateFrom, dateTo) => {
+  const dateFromCorrect = getCorrectTime(dateFrom);
+  let dateFromText = `${dateFromCorrect.monthText} ${dateFromCorrect.day}`;
+  let intervalText = dateFromText;
+
+  if (dateFrom.toString() !== dateTo.toString()) {
+    const dateToCorrect = getCorrectTime(dateTo);
+    let dateToText = ``;
+
+    if (dateFromCorrect.year === dateToCorrect.year) {
+      if (dateFromCorrect.monthText === dateToCorrect.monthText) {
+        dateToText = `${dateToCorrect.day}`;
+      } else {
+        dateToText = `${dateToCorrect.monthText} ${dateToCorrect.day}`;
+      }
+    } else {
+      dateFromText += `, ${dateFromCorrect.year}`;
+      dateToText = `${dateToCorrect.monthText} ${dateToCorrect.day}, ${dateToCorrect.year}`;
+    }
+
+    intervalText = `${dateFromText}&nbsp;&mdash;&nbsp;${dateToText}`;
+  }
+
+  return intervalText;
+};
+
+export const createInfoTemplate = (cities, dateFrom, dateTo) => {
   const infoTitle = calcInfoTitle(cities);
+  const infoDates = calcInfoDates(dateFrom, dateTo);
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">${infoTitle}</h1>
   
-      <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;21</p>
+      <p class="trip-info__dates">${infoDates}</p>
     </div>`
   );
 };
