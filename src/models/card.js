@@ -1,5 +1,5 @@
 import {MockTypes, MockCities, MockDescription, MockOffers} from "../mock/card";
-import {getRandomInt} from "../helpers";
+import {getRandomInt, castTimeFormat, getCorrectTime} from "../helpers";
 
 export class CardModel {
   constructor() {
@@ -11,8 +11,12 @@ export class CardModel {
     this.description = this._getRandomDescription(MockDescription);
     this.dateFrom = this._getRandomDate(new Date(), 25);
     this.dateTo = this._getRandomDate(this.dateFrom, 2);
+    this.correctDateFrom = getCorrectTime(this.dateFrom);
+    this.correctDateTo = getCorrectTime(this.dateTo);
     this.price = getRandomInt(0, 1000);
     this.offers = this._getRandomOffers(MockOffers);
+
+    this.countDuration();
   }
 
   _getRandomDate(fromDate, daysAfter) {
@@ -46,6 +50,27 @@ export class CardModel {
       .map(() => {
         return offers[getRandomInt(0, offers.length - 1)];
       });
+  }
+
+  countDuration() {
+    let durationString = `00M`;
+    const durationInMinutes = Math.floor((this.dateTo - this.dateFrom) / (1000 * 60));
+
+    if (durationInMinutes > 0) {
+      durationString = `${castTimeFormat(durationInMinutes % 60)}M`;
+    }
+
+    if (durationInMinutes >= 60) {
+      const durationInHours = Math.floor(durationInMinutes / 60);
+      durationString = `${castTimeFormat(durationInHours % 24)}H ${durationString}`;
+
+      if (durationInHours >= 24) {
+        const durationInDays = Math.floor(durationInHours / 24);
+        durationString = `${castTimeFormat(durationInDays)}D ${durationString}`;
+      }
+    }
+
+    this.duration = durationString;
   }
 }
 
