@@ -47,6 +47,10 @@ export class CardsListController {
     this.cities = cities;
   }
 
+  get cards() {
+    return this.cardsModel.cards;
+  }
+
   get listTemplate() {
     const listContentElement = document.createElement(`div`);
 
