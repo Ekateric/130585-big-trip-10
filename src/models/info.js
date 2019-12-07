@@ -51,17 +51,13 @@ export class InfoModel {
   }
 
   countTripSum() {
-    let tripSum = 0;
+    this.sum = this.cards.reduce((cardsAccumulator, currentCard) => {
+      const offersSum = currentCard.offers.reduce((offersAccumulator, currentOffer) => {
+        return offersAccumulator + currentOffer.price;
+      }, 0);
 
-    this.cards.forEach((card) => {
-      tripSum += card.price;
-
-      card.offers.forEach((offer) => {
-        tripSum += offer.price;
-      });
-    });
-
-    this.sum = tripSum;
+      return cardsAccumulator + currentCard.price + offersSum;
+    }, 0);
 
     return this.sum;
   }
