@@ -16,7 +16,7 @@ export class CardsListController {
   }
 
   sortCards() {
-    this.cardsModel.cards.sort();
+    this.cardsModel.sort();
   }
 
   createDaysAndCities() {
