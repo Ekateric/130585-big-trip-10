@@ -3,28 +3,24 @@ import {createMenuData} from "./mock/menu";
 import {createMenuTemplate} from "./components/menu";
 import {createFilterData} from "./mock/filters";
 import {createFiltersTemplate} from "./components/filters";
-import {createCardsData} from "./mock/cards";
-import {createDaysAndCities, createDaysListTemplate} from "./components/days-list";
-import {createDayTemplate} from "./components/day";
-import {createCardTemplate} from "./components/card";
+import {CardsListController} from "./controllers/cards-list";
+import {createDaysListTemplate} from "./components/days-list";
 import {createCardFormTemplate} from "./components/card-form";
-import {getRandomInt} from "./helpers";
+import {getRandomInt, render} from "./helpers";
 
 const CARDS_COUNT = getRandomInt(1, 10);
 
 const menuItems = createMenuData();
 const filters = createFilterData();
-const cards = createCardsData(CARDS_COUNT);
-cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
-const {days, cities} = createDaysAndCities(cards);
+const cardsController = new CardsListController();
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
+cardsController.createCardsData(CARDS_COUNT);
+cardsController.sortCards();
+cardsController.createDaysAndCities();
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
-render(headerInfoElement, createInfoTemplate(cities, cards), `afterbegin`);
+//render(headerInfoElement, createInfoTemplate(cities, cards), `afterbegin`);
 
 const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
 render(headerControlsElement.querySelector(`h2`), createMenuTemplate(menuItems), `afterend`);
@@ -35,16 +31,5 @@ render(eventsElement, createCardFormTemplate());
 render(eventsElement, createDaysListTemplate());
 
 const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
-
-days.forEach((day) => {
-  const dayContentElement = document.createElement(`div`);
-  render(dayContentElement, createDayTemplate(day));
-
-  const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-  cards
-    .filter((card) => card.dateFrom.toDateString() === day.string)
-    .forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
-
-  render(eventsDaysElement, dayContentElement.innerHTML);
-});
+render(eventsDaysElement, cardsController.listTemplate);
 

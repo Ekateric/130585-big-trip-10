@@ -39,3 +39,7 @@ export const getCorrectTime = (date) => {
     stringISO: `${year}-${month}-${day}T${hours}:${minutes}`
   };
 };
+
+export const render = (container, template, place = `beforeend`) => {
+  container.insertAdjacentHTML(place, template);
+};
