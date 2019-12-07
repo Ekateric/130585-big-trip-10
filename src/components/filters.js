@@ -1,5 +1,4 @@
-const createFilterTemplate = (title) => {
-  const isChecked = title === `everything`;
+const createFilterTemplate = (title, isChecked) => {
   return (
     `<div class="trip-filters__filter">
       <input 
@@ -15,7 +14,7 @@ const createFilterTemplate = (title) => {
 };
 
 export const createFiltersTemplate = (filters) => {
-  const filtersTemplate = filters.map((filter) => createFilterTemplate(filter)).join(`\n`);
+  const filtersTemplate = filters.map((filter) => createFilterTemplate(filter.name, filter.isActive)).join(`\n`);
   return (
     `<form class="trip-filters" action="#" method="get">
       ${filtersTemplate}
