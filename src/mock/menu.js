@@ -1,8 +1,4 @@
-const MenuItems = [
+export const MenuItems = [
   `Table`,
   `Stats`
 ];
-
-export const createMenuData = () => {
-  return MenuItems;
-};
