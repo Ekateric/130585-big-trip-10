@@ -8,7 +8,7 @@ export class FiltersListController {
 
   createFiltersData() {
     this.filtersListModel.createData();
-    this.filtersListModel.checkActive();
+    this.filtersListModel.checkActive(0);
   }
 
   get listTemplate() {

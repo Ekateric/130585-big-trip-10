@@ -1,4 +1,3 @@
-import {FilterModel} from "./filter";
 import {Filters} from "../mock/filters";
 
 export class FiltersListModel {
@@ -7,11 +6,16 @@ export class FiltersListModel {
   }
 
   createData() {
-    this.items = Filters.map((filterName) => new FilterModel(filterName));
+    this.items = Filters.map((filterName) => {
+      return {
+        name: filterName,
+        isActive: false
+      };
+    });
   }
 
-  checkActive() {
+  checkActive(index) {
     // черновой вариант
-    this.items[0].isActive = true;
+    this.items[index].isActive = true;
   }
 }
