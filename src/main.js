@@ -4,7 +4,6 @@ import {createFilterData} from "./mock/filters";
 import {createFiltersTemplate} from "./components/filters";
 import {CardsListController} from "./controllers/cards-list";
 import {InfoController} from "./controllers/info";
-import {createDaysListTemplate} from "./components/days-list";
 import {createCardFormTemplate} from "./components/card-form";
 import {getRandomInt, render} from "./helpers";
 
@@ -30,8 +29,5 @@ render(headerControlsElement, createFiltersTemplate(filters));
 
 const eventsElement = document.querySelector(`.trip-events`);
 render(eventsElement, createCardFormTemplate());
-render(eventsElement, createDaysListTemplate()); // todo
-
-const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
-render(eventsDaysElement, cardsController.listTemplate);
+render(eventsElement, cardsController.listTemplate);
 

@@ -1,5 +1,6 @@
 import {CardsListModel} from "../models/cards-list";
 import {DayModel} from "../models/day";
+import {createDaysListTemplate} from "../components/days-list";
 import {createDayTemplate} from "../components/day";
 import {createCardTemplate} from "../components/card";
 import {render} from "../helpers";
@@ -53,6 +54,9 @@ export class CardsListController {
 
   get listTemplate() {
     const listContentElement = document.createElement(`div`);
+    render(listContentElement, createDaysListTemplate());
+
+    const eventsDaysElement = listContentElement.querySelector(`.trip-days`);
 
     this.days.forEach((day) => {
       const dayContentElement = document.createElement(`div`);
@@ -63,7 +67,7 @@ export class CardsListController {
         .filter((card) => card.dateFrom.toDateString() === day.string)
         .forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
 
-      render(listContentElement, dayContentElement.innerHTML);
+      render(eventsDaysElement, dayContentElement.innerHTML);
     });
 
     return listContentElement.innerHTML;
