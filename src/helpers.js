@@ -1,20 +1,5 @@
-// Constants
-export const Months = [
-  `Jan`,
-  `Feb`,
-  `Mar`,
-  `Apr`,
-  `May`,
-  `Jun`,
-  `Jul`,
-  `Aug`,
-  `Sep`,
-  `Oct`,
-  `Nov`,
-  `Dec`
-];
+import {MONTHS} from "./const";
 
-// Utilities
 export const getRandomInt = (min, max) => min + Math.floor(Math.random() * (max + 1 - min));
 
 export const castTimeFormat = (value) => {
@@ -33,7 +18,7 @@ export const getCorrectTime = (date) => {
     day,
     month,
     year,
-    monthText: Months[monthIndex],
+    monthText: MONTHS[monthIndex],
     time: `${hours}:${minutes}`,
     string: `${day}/${month}/${year} ${hours}:${minutes}`,
     stringISO: `${year}-${month}-${day}T${hours}:${minutes}`
