@@ -1,41 +1,33 @@
-import {createInfoTemplate} from "./components/info";
-import {createMenuTemplate} from "./components/menu";
-import {createFiltersTemplate} from "./components/filters";
-import {createDaysListTemplate} from "./components/days-list";
-import {createDayTemplate} from "./components/day";
-import {createCardTemplate} from "./components/card";
-import {createCardFormTemplate} from "./components/card-form";
+import {CardsListController} from "./controllers/cards-list";
+import {InfoController} from "./controllers/info";
+import {MenuController} from "./controllers/menu";
+import {FiltersListController} from "./controllers/filters-list";
+import {getRandomInt, render} from "./helpers";
+import {MockTypes, MockCities} from "./mock/card";
 
-const DAYS_COUNT = 3;
-const CARDS_COUNT = 3;
+const CARDS_COUNT = getRandomInt(1, 10);
+const cardsController = new CardsListController(MockTypes, MockCities);
 
-const render = (container, template, place = `beforeend`) => {
-  container.insertAdjacentHTML(place, template);
-};
+cardsController.createCardsData(CARDS_COUNT);
+cardsController.sortCards();
+cardsController.createDaysAndCities();
+cardsController.editCard = 0;
+
+const infoController = new InfoController(cardsController.tripCities, cardsController.cards);
+const menuController = new MenuController();
+menuController.createMenuData();
+
+const filtersController = new FiltersListController();
+filtersController.createFiltersData();
 
 const siteHeaderElement = document.querySelector(`.page-header`);
 const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
-render(headerInfoElement, createInfoTemplate(), `afterbegin`);
+render(headerInfoElement, infoController.infoTemplate, `afterbegin`);
 
 const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
-render(headerControlsElement.querySelector(`h2`), createMenuTemplate(), `afterend`);
-render(headerControlsElement, createFiltersTemplate());
+render(headerControlsElement.querySelector(`h2`), menuController.listTemplate, `afterend`);
+render(headerControlsElement, filtersController.listTemplate);
 
 const eventsElement = document.querySelector(`.trip-events`);
-render(eventsElement, createCardFormTemplate());
-render(eventsElement, createDaysListTemplate());
-
-const eventsDaysElement = eventsElement.querySelector(`.trip-days`);
-
-for (let daysCounter = 0; daysCounter < DAYS_COUNT; daysCounter++) {
-  const dayContentElement = document.createElement(`div`);
-  render(dayContentElement, createDayTemplate());
-
-  const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-  for (let eventsCounter = 0; eventsCounter < CARDS_COUNT; eventsCounter++) {
-    render(dayEventsListElement, createCardTemplate());
-  }
-  render(eventsDaysElement, dayContentElement.innerHTML);
-}
-
+render(eventsElement, cardsController.listTemplate);
 
