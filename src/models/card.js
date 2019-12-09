@@ -3,9 +3,11 @@ import {getRandomInt, castTimeFormat, getCorrectTime} from "../helpers";
 
 export class CardModel {
   constructor() {
-    const typeIndex = getRandomInt(0, MockTypes.length - 1);
-    this.type = MockTypes[typeIndex].type;
-    this.icon = MockTypes[typeIndex].icon;
+    const typeGroupIndex = getRandomInt(0, MockTypes.length - 1);
+    const typeIndex = getRandomInt(0, MockTypes[typeGroupIndex].types.length - 1);
+    this.typeGroup = MockTypes[typeGroupIndex].group;
+    this.type = MockTypes[typeGroupIndex].types[typeIndex].type;
+    this.icon = MockTypes[typeGroupIndex].types[typeIndex].icon;
     this.city = MockCities[getRandomInt(0, MockCities.length - 1)];
     this.photos = this._getRandomPhotos();
     this.description = this._getRandomDescription(MockDescription);
@@ -15,6 +17,8 @@ export class CardModel {
     this.correctDateTo = getCorrectTime(this.dateTo);
     this.price = getRandomInt(0, 1000);
     this.offers = this._getRandomOffers(MockOffers);
+    this.isFavorite = Math.random() > 0.5;
+    this.isEdit = false;
 
     this.countDuration();
   }
@@ -71,6 +75,10 @@ export class CardModel {
     }
 
     this.duration = durationString;
+  }
+
+  set edit(isEdit) {
+    this.isEdit = isEdit;
   }
 }
 

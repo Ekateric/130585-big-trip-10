@@ -3,13 +3,16 @@ import {DayModel} from "../models/day";
 import {createDaysListTemplate} from "../components/days-list";
 import {createDayTemplate} from "../components/day";
 import {createCardTemplate} from "../components/card";
+import {createCardFormTemplate} from "../components/card-form";
 import {render} from "../helpers";
 
 export class CardsListController {
-  constructor() {
+  constructor(cardsTypes, allCities) {
     this.cardsModel = new CardsListModel();
     this.days = [];
-    this.cities = [];
+    this.tripCities = [];
+    this.types = cardsTypes;
+    this.allCities = allCities;
   }
 
   createCardsData(count) {
@@ -45,7 +48,11 @@ export class CardsListController {
     });
 
     this.days = days;
-    this.cities = cities;
+    this.tripCities = cities;
+  }
+
+  set editCard(index) {
+    this.cardsModel.editCard = index;
   }
 
   get cards() {
@@ -65,7 +72,13 @@ export class CardsListController {
       const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
       this.cardsModel.cards
         .filter((card) => card.dateFrom.toDateString() === day.string)
-        .forEach((card) => render(dayEventsListElement, createCardTemplate(card)));
+        .forEach((card) => {
+          if (card.isEdit) {
+            render(dayEventsListElement, createCardFormTemplate(card, this.types, this.allCities));
+          } else {
+            render(dayEventsListElement, createCardTemplate(card));
+          }
+        });
 
       render(eventsDaysElement, dayContentElement.innerHTML);
     });
