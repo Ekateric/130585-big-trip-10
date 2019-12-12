@@ -4,6 +4,7 @@ export class InfoModel {
     this.cards = cards;
     this.title = this._calcInfoTitle();
     this.datesInterval = this._calcInfoDates();
+    this.sum = 0;
 
     this.countTripSum();
   }
