@@ -1,4 +1,4 @@
-import {castTimeFormat} from "../helpers";
+import castTimeFormat from "../services/utils/castTimeFormat";
 
 export const createDayTemplate = (date) => {
   const {day, month, monthText, year} = date;

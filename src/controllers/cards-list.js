@@ -4,7 +4,7 @@ import {createDaysListTemplate} from "../components/days-list";
 import {createDayTemplate} from "../components/day";
 import {createCardTemplate} from "../components/card";
 import {createCardFormTemplate} from "../components/card-form";
-import {render} from "../helpers";
+import render from "../services/utils/render";
 
 export class CardsListController {
   constructor(cardsTypes, allCities) {

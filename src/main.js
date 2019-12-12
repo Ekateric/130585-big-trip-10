@@ -2,8 +2,9 @@ import {CardsListController} from "./controllers/cards-list";
 import {InfoController} from "./controllers/info";
 import {MenuController} from "./controllers/menu";
 import {FiltersListController} from "./controllers/filters-list";
-import {getRandomInt, render} from "./helpers";
 import {MockTypes, MockCities} from "./mock/card";
+import render from "./services/utils/render";
+import getRandomInt from "./services/utils/getRandomInt";
 
 const CARDS_COUNT = getRandomInt(1, 10);
 const cardsController = new CardsListController(MockTypes, MockCities);

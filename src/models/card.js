@@ -1,5 +1,7 @@
 import {MockTypes, MockCities, MockDescription, MockOffers} from "../mock/card";
-import {getRandomInt, castTimeFormat, getCorrectTime} from "../helpers";
+import getCorrectTime from "../services/utils/getCorrectTime";
+import castTimeFormat from "../services/utils/castTimeFormat";
+import getRandomInt from "../services/utils/getRandomInt";
 
 export class CardModel {
   constructor() {
