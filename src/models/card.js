@@ -15,12 +15,11 @@ export class CardModel {
     this.dateTo = this._getRandomDate(this.dateFrom, 2);
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
+    this.duration = this._countDuration();
     this.price = getRandomInt(0, 1000);
     this.offers = this._getRandomOffers(MockOffers);
     this.isFavorite = Math.random() > 0.5;
     this.isEdit = false;
-
-    this.countDuration();
   }
 
   _getRandomDate(fromDate, daysAfter) {
@@ -56,7 +55,7 @@ export class CardModel {
       });
   }
 
-  countDuration() {
+  _countDuration() {
     let durationString = `00M`;
     const durationInMinutes = Math.floor((this.dateTo - this.dateFrom) / (1000 * 60));
 
@@ -74,7 +73,7 @@ export class CardModel {
       }
     }
 
-    this.duration = durationString;
+    return durationString;
   }
 
   set edit(isEdit) {
