@@ -1,11 +1,11 @@
-import {DayModel} from "../models/day";
-import {createDaysListTemplate} from "../components/days-list";
-import {createDayTemplate} from "../components/day";
-import {createCardTemplate} from "../components/card";
-import {createCardFormTemplate} from "../components/card-form";
+import DaysListView from "../views/days-list";
+import DayModel from "../models/day";
+import DayView from "../views/day";
+import CardView from "../views/card";
+import CardFormView from "../views/card-form";
 import render from "../services/utils/render";
 
-export class CardsListController {
+export default class CardsListController {
   constructor(cardsListModel) {
     this._cardsListModel = cardsListModel;
     this._days = [];
@@ -60,28 +60,28 @@ export class CardsListController {
 
   get listTemplate() {
     const listContentElement = document.createElement(`div`);
-    render(listContentElement, createDaysListTemplate());
+    render(listContentElement, (new DaysListView()).getElement());
 
     const eventsDaysElement = listContentElement.querySelector(`.trip-days`);
 
     this._days.forEach((day) => {
       const dayContentElement = document.createElement(`div`);
-      render(dayContentElement, createDayTemplate(day));
+      render(dayContentElement, (new DayView(day)).getElement());
 
       const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
       this._cardsListModel.cards
         .filter((card) => card.dateFrom.toDateString() === day.string)
         .forEach((card) => {
           if (card.isEdit) {
-            render(dayEventsListElement, createCardFormTemplate(card, this._types, this._allCities));
+            render(dayEventsListElement, (new CardFormView(card, this._types, this._allCities)).getElement());
           } else {
-            render(dayEventsListElement, createCardTemplate(card));
+            render(dayEventsListElement, (new CardView(card)).getElement());
           }
         });
 
-      render(eventsDaysElement, dayContentElement.innerHTML);
+      render(eventsDaysElement, dayContentElement.firstElementChild);
     });
 
-    return listContentElement.innerHTML;
+    return listContentElement.firstElementChild;
   }
 }

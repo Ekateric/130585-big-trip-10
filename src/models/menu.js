@@ -1,12 +1,12 @@
 import {MenuItems} from "../mock/menu";
 
-export class MenuModel {
+export default class MenuModel {
   constructor() {
-    this.items = [];
+    this._items = this._createItems();
   }
 
-  createData() {
-    this.items = MenuItems.map((itemName) => {
+  _createItems() {
+    return MenuItems.map((itemName) => {
       return {
         name: itemName,
         isActive: false
@@ -17,5 +17,9 @@ export class MenuModel {
   checkActive(index) {
     // черновой вариант
     this.items[index].isActive = true;
+  }
+
+  get items() {
+    return this._items;
   }
 }

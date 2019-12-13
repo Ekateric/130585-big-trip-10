@@ -1,67 +1,66 @@
-const createTypesTemplate = (types, currentType) => {
-  return types
-    .map((typeItem) => {
-      const isChecked = typeItem.type === currentType;
-      const typeLowerCase = typeItem.type.toLowerCase();
+import createElement from "../services/utils/createElement";
 
-      return (
-        `<div class="event__type-item">
-          <input 
-          id="event-type-${typeLowerCase}-1" 
-          class="event__type-input visually-hidden" 
-          type="radio" name="event-type" 
-          value="${typeItem.type}"
-          ${isChecked ? `checked` : ``}>
-          <label 
-            class="event__type-label event__type-label--${typeItem.icon}" 
-            for="event-type-${typeLowerCase}-1">${typeItem.type}</label>
-        </div>`
-      );
-    }).join(`\n`);
+const createTypeTemplate = (typeItem, currentType) => {
+  const {type, icon} = typeItem;
+  const isChecked = type === currentType;
+  const typeLowerCase = type.toLowerCase();
+
+  return (
+    `<div class="event__type-item">
+      <input 
+      id="event-type-${typeLowerCase}-1" 
+      class="event__type-input visually-hidden" 
+      type="radio" name="event-type" 
+      value="${type}"
+      ${isChecked ? `checked` : ``}>
+      <label 
+        class="event__type-label event__type-label--${icon}" 
+        for="event-type-${typeLowerCase}-1">${type}</label>
+    </div>`
+  );
 };
 
-const createTypesGroupsTemplate = (typesGroups, currentType) => {
-  return typesGroups
-    .map((typeGroup) => {
-      const typesTemplate = createTypesTemplate(typeGroup.types, currentType);
-      return (
-        `<fieldset class="event__type-group">
-          <legend class="visually-hidden">${typeGroup.name}</legend>
-
-          ${typesTemplate}
-        </fieldset>`
-      );
-    }).join(`\n`);
-};
-
-const createCitiesOptionsTemplate = (cities) => {
-  return cities
-    .map((city) => `<option value="${city}"></option>`)
+const createTypesGroupTemplate = (typeGroup, currentType) => {
+  const {name, types} = typeGroup;
+  const typesTemplate = types
+    .map((type) => createTypeTemplate(type, currentType))
     .join(`\n`);
+
+  return (
+    `<fieldset class="event__type-group">
+      <legend class="visually-hidden">${name}</legend>
+
+      ${typesTemplate}
+    </fieldset>`
+  );
 };
 
-const createOffersTemplate = (offers) => {
-  return offers
-    .map((offer) => {
-      return (
-        `<div class="event__offer-selector">
-          <input class="event__offer-checkbox visually-hidden" 
-          id="event-offer-${offer.type}-1" 
-          type="checkbox" 
-          name="event-offer-${offer.type}" 
-          checked>
-          <label class="event__offer-label" for="event-offer-${offer.type}-1">
-            <span class="event__offer-title">${offer.name}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>`
-      );
-    }).join(`\n`);
+const createOptionTemplate = (value) => `<option value="${value}"></option>`;
+
+const createOfferTemplate = (offer) => {
+  const {type, name, price} = offer;
+
+  return (
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox visually-hidden" 
+      id="event-offer-${type}-1" 
+      type="checkbox" 
+      name="event-offer-${type}" 
+      checked>
+      <label class="event__offer-label" for="event-offer-${type}-1">
+        <span class="event__offer-title">${name}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${price}</span>
+      </label>
+    </div>`
+  );
 };
 
 const createOffersSectionTemplate = (offers) => {
-  const offersListTemplate = createOffersTemplate(offers);
+  const offersListTemplate = offers
+    .map((offer) => createOfferTemplate(offer))
+    .join(`\n`);
+
   return (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -73,14 +72,13 @@ const createOffersSectionTemplate = (offers) => {
   );
 };
 
-const createPhotosListTemplate = (photos) => {
-  return photos
-    .map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`)
-    .join(`\n`);
-};
+const createPhotoTemplate = (photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`;
 
 const createDestinationTemplate = (description, photos) => {
-  const photosListTemplate = createPhotosListTemplate(photos);
+  const photosListTemplate = photos
+    .map((photo) => createPhotoTemplate(photo))
+    .join(`\n`);
+
   return (
     `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -95,10 +93,14 @@ const createDestinationTemplate = (description, photos) => {
   );
 };
 
-export const createCardFormTemplate = (card, types, cities) => {
+const createCardFormTemplate = (card, types, cities) => {
   const {type, icon, city, correctDateFrom, correctDateTo, price, offers, description, photos, isFavorite} = card;
-  const typesGroupsTemplate = createTypesGroupsTemplate(types, type);
-  const citiesOptionsTemplate = createCitiesOptionsTemplate(cities);
+  const typesGroupsTemplate = types
+    .map((typeGroup) => createTypesGroupTemplate(typeGroup, type))
+    .join(`\n`);
+  const citiesOptionsTemplate = cities
+    .map((item) => createOptionTemplate(item))
+    .join(`\n`);
   const offersTemplate = offers.length ? createOffersSectionTemplate(offers) : ``;
   const destinationTemplate = description.length ? createDestinationTemplate(description, photos) : ``;
 
@@ -171,3 +173,36 @@ export const createCardFormTemplate = (card, types, cities) => {
     </form>`
   );
 };
+
+export default class CardFormView {
+  constructor(card, types, allCities) {
+    this._card = card;
+    this._types = types;
+    this._cities = allCities;
+
+    this._element = null;
+  }
+
+  setClickUpButtonHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  getTemplate() {
+    return createCardFormTemplate(this._card, this._types, this._cities);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

@@ -1,7 +1,7 @@
 import getCorrectTime from "../services/utils/getCorrectTime";
 import castTimeFormat from "../services/utils/castTimeFormat";
 
-export class CardModel {
+export default class CardModel {
   constructor(data) {
     this.id = data.id;
     this.typeGroup = data.typeGroup;

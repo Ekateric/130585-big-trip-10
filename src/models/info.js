@@ -1,7 +1,7 @@
-export class InfoModel {
+export default class InfoModel {
   constructor(cities, cards) {
-    this.cities = cities;
-    this.cards = cards;
+    this._cities = cities;
+    this._cards = cards;
     this.title = this._calcInfoTitle();
     this.datesInterval = this._calcInfoDates();
     this.sum = 0;
@@ -10,28 +10,28 @@ export class InfoModel {
   }
 
   _calcInfoTitle() {
-    const pointsLength = this.cities.length;
+    const pointsLength = this._cities.length;
     let title = ``;
 
     if (pointsLength > 3) {
-      title = `${this.cities[0]} &mdash; ... &mdash; ${this.cities[pointsLength - 1]}`;
+      title = `${this._cities[0]} &mdash; ... &mdash; ${this._cities[pointsLength - 1]}`;
 
     } else {
-      title = this.cities.join(` &mdash; `);
+      title = this._cities.join(` &mdash; `);
     }
 
     return title;
   }
 
   _calcInfoDates() {
-    const dateFrom = this.cards[0].dateFrom;
-    const dateTo = this.cards[this.cards.length - 1].dateTo;
-    const dateFromCorrect = this.cards[0].correctDateFrom;
+    const dateFrom = this._cards[0].dateFrom;
+    const dateTo = this._cards[this._cards.length - 1].dateTo;
+    const dateFromCorrect = this._cards[0].correctDateFrom;
     let dateFromText = `${dateFromCorrect.monthText} ${dateFromCorrect.day}`;
     let intervalText = dateFromText;
 
     if (dateFrom.toString() !== dateTo.toString()) {
-      const dateToCorrect = this.cards[this.cards.length - 1].correctDateTo;
+      const dateToCorrect = this._cards[this._cards.length - 1].correctDateTo;
       let dateToText = ``;
 
       if (dateFromCorrect.year === dateToCorrect.year) {
@@ -52,7 +52,7 @@ export class InfoModel {
   }
 
   countTripSum() {
-    this.sum = this.cards.reduce((cardsAccumulator, currentCard) => {
+    this.sum = this._cards.reduce((cardsAccumulator, currentCard) => {
       const offersSum = currentCard.offers.reduce((offersAccumulator, currentOffer) => {
         return offersAccumulator + currentOffer.price;
       }, 0);

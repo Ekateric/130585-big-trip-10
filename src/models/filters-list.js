@@ -1,12 +1,12 @@
 import {Filters} from "../mock/filters";
 
-export class FiltersListModel {
+export default class FiltersListModel {
   constructor() {
-    this.items = [];
+    this._items = this._createItems();
   }
 
-  createData() {
-    this.items = Filters.map((filterName) => {
+  _createItems() {
+    return Filters.map((filterName) => {
       return {
         name: filterName,
         isActive: false
@@ -17,5 +17,9 @@ export class FiltersListModel {
   checkActive(index) {
     // черновой вариант
     this.items[index].isActive = true;
+  }
+
+  get items() {
+    return this._items;
   }
 }

@@ -1,8 +1,8 @@
-import {CardModel} from "./card";
+import CardModel from "./card";
 import CardsMock from "../mock/cards";
 import {getAllCards, getCardById, getAllCities, getAllTypes} from "../services/api/index";
 
-export class CardsListModel {
+export default class CardsListModel {
   constructor() {
     this._mock = new CardsMock();
     this._cards = this._createCards(this.getAllCards());
