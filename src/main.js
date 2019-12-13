@@ -25,13 +25,12 @@ const menuController = new MenuController(menuModel);
 const filtersModel = new FiltersListModel();
 const filtersController = new FiltersListController(filtersModel);
 
-const siteHeaderElement = document.querySelector(`.page-header`);
-const headerInfoElement = siteHeaderElement.querySelector(`.trip-info`);
-infoController.render(headerInfoElement, RenderPosition.AFTERBEGIN);
+const tripMainElement = document.querySelector(`.trip-main`);
+infoController.render(tripMainElement, RenderPosition.AFTERBEGIN);
 
-const headerControlsElement = siteHeaderElement.querySelector(`.trip-controls`);
-menuController.render(headerControlsElement.querySelector(`h2`), RenderPosition.AFTEREND);
-filtersController.render(headerControlsElement);
+const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
+menuController.render(tripControlsElement.querySelector(`h2`), RenderPosition.AFTEREND);
+filtersController.render(tripControlsElement);
 
 const eventsElement = document.querySelector(`.trip-events`);
 render(eventsElement, cardsController.listTemplate);
