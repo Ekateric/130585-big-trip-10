@@ -1,18 +1,16 @@
+import {CardsListModel} from "./models/cards-list";
 import {CardsListController} from "./controllers/cards-list";
 import {InfoController} from "./controllers/info";
 import {MenuController} from "./controllers/menu";
 import {FiltersListController} from "./controllers/filters-list";
-import {MockTypes, MockCities} from "./mock/card";
 import render from "./services/utils/render";
-import getRandomInt from "./services/utils/getRandomInt";
 
-const CARDS_COUNT = getRandomInt(1, 10);
-const cardsController = new CardsListController(MockTypes, MockCities);
+const cardsListModel = new CardsListModel();
+const cardsController = new CardsListController(cardsListModel);
 
-cardsController.createCardsData(CARDS_COUNT);
 cardsController.sortCards();
 cardsController.createDaysAndCities();
-cardsController.editCard = 0;
+cardsController.editCardId = 0;
 
 const infoController = new InfoController(cardsController.tripCities, cardsController.cards);
 const menuController = new MenuController();

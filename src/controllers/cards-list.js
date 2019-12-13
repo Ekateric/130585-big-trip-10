@@ -1,4 +1,3 @@
-import {CardsListModel} from "../models/cards-list";
 import {DayModel} from "../models/day";
 import {createDaysListTemplate} from "../components/days-list";
 import {createDayTemplate} from "../components/day";
@@ -7,27 +6,23 @@ import {createCardFormTemplate} from "../components/card-form";
 import render from "../services/utils/render";
 
 export class CardsListController {
-  constructor(cardsTypes, allCities) {
-    this.cardsModel = new CardsListModel();
-    this.days = [];
-    this.tripCities = [];
-    this.types = cardsTypes;
-    this.allCities = allCities;
-  }
-
-  createCardsData(count) {
-    this.cardsModel.createData(count);
+  constructor(cardsListModel) {
+    this._cardsListModel = cardsListModel;
+    this._days = [];
+    this._tripCities = [];
+    this._types = this._cardsListModel.getAllTypes();
+    this._allCities = this._cardsListModel.getAllCities();
   }
 
   sortCards() {
-    this.cardsModel.sort();
+    this._cardsListModel.sort();
   }
 
   createDaysAndCities() {
     let days = [];
     let cities = [];
 
-    this.cardsModel.cards.forEach((card) => {
+    this._cardsListModel.cards.forEach((card) => {
       const dateString = card.dateFrom.toDateString();
 
       if (days.find((day) => day.string === dateString) === undefined) {
@@ -47,16 +42,20 @@ export class CardsListController {
       }
     });
 
-    this.days = days;
-    this.tripCities = cities;
+    this._days = days;
+    this._tripCities = cities;
   }
 
-  set editCard(index) {
-    this.cardsModel.editCard = index;
+  set editCardId(index) {
+    this._cardsListModel.editCardId = index;
   }
 
   get cards() {
-    return this.cardsModel.cards;
+    return this._cardsListModel.cards;
+  }
+
+  get tripCities() {
+    return this._tripCities;
   }
 
   get listTemplate() {
@@ -65,16 +64,16 @@ export class CardsListController {
 
     const eventsDaysElement = listContentElement.querySelector(`.trip-days`);
 
-    this.days.forEach((day) => {
+    this._days.forEach((day) => {
       const dayContentElement = document.createElement(`div`);
       render(dayContentElement, createDayTemplate(day));
 
       const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-      this.cardsModel.cards
+      this._cardsListModel.cards
         .filter((card) => card.dateFrom.toDateString() === day.string)
         .forEach((card) => {
           if (card.isEdit) {
-            render(dayEventsListElement, createCardFormTemplate(card, this.types, this.allCities));
+            render(dayEventsListElement, createCardFormTemplate(card, this._types, this._allCities));
           } else {
             render(dayEventsListElement, createCardTemplate(card));
           }
