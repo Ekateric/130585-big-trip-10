@@ -65,10 +65,6 @@ export default class CardsListController {
     render(renderToElement, this._element);
   }
 
-  set editCardId(index) {
-    this._cardsListModel.editCardId = index;
-  }
-
   get cards() {
     return this._cardsModels;
   }

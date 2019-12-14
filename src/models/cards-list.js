@@ -9,7 +9,6 @@ export default class CardsListModel {
     this._allTypes = this.getAllTypes();
     this._allCities = this.getAllCities();
     this._cards = this._createCards(this.getAllCards());
-    this._editCardId = null;
   }
 
   _createCards(data) {
@@ -37,19 +36,6 @@ export default class CardsListModel {
 
   sort() {
     this._cards.sort((cardOne, cardTwo) => cardOne.model.dateFrom - cardTwo.model.dateFrom);
-  }
-
-  set editCardId(id) {
-    if (this._editCardId && this._editCardId !== id) {
-      this.unEditCard(this._editCardId);
-    }
-    this._editCardId = id;
-    this._cards[id].model.edit = true;
-  }
-
-  set unEditCard(id) {
-    this._editCardId = null;
-    this._cards[id].model.edit = false;
   }
 
   get cardsControllers() {

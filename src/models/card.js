@@ -19,7 +19,6 @@ export default class CardModel {
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
     this.duration = this._countDuration();
-    this.isEdit = false;
   }
 
   _countDuration() {
@@ -41,10 +40,6 @@ export default class CardModel {
     }
 
     return durationString;
-  }
-
-  set edit(isEdit) {
-    this.isEdit = isEdit;
   }
 }
 
