@@ -1,4 +1,4 @@
-import MONTHS from "../const/months";
+import MONTHS from "../data/months";
 import castTimeFormat from "./castTimeFormat";
 
 export default (date) => {

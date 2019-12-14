@@ -1,5 +1,5 @@
-import castTimeFormat from "../services/utils/castTimeFormat";
-import createElement from "../services/utils/createElement";
+import castTimeFormat from "../utils/castTimeFormat";
+import createElement from "../utils/createElement";
 
 export const createDayTemplate = (date) => {
   const {day, month, monthText, year} = date;

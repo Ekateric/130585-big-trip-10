@@ -1,6 +1,6 @@
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
-import render from "../services/utils/render";
+import render from "../utils/render";
 
 export default class CardController {
   constructor(cardModel, types, cities) {

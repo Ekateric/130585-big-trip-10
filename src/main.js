@@ -6,7 +6,7 @@ import MenuModel from "./models/menu";
 import MenuController from "./controllers/menu";
 import FiltersListModel from "./models/filters-list";
 import FiltersListController from "./controllers/filters-list";
-import RenderPosition from "./services/const/render-position";
+import RenderPosition from "./data/render-position";
 
 const cardsListModel = new CardsListModel();
 const cardsController = new CardsListController(cardsListModel);

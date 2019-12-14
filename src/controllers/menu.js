@@ -1,5 +1,5 @@
 import MenuView from "../views/menu";
-import render from "../services/utils/render";
+import render from "../utils/render";
 
 export default class MenuController {
   constructor(menuModel) {

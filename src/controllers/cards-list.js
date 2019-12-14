@@ -1,7 +1,7 @@
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
-import render from "../services/utils/render";
+import render from "../utils/render";
 
 export default class CardsListController {
   constructor(cardsListModel) {

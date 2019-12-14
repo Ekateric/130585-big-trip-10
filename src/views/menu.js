@@ -1,4 +1,4 @@
-import createElement from "../services/utils/createElement";
+import createElement from "../utils/createElement";
 
 const createMenuItemTemplate = (item) => {
   const {name, isActive} = item;

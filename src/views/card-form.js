@@ -1,4 +1,4 @@
-import createElement from "../services/utils/createElement";
+import createElement from "../utils/createElement";
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;

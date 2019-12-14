@@ -1,5 +1,5 @@
-import getCorrectTime from "../services/utils/getCorrectTime";
-import castTimeFormat from "../services/utils/castTimeFormat";
+import getCorrectTime from "../utils/getCorrectTime";
+import castTimeFormat from "../utils/castTimeFormat";
 
 export default class CardModel {
   constructor(data) {

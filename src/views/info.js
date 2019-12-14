@@ -1,4 +1,4 @@
-import createElement from "../services/utils/createElement";
+import createElement from "../utils/createElement";
 
 export const createInfoTemplate = (info) => {
   const {title, datesInterval, sum} = info;
