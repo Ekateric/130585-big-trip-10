@@ -12,10 +12,6 @@ import RenderPosition from "./services/const/render-position";
 const cardsListModel = new CardsListModel();
 const cardsController = new CardsListController(cardsListModel);
 
-cardsController.sortCards();
-cardsController.createDaysAndCities();
-cardsController.editCardId = 0;
-
 const infoModel = new InfoModel(cardsController.tripCities, cardsController.cards);
 const infoController = new InfoController(infoModel);
 

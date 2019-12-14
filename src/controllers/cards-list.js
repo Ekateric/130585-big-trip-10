@@ -1,17 +1,19 @@
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
-import CardView from "../views/card";
-import CardFormView from "../views/card-form";
 import render from "../services/utils/render";
 
 export default class CardsListController {
   constructor(cardsListModel) {
     this._cardsListModel = cardsListModel;
+    this.sortCards();
+
+    this._cardsControllers = this._cardsListModel.cardsControllers;
+    this._cardsModels = this._cardsListModel.cardsModels;
+
     this._days = [];
     this._tripCities = [];
-    this._types = this._cardsListModel.getAllTypes();
-    this._allCities = this._cardsListModel.getAllCities();
+    this.createDaysAndCities();
   }
 
   sortCards() {
@@ -22,7 +24,7 @@ export default class CardsListController {
     let days = [];
     let cities = [];
 
-    this._cardsListModel.cards.forEach((card) => {
+    this._cardsModels.forEach((card) => {
       const dateString = card.dateFrom.toDateString();
 
       if (days.find((day) => day.string === dateString) === undefined) {
@@ -51,7 +53,7 @@ export default class CardsListController {
   }
 
   get cards() {
-    return this._cardsListModel.cards;
+    return this._cardsModels;
   }
 
   get tripCities() {
@@ -69,14 +71,10 @@ export default class CardsListController {
       render(dayContentElement, (new DayView(day)).getElement());
 
       const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-      this._cardsListModel.cards
-        .filter((card) => card.dateFrom.toDateString() === day.string)
+      this._cardsControllers
+        .filter((card) => card.model.dateFrom.toDateString() === day.string)
         .forEach((card) => {
-          if (card.isEdit) {
-            render(dayEventsListElement, (new CardFormView(card, this._types, this._allCities)).getElement());
-          } else {
-            render(dayEventsListElement, (new CardView(card)).getElement());
-          }
+          card.render(dayEventsListElement);
         });
 
       render(eventsDaysElement, dayContentElement.firstElementChild);
