@@ -6,7 +6,6 @@ import MenuModel from "./models/menu";
 import MenuController from "./controllers/menu";
 import FiltersListModel from "./models/filters-list";
 import FiltersListController from "./controllers/filters-list";
-import render from "./services/utils/render";
 import RenderPosition from "./services/const/render-position";
 
 const cardsListModel = new CardsListModel();
@@ -29,5 +28,5 @@ menuController.render(tripControlsElement.querySelector(`h2`), RenderPosition.AF
 filtersController.render(tripControlsElement);
 
 const eventsElement = document.querySelector(`.trip-events`);
-render(eventsElement, cardsController.listTemplate);
+cardsController.render(eventsElement);
 

@@ -10,6 +10,8 @@ export default class CardsListController {
 
     this._cardsControllers = this._cardsListModel.cardsControllers;
     this._cardsModels = this._cardsListModel.cardsModels;
+    this._view = new DaysListView();
+    this._element = this._view.getElement();
 
     this._days = [];
     this._tripCities = [];
@@ -48,6 +50,21 @@ export default class CardsListController {
     this._tripCities = cities;
   }
 
+  render(renderToElement) {
+    this._days.forEach((day) => {
+      const dayView = new DayView(day);
+      const dayElement = dayView.getElement();
+      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+
+      this._cardsControllers
+        .filter((card) => card.model.dateFrom.toDateString() === day.string)
+        .forEach((card) => card.render(dayEventsListElement));
+
+      render(this._element, dayElement);
+    });
+    render(renderToElement, this._element);
+  }
+
   set editCardId(index) {
     this._cardsListModel.editCardId = index;
   }
@@ -58,28 +75,5 @@ export default class CardsListController {
 
   get tripCities() {
     return this._tripCities;
-  }
-
-  get listTemplate() {
-    const listContentElement = document.createElement(`div`);
-    render(listContentElement, (new DaysListView()).getElement());
-
-    const eventsDaysElement = listContentElement.querySelector(`.trip-days`);
-
-    this._days.forEach((day) => {
-      const dayContentElement = document.createElement(`div`);
-      render(dayContentElement, (new DayView(day)).getElement());
-
-      const dayEventsListElement = dayContentElement.querySelector(`.trip-events__list`);
-      this._cardsControllers
-        .filter((card) => card.model.dateFrom.toDateString() === day.string)
-        .forEach((card) => {
-          card.render(dayEventsListElement);
-        });
-
-      render(eventsDaysElement, dayContentElement.firstElementChild);
-    });
-
-    return listContentElement.firstElementChild;
   }
 }
