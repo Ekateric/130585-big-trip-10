@@ -1,6 +1,6 @@
 import createElement from "../services/utils/createElement";
 
-const createTypeTemplate = (typeItem, currentType) => {
+const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
   const isChecked = type === currentType;
   const typeLowerCase = type.toLowerCase();
@@ -8,22 +8,22 @@ const createTypeTemplate = (typeItem, currentType) => {
   return (
     `<div class="event__type-item">
       <input 
-      id="event-type-${typeLowerCase}-1" 
+      id="event-type-${typeLowerCase}-${cardId}" 
       class="event__type-input visually-hidden" 
       type="radio" name="event-type" 
       value="${type}"
       ${isChecked ? `checked` : ``}>
       <label 
         class="event__type-label event__type-label--${icon}" 
-        for="event-type-${typeLowerCase}-1">${type}</label>
+        for="event-type-${typeLowerCase}-${cardId}">${type}</label>
     </div>`
   );
 };
 
-const createTypesGroupTemplate = (typeGroup, currentType) => {
+const createTypesGroupTemplate = (typeGroup, currentType, cardId) => {
   const {name, types} = typeGroup;
   const typesTemplate = types
-    .map((type) => createTypeTemplate(type, currentType))
+    .map((type) => createTypeTemplate(type, currentType, cardId))
     .join(`\n`);
 
   return (
@@ -37,17 +37,17 @@ const createTypesGroupTemplate = (typeGroup, currentType) => {
 
 const createOptionTemplate = (value) => `<option value="${value}"></option>`;
 
-const createOfferTemplate = (offer) => {
+const createOfferTemplate = (offer, cardId) => {
   const {type, name, price} = offer;
 
   return (
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox visually-hidden" 
-      id="event-offer-${type}-1" 
-      type="checkbox" 
-      name="event-offer-${type}" 
+      <input class="event__offer-checkbox visually-hidden"
+      id="event-offer-${type}-${cardId}"
+      type="checkbox"
+      name="event-offer-${type}"
       checked>
-      <label class="event__offer-label" for="event-offer-${type}-1">
+      <label class="event__offer-label" for="event-offer-${type}-${cardId}">
         <span class="event__offer-title">${name}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
@@ -56,9 +56,9 @@ const createOfferTemplate = (offer) => {
   );
 };
 
-const createOffersSectionTemplate = (offers) => {
+const createOffersSectionTemplate = (offers, cardId) => {
   const offersListTemplate = offers
-    .map((offer) => createOfferTemplate(offer))
+    .map((offer) => createOfferTemplate(offer, cardId))
     .join(`\n`);
 
   return (
@@ -94,66 +94,66 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormTemplate = (card, types, cities) => {
-  const {type, icon, city, correctDateFrom, correctDateTo, price, offers, description, photos, isFavorite} = card;
+  const {id, type, icon, city, correctDateFrom, correctDateTo, price, offers, description, photos, isFavorite} = card;
   const typesGroupsTemplate = types
-    .map((typeGroup) => createTypesGroupTemplate(typeGroup, type))
+    .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
     .join(`\n`);
   const citiesOptionsTemplate = cities
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
-  const offersTemplate = offers.length ? createOffersSectionTemplate(offers) : ``;
+  const offersTemplate = offers.length ? createOffersSectionTemplate(offers, id) : ``;
   const destinationTemplate = description.length ? createDestinationTemplate(description, photos) : ``;
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-1">
+          <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${icon}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-  
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+
           <div class="event__type-list">
             ${typesGroupsTemplate}
           </div>
         </div>
-  
+
         <div class="event__field-group event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label  event__type-output" for="event-destination-${id}">
             ${type} at
           </label>
-          <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
-          <datalist id="destination-list-1">
+          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
+          <datalist id="destination-list-${id}">
             ${citiesOptionsTemplate}
           </datalist>
         </div>
-  
+
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">
+          <label class="visually-hidden" for="event-start-time-${id}">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${correctDateFrom.string}">
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${correctDateFrom.string}">
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">
+          <label class="visually-hidden" for="event-end-time-${id}">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${correctDateTo.string}">
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${correctDateTo.string}">
         </div>
-  
+
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
         </div>
-  
+
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
-        
-        <input id="event-favorite-1" class="event__favorite-checkbox visually-hidden" type="checkbox" name="event-favorite"${isFavorite ? ` checked` : ``}>
-        <label class="event__favorite-btn" for="event-favorite-1">
+
+        <input id="event-favorite-${id}" class="event__favorite-checkbox visually-hidden" type="checkbox" name="event-favorite"${isFavorite ? ` checked` : ``}>
+        <label class="event__favorite-btn" for="event-favorite-${id}">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
             <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -164,7 +164,7 @@ const createCardFormTemplate = (card, types, cities) => {
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
-      
+
       <section class="event__details">
         ${offersTemplate}
 
