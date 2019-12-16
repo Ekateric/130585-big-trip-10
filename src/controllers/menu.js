@@ -1,17 +1,19 @@
-import {MenuModel} from "../models/menu";
-import {createMenuTemplate} from "../components/menu";
+import MenuView from "../views/menu";
+import render from "../utils/render";
 
-export class MenuController {
-  constructor() {
-    this.menuModel = new MenuModel();
+export default class MenuController {
+  constructor(menuModel) {
+    this._model = menuModel;
+    this._model.checkActive(0);
+    this._view = new MenuView(this._model.items);
+    this._element = this._view.getElement();
   }
 
-  createMenuData() {
-    this.menuModel.createData();
-    this.menuModel.checkActive(0);
+  render(renderToElement, place) {
+    render(renderToElement, this._element, place);
   }
 
-  get listTemplate() {
-    return createMenuTemplate(this.menuModel.items);
+  get element() {
+    return this._element;
   }
 }

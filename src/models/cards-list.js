@@ -1,35 +1,48 @@
-import {CardModel} from "./card";
+import CardsMock from "../mock/cards";
+import CardController from "../controllers/card";
+import CardModel from "./card";
+import {getAllCards, getCardById, getAllCities, getAllTypes} from "../services/api/index";
 
-export class CardsListModel {
+export default class CardsListModel {
   constructor() {
-    this.cardsList = [];
-    this.editCardIndex = null;
+    this._mock = new CardsMock();
+    this._allTypes = this.getAllTypes();
+    this._allCities = this.getAllCities();
+    this._cards = this._createCards(this.getAllCards());
   }
 
-  createData(count) {
-    this.cardsList = new Array(count)
-      .fill(``)
-      .map(() => new CardModel());
+  _createCards(data) {
+    return data.map((card) => {
+      const cardModel = new CardModel(card);
+      return new CardController(cardModel, this._allTypes, this._allCities);
+    });
+  }
+
+  getAllCards() {
+    return getAllCards(this._mock);
+  }
+
+  getCardById(id) {
+    return getCardById(id, this._mock);
+  }
+
+  getAllCities() {
+    return getAllCities();
+  }
+
+  getAllTypes() {
+    return getAllTypes();
   }
 
   sort() {
-    this.cardsList.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
+    this._cards.sort((cardOne, cardTwo) => cardOne.model.dateFrom - cardTwo.model.dateFrom);
   }
 
-  set editCard(index) {
-    if (this.editCardIndex && this.editCardIndex !== index) {
-      this.unEditCard(this.editCardIndex);
-    }
-    this.editCardIndex = index;
-    this.cardsList[index].edit = true;
+  get cardsControllers() {
+    return this._cards;
   }
 
-  set unEditCard(index) {
-    this.editCardIndex = null;
-    this.cardsList[index].edit = false;
-  }
-
-  get cards() {
-    return this.cardsList;
+  get cardsModels() {
+    return this._cards.map((card) => card.model);
   }
 }

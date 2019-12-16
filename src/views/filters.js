@@ -1,3 +1,5 @@
+import createElement from "../utils/createElement";
+
 const createFilterTemplate = (title, isChecked) => {
   return (
     `<div class="trip-filters__filter">
@@ -13,8 +15,11 @@ const createFilterTemplate = (title, isChecked) => {
   );
 };
 
-export const createFiltersTemplate = (filters) => {
-  const filtersTemplate = filters.map((filter) => createFilterTemplate(filter.name, filter.isActive)).join(`\n`);
+const createFiltersTemplate = (filters) => {
+  const filtersTemplate = filters
+    .map((filter) => createFilterTemplate(filter.name, filter.isActive))
+    .join(`\n`);
+
   return (
     `<form class="trip-filters" action="#" method="get">
       ${filtersTemplate}
@@ -23,3 +28,27 @@ export const createFiltersTemplate = (filters) => {
     </form>`
   );
 };
+
+export default class FiltersView {
+  constructor(filters) {
+    this._filters = filters;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFiltersTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

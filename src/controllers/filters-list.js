@@ -1,17 +1,19 @@
-import {FiltersListModel} from "../models/filters-list";
-import {createFiltersTemplate} from "../components/filters";
+import FiltersView from "../views/filters";
+import render from "../utils/render";
 
-export class FiltersListController {
-  constructor() {
-    this.filtersListModel = new FiltersListModel();
+export default class FiltersListController {
+  constructor(filtersListModel) {
+    this._model = filtersListModel;
+    this._model.checkActive(0);
+    this._view = new FiltersView(this._model.items);
+    this._element = this._view.getElement();
   }
 
-  createFiltersData() {
-    this.filtersListModel.createData();
-    this.filtersListModel.checkActive(0);
+  render(renderToElement) {
+    render(renderToElement, this._element);
   }
 
-  get listTemplate() {
-    return createFiltersTemplate(this.filtersListModel.items);
+  get element() {
+    return this._element;
   }
 }

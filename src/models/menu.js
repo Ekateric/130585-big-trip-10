@@ -1,12 +1,12 @@
-import {MenuItems} from "../mock/menu";
+import {getMenuItems} from "../services/api/index";
 
-export class MenuModel {
+export default class MenuModel {
   constructor() {
-    this.items = [];
+    this._items = this._createItems(this.getMenuItems());
   }
 
-  createData() {
-    this.items = MenuItems.map((itemName) => {
+  _createItems(data) {
+    return data.map((itemName) => {
       return {
         name: itemName,
         isActive: false
@@ -14,8 +14,16 @@ export class MenuModel {
     });
   }
 
+  getMenuItems() {
+    return getMenuItems();
+  }
+
   checkActive(index) {
     // черновой вариант
     this.items[index].isActive = true;
+  }
+
+  get items() {
+    return this._items;
   }
 }

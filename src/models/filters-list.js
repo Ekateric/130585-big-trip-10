@@ -1,12 +1,12 @@
-import {Filters} from "../mock/filters";
+import {getFilters} from "../services/api/index";
 
-export class FiltersListModel {
+export default class FiltersListModel {
   constructor() {
-    this.items = [];
+    this._items = this._createItems(this.getFilters());
   }
 
-  createData() {
-    this.items = Filters.map((filterName) => {
+  _createItems(data) {
+    return data.map((filterName) => {
       return {
         name: filterName,
         isActive: false
@@ -14,8 +14,16 @@ export class FiltersListModel {
     });
   }
 
+  getFilters() {
+    return getFilters();
+  }
+
   checkActive(index) {
     // черновой вариант
     this.items[index].isActive = true;
+  }
+
+  get items() {
+    return this._items;
   }
 }

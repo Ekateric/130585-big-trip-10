@@ -1,19 +1,21 @@
-const createOffersTemplate = (offers) => {
-  return Array.from(offers)
-    .map((offer) => {
-      return (
-        `<li class="event__offer">
-          <span class="event__offer-title">${offer.name}</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-        </li>`
-      );
-    }).join(`\n`);
+import createElement from "../utils/createElement";
+
+const createOfferTemplate = (offer) => {
+  const {name, price} = offer;
+  return (
+    `<li class="event__offer">
+      <span class="event__offer-title">${name}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${price}</span>
+    </li>`
+  );
 };
 
 export const createCardTemplate = (card) => {
   const {type, icon, city, correctDateFrom, correctDateTo, price, offers, duration} = card;
-  const offersTemplate = createOffersTemplate(offers);
+  const offersTemplate = Array.from(offers)
+    .map((offer) => createOfferTemplate(offer))
+    .join(`\n`);
 
   return (
     `<li class="trip-events__item">
@@ -48,3 +50,33 @@ export const createCardTemplate = (card) => {
      </li>`
   );
 };
+
+export default class CardView {
+  constructor(card) {
+    this._card = card;
+
+    this._element = null;
+  }
+
+  setClickEditButtonHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

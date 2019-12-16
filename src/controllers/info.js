@@ -1,12 +1,18 @@
-import {InfoModel} from "../models/info";
-import {createInfoTemplate} from "../components/info";
+import InfoView from "../views/info";
+import render from "../utils/render";
 
-export class InfoController {
-  constructor(cities, cards) {
-    this.infoModel = new InfoModel(cities, cards);
+export default class InfoController {
+  constructor(infoModel) {
+    this._model = infoModel;
+    this._view = new InfoView(this._model);
+    this._element = this._view.getElement();
   }
 
-  get infoTemplate() {
-    return createInfoTemplate(this.infoModel);
+  render(renderToElement, place) {
+    render(renderToElement, this._element, place);
+  }
+
+  get element() {
+    return this._element;
   }
 }

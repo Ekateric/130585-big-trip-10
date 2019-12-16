@@ -1,4 +1,5 @@
-import {castTimeFormat} from "../helpers";
+import castTimeFormat from "../utils/castTimeFormat";
+import createElement from "../utils/createElement";
 
 export const createDayTemplate = (date) => {
   const {day, month, monthText, year} = date;
@@ -16,3 +17,28 @@ export const createDayTemplate = (date) => {
     </li>`
   );
 };
+
+export default class DayView {
+  constructor(date) {
+    this._date = date;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDayTemplate(this._date);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

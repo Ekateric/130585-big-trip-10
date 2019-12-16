@@ -1,4 +1,4 @@
-export const MONTHS = [
+export default [
   `Jan`,
   `Feb`,
   `Mar`,
