@@ -11,7 +11,7 @@ const createOfferTemplate = (offer) => {
   );
 };
 
-export const createCardTemplate = (card) => {
+const createCardTemplate = (card) => {
   const {type, icon, city, correctDateFrom, correctDateTo, price, offers, duration} = card;
   const offersTemplate = Array.from(offers)
     .map((offer) => createOfferTemplate(offer))
