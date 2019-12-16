@@ -3,7 +3,7 @@ import {Types, Cities, Description, Offers} from "./const/index";
 
 export default class CardsMock {
   constructor() {
-    this._cardsCount = getRandomInt(1, 10);
+    this._cardsCount = getRandomInt(0, 10);
     this._data = this.createCardsData(this._cardsCount);
   }
 
