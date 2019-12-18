@@ -2,11 +2,15 @@ export default class InfoModel {
   constructor(cities, cards) {
     this._cities = cities;
     this._cards = cards;
-    this.title = this._calcInfoTitle();
-    this.datesInterval = this._calcInfoDates();
+    this.title = null;
+    this.datesInterval = null;
     this.sum = 0;
 
-    this.countTripSum();
+    if (this._cards.length > 0) {
+      this.title = this._calcInfoTitle();
+      this.datesInterval = this._calcInfoDates();
+      this.countTripSum();
+    }
   }
 
   _calcInfoTitle() {

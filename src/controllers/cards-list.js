@@ -1,6 +1,7 @@
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
+import NoCardsView from "../views/no-cards";
 import render from "../utils/render";
 
 export default class CardsListController {
@@ -13,9 +14,33 @@ export default class CardsListController {
     this._view = new DaysListView();
     this._element = this._view.getElement();
 
+    this._noCardsView = null;
+    this._noCardsElement = null;
+
     this._days = [];
     this._tripCities = [];
     this.createDaysAndCities();
+  }
+
+  _renderNoCards(renderToElement) {
+    this._noCardsView = new NoCardsView();
+    this._noCardsElement = this._noCardsView.getElement();
+    render(renderToElement, this._noCardsElement);
+  }
+
+  _renderDays(renderToElement) {
+    this._days.forEach((day) => {
+      const dayView = new DayView(day);
+      const dayElement = dayView.getElement();
+      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+
+      this._cardsControllers
+        .filter((card) => card.model.dateFrom.toDateString() === day.string)
+        .forEach((card) => card.render(dayEventsListElement));
+
+      render(this._element, dayElement);
+    });
+    render(renderToElement, this._element);
   }
 
   sortCards() {
@@ -51,18 +76,12 @@ export default class CardsListController {
   }
 
   render(renderToElement) {
-    this._days.forEach((day) => {
-      const dayView = new DayView(day);
-      const dayElement = dayView.getElement();
-      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+    if (this._cardsListModel.isEmpty) {
+      this._renderNoCards(renderToElement);
 
-      this._cardsControllers
-        .filter((card) => card.model.dateFrom.toDateString() === day.string)
-        .forEach((card) => card.render(dayEventsListElement));
-
-      render(this._element, dayElement);
-    });
-    render(renderToElement, this._element);
+    } else {
+      this._renderDays(renderToElement);
+    }
   }
 
   get cards() {
