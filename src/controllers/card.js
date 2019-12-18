@@ -23,7 +23,7 @@ export default class CardController {
   }
 
   render(renderToElement) {
-    render(renderToElement, this._cardElement);
+    render(renderToElement, this._view);
     this._parentElement = renderToElement;
     this.setHandlers();
   }

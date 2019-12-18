@@ -6,14 +6,9 @@ export default class FiltersListController {
     this._model = filtersListModel;
     this._model.checkActive(0);
     this._view = new FiltersView(this._model.items);
-    this._element = this._view.getElement();
   }
 
   render(renderToElement) {
-    render(renderToElement, this._element);
-  }
-
-  get element() {
-    return this._element;
+    render(renderToElement, this._view);
   }
 }

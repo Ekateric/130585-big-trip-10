@@ -53,16 +53,15 @@ export default class CardsListController {
   render(renderToElement) {
     this._days.forEach((day) => {
       const dayView = new DayView(day);
-      const dayElement = dayView.getElement();
-      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+      const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
       this._cardsControllers
         .filter((card) => card.model.dateFrom.toDateString() === day.string)
         .forEach((card) => card.render(dayEventsListElement));
 
-      render(this._element, dayElement);
+      render(this._element, dayView);
     });
-    render(renderToElement, this._element);
+    render(renderToElement, this._view);
   }
 
   get cards() {
