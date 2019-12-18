@@ -1,5 +1,5 @@
+import AbstractView from "./abstract";
 import castTimeFormat from "../utils/castTimeFormat";
-import createElement from "../utils/createElement";
 
 export const createDayTemplate = (date) => {
   const {day, month, monthText, year} = date;
@@ -18,27 +18,14 @@ export const createDayTemplate = (date) => {
   );
 };
 
-export default class DayView {
+export default class DayView extends AbstractView {
   constructor(date) {
-    this._date = date;
+    super();
 
-    this._element = null;
+    this._date = date;
   }
 
   getTemplate() {
     return createDayTemplate(this._date);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
-
