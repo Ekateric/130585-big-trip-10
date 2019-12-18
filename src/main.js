@@ -9,7 +9,8 @@ import FiltersListController from "./controllers/filters-list";
 import RenderPosition from "./data/render-position";
 
 const cardsListModel = new CardsListModel();
-const cardsController = new CardsListController(cardsListModel);
+const eventsElement = document.querySelector(`.trip-events`);
+const cardsController = new CardsListController(cardsListModel, eventsElement);
 
 const infoModel = new InfoModel(cardsController.tripCities, cardsController.cards);
 const infoController = new InfoController(infoModel);
@@ -27,6 +28,5 @@ const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 menuController.render(tripControlsElement.querySelector(`h2`), RenderPosition.AFTEREND);
 filtersController.render(tripControlsElement);
 
-const eventsElement = document.querySelector(`.trip-events`);
-cardsController.render(eventsElement);
+cardsController.render();
 

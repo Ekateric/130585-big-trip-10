@@ -5,8 +5,9 @@ import NoCardsView from "../views/no-cards";
 import render from "../utils/render";
 
 export default class CardsListController {
-  constructor(cardsListModel) {
+  constructor(cardsListModel, containerElement) {
     this._cardsListModel = cardsListModel;
+    this._containerElement = containerElement;
     this.sortCards();
 
     this._cardsControllers = this._cardsListModel.cardsControllers;
@@ -20,12 +21,12 @@ export default class CardsListController {
     this.createDaysAndCities();
   }
 
-  _renderNoCards(renderToElement) {
+  _renderNoCards() {
     this._noCardsView = new NoCardsView();
-    render(renderToElement, this._noCardsView);
+    render(this._containerElement, this._noCardsView);
   }
 
-  _renderDays(renderToElement) {
+  _renderDays() {
     this._days.forEach((day) => {
       const dayView = new DayView(day);
       const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
@@ -37,7 +38,7 @@ export default class CardsListController {
       render(this._element, dayView);
     });
 
-    render(renderToElement, this._view);
+    render(this._containerElement, this._view);
   }
 
   sortCards() {
@@ -72,12 +73,12 @@ export default class CardsListController {
     this._tripCities = cities;
   }
 
-  render(renderToElement) {
+  render() {
     if (this._cardsListModel.isEmpty) {
-      this._renderNoCards(renderToElement);
+      this._renderNoCards();
 
     } else {
-      this._renderDays(renderToElement);
+      this._renderDays();
     }
   }
 
