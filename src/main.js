@@ -8,25 +8,24 @@ import FiltersListModel from "./models/filters-list";
 import FiltersListController from "./controllers/filters-list";
 import RenderPosition from "./data/render-position";
 
-const cardsListModel = new CardsListModel();
 const eventsElement = document.querySelector(`.trip-events`);
+const tripMainElement = document.querySelector(`.trip-main`);
+const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
+
+const cardsListModel = new CardsListModel();
 const cardsController = new CardsListController(cardsListModel, eventsElement);
 
 const infoModel = new InfoModel(cardsController.tripCities, cardsController.cards);
-const tripMainElement = document.querySelector(`.trip-main`);
 const infoController = new InfoController(infoModel, tripMainElement);
 
 const menuModel = new MenuModel();
-const menuController = new MenuController(menuModel);
+const menuController = new MenuController(menuModel, tripControlsElement.querySelector(`h2`));
 
 const filtersModel = new FiltersListModel();
-const filtersController = new FiltersListController(filtersModel);
+const filtersController = new FiltersListController(filtersModel, tripControlsElement);
 
 infoController.render(RenderPosition.AFTERBEGIN);
-
-const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
-menuController.render(tripControlsElement.querySelector(`h2`), RenderPosition.AFTEREND);
-filtersController.render(tripControlsElement);
-
+menuController.render(RenderPosition.AFTEREND);
+filtersController.render();
 cardsController.render();
 
