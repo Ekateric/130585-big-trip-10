@@ -1,4 +1,4 @@
-import createElement from "../utils/createElement";
+import AbstractView from "./abstract";
 
 const createOfferTemplate = (offer) => {
   const {name, price} = offer;
@@ -51,11 +51,11 @@ export const createCardTemplate = (card) => {
   );
 };
 
-export default class CardView {
+export default class CardView extends AbstractView {
   constructor(card) {
-    this._card = card;
+    super();
 
-    this._element = null;
+    this._card = card;
   }
 
   setClickEditButtonHandler(handler) {
@@ -66,17 +66,5 @@ export default class CardView {
 
   getTemplate() {
     return createCardTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
