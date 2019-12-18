@@ -13,7 +13,8 @@ const eventsElement = document.querySelector(`.trip-events`);
 const cardsController = new CardsListController(cardsListModel, eventsElement);
 
 const infoModel = new InfoModel(cardsController.tripCities, cardsController.cards);
-const infoController = new InfoController(infoModel);
+const tripMainElement = document.querySelector(`.trip-main`);
+const infoController = new InfoController(infoModel, tripMainElement);
 
 const menuModel = new MenuModel();
 const menuController = new MenuController(menuModel);
@@ -21,8 +22,7 @@ const menuController = new MenuController(menuModel);
 const filtersModel = new FiltersListModel();
 const filtersController = new FiltersListController(filtersModel);
 
-const tripMainElement = document.querySelector(`.trip-main`);
-infoController.render(tripMainElement, RenderPosition.AFTERBEGIN);
+infoController.render(RenderPosition.AFTERBEGIN);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 menuController.render(tripControlsElement.querySelector(`h2`), RenderPosition.AFTEREND);
