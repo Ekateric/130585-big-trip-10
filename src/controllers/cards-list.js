@@ -13,9 +13,7 @@ export default class CardsListController {
     this._cardsModels = this._cardsListModel.cardsModels;
     this._view = new DaysListView();
     this._element = this._view.getElement();
-
     this._noCardsView = null;
-    this._noCardsElement = null;
 
     this._days = [];
     this._tripCities = [];
@@ -24,23 +22,22 @@ export default class CardsListController {
 
   _renderNoCards(renderToElement) {
     this._noCardsView = new NoCardsView();
-    this._noCardsElement = this._noCardsView.getElement();
-    render(renderToElement, this._noCardsElement);
+    render(renderToElement, this._noCardsView);
   }
 
   _renderDays(renderToElement) {
     this._days.forEach((day) => {
       const dayView = new DayView(day);
-      const dayElement = dayView.getElement();
-      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+      const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
       this._cardsControllers
         .filter((card) => card.model.dateFrom.toDateString() === day.string)
         .forEach((card) => card.render(dayEventsListElement));
 
-      render(this._element, dayElement);
+      render(this._element, dayView);
     });
-    render(renderToElement, this._element);
+
+    render(renderToElement, this._view);
   }
 
   sortCards() {
