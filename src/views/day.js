@@ -1,7 +1,7 @@
 import AbstractView from "./abstract";
 import castTimeFormat from "../utils/castTimeFormat";
 
-export const createDayTemplate = (date) => {
+const createDayTemplate = (date) => {
   const {day, month, monthText, year} = date;
   const castMonth = castTimeFormat(month);
   const halfYear = String(year).slice(2);

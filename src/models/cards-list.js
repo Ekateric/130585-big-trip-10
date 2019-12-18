@@ -9,6 +9,7 @@ export default class CardsListModel {
     this._allTypes = this.getAllTypes();
     this._allCities = this.getAllCities();
     this._cards = this._createCards(this.getAllCards());
+    this._isEmpty = this._checkIsEmpty();
   }
 
   _createCards(data) {
@@ -16,6 +17,10 @@ export default class CardsListModel {
       const cardModel = new CardModel(card);
       return new CardController(cardModel, this._allTypes, this._allCities);
     });
+  }
+
+  _checkIsEmpty() {
+    return this._cards.length === 0;
   }
 
   getAllCards() {
@@ -44,5 +49,9 @@ export default class CardsListModel {
 
   get cardsModels() {
     return this._cards.map((card) => card.model);
+  }
+
+  get isEmpty() {
+    return this._isEmpty;
   }
 }

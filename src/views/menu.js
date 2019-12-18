@@ -7,7 +7,7 @@ const createMenuItemTemplate = (item) => {
   return `<a class="trip-tabs__btn ${activeClass}" href="#">${name}</a>`;
 };
 
-export const createMenuTemplate = (menuItems) => {
+const createMenuTemplate = (menuItems) => {
   const menuItemsTemplate = menuItems
     .map((item) => createMenuItemTemplate(item))
     .join(`\n`);

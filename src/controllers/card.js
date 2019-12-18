@@ -28,12 +28,25 @@ export default class CardController {
   }
 
   setHandlers() {
+    const _that = this;
+    const onExitForm = (event) => {
+      const isEscKey = event.key === `Escape` || event.key === `Esc`;
+
+      if (isEscKey) {
+        _that._replaceEditToView();
+        document.removeEventListener(`keydown`, onExitForm);
+      }
+    };
+
     this._view.setClickEditButtonHandler(() => {
       this._replaceViewToEdit();
+
+      document.addEventListener(`keydown`, onExitForm);
     });
 
     this._formView.setClickUpButtonHandler(() => {
       this._replaceEditToView();
+      document.removeEventListener(`keydown`, onExitForm);
     });
   }
 
