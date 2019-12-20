@@ -1,4 +1,4 @@
-import createElement from "../utils/createElement";
+import AbstractView from "./abstract";
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
@@ -174,13 +174,13 @@ const createCardFormTemplate = (card, types, cities) => {
   );
 };
 
-export default class CardFormView {
+export default class CardFormView extends AbstractView {
   constructor(card, types, allCities) {
+    super();
+
     this._card = card;
     this._types = types;
     this._cities = allCities;
-
-    this._element = null;
   }
 
   setClickUpButtonHandler(handler) {
@@ -192,17 +192,4 @@ export default class CardFormView {
   getTemplate() {
     return createCardFormTemplate(this._card, this._types, this._cities);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
-

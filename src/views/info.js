@@ -1,4 +1,4 @@
-import createElement from "../utils/createElement";
+import AbstractView from "./abstract";
 
 const createMainInfoTemplate = (title, datesInterval) => {
   return (
@@ -24,26 +24,14 @@ const createInfoTemplate = (info) => {
   );
 };
 
-export default class InfoView {
+export default class InfoView extends AbstractView {
   constructor(info) {
-    this._info = info;
+    super();
 
-    this._element = null;
+    this._info = info;
   }
 
   getTemplate() {
     return createInfoTemplate(this._info);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

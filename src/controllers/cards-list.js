@@ -5,42 +5,40 @@ import NoCardsView from "../views/no-cards";
 import render from "../utils/render";
 
 export default class CardsListController {
-  constructor(cardsListModel) {
+  constructor(cardsListModel, containerElement) {
     this._cardsListModel = cardsListModel;
+    this._containerElement = containerElement;
     this.sortCards();
 
     this._cardsControllers = this._cardsListModel.cardsControllers;
     this._cardsModels = this._cardsListModel.cardsModels;
     this._view = new DaysListView();
     this._element = this._view.getElement();
-
     this._noCardsView = null;
-    this._noCardsElement = null;
 
     this._days = [];
     this._tripCities = [];
     this.createDaysAndCities();
   }
 
-  _renderNoCards(renderToElement) {
+  _renderNoCards() {
     this._noCardsView = new NoCardsView();
-    this._noCardsElement = this._noCardsView.getElement();
-    render(renderToElement, this._noCardsElement);
+    render(this._containerElement, this._noCardsView);
   }
 
-  _renderDays(renderToElement) {
+  _renderDays() {
     this._days.forEach((day) => {
       const dayView = new DayView(day);
-      const dayElement = dayView.getElement();
-      const dayEventsListElement = dayElement.querySelector(`.trip-events__list`);
+      const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
       this._cardsControllers
         .filter((card) => card.model.dateFrom.toDateString() === day.string)
         .forEach((card) => card.render(dayEventsListElement));
 
-      render(this._element, dayElement);
+      render(this._element, dayView);
     });
-    render(renderToElement, this._element);
+
+    render(this._containerElement, this._view);
   }
 
   sortCards() {
@@ -75,12 +73,12 @@ export default class CardsListController {
     this._tripCities = cities;
   }
 
-  render(renderToElement) {
+  render() {
     if (this._cardsListModel.isEmpty) {
-      this._renderNoCards(renderToElement);
+      this._renderNoCards();
 
     } else {
-      this._renderDays(renderToElement);
+      this._renderDays();
     }
   }
 

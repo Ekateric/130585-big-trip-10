@@ -2,18 +2,14 @@ import MenuView from "../views/menu";
 import render from "../utils/render";
 
 export default class MenuController {
-  constructor(menuModel) {
+  constructor(menuModel, containerElement) {
     this._model = menuModel;
     this._model.checkActive(0);
     this._view = new MenuView(this._model.items);
-    this._element = this._view.getElement();
+    this._containerElement = containerElement;
   }
 
-  render(renderToElement, place) {
-    render(renderToElement, this._element, place);
-  }
-
-  get element() {
-    return this._element;
+  render(place) {
+    render(this._containerElement, this._view, place);
   }
 }
