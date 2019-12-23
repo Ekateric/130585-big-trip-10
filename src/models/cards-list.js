@@ -1,5 +1,4 @@
 import CardsMock from "../mock/cards";
-import CardController from "../controllers/card";
 import CardModel from "./card";
 import {getAllCards, getCardById, getAllCities, getAllTypes} from "../services/api/index";
 
@@ -13,10 +12,7 @@ export default class CardsListModel {
   }
 
   _createCards(data) {
-    return data.map((card) => {
-      const cardModel = new CardModel(card);
-      return new CardController(cardModel, this._allTypes, this._allCities);
-    });
+    return data.map((card) => new CardModel(card));
   }
 
   _checkIsEmpty() {
@@ -40,18 +36,22 @@ export default class CardsListModel {
   }
 
   sort() {
-    this._cards.sort((cardOne, cardTwo) => cardOne.model.dateFrom - cardTwo.model.dateFrom);
-  }
-
-  get cardsControllers() {
-    return this._cards;
+    this._cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
   }
 
   get cardsModels() {
-    return this._cards.map((card) => card.model);
+    return this._cards;
   }
 
   get isEmpty() {
     return this._isEmpty;
+  }
+
+  get allTypes() {
+    return this._allTypes;
+  }
+
+  get allCities() {
+    return this._allCities;
   }
 }

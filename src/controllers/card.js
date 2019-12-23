@@ -4,14 +4,14 @@ import render from "../utils/render";
 import replace from "../utils/replace";
 
 export default class CardController {
-  constructor(cardModel, types, cities) {
+  constructor(cardModel, containerElement, types, cities) {
     this._model = cardModel;
+    this._containerElement = containerElement;
     this._view = new CardView(this._model);
 
     this._allTypes = types;
     this._allCities = cities;
     this._formView = new CardFormView(this._model, this._allTypes, this._allCities);
-    this._parentElement = null;
 
     this._onExitForm = this._onExitForm.bind(this);
   }
@@ -33,9 +33,8 @@ export default class CardController {
     }
   }
 
-  render(renderToElement) {
-    render(renderToElement, this._view);
-    this._parentElement = renderToElement;
+  render() {
+    render(this._containerElement, this._view);
     this.setHandlers();
   }
 

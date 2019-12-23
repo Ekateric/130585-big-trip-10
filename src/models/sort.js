@@ -24,7 +24,7 @@ export default class SortModel {
   }
 
   set checked(id) {
-    if (this._checkedId && this._checkedId !== id) {
+    if (this._checkedId) {
       this._items.find((item) => item.id === this._checkedId).isChecked = false;
     }
     this._checkedId = id;

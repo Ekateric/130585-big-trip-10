@@ -1,41 +1,66 @@
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
+import CardController from "./card";
 import render from "../utils/render";
 
 export default class CardsListController {
   constructor(cardsListModel, containerElement) {
     this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
-    this.sortCards();
 
-    this._cardsControllers = this._cardsListModel.cardsControllers;
-    this._cardsModels = this._cardsListModel.cardsModels;
+    this._cardsListModel.sort();
+
+    this._cardsModels = this._cardsListModel.cardsModels; // всегда отсортированы по дате
+    this._sortedCardsModels = this._cardsModels.slice();
+    this._showedCardsControllers = [];
+
     this._view = new DaysListView();
     this._element = this._view.getElement();
 
+    this._allTypes = this._cardsListModel.allTypes;
+    this._allCities = this._cardsListModel.allCities;
     this._days = [];
     this._tripCities = [];
     this.createDaysAndCities();
   }
 
-  _renderDays() {
-    this._days.forEach((day) => {
-      const dayView = new DayView(day);
-      const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
+  _renderDayItem(dayData, dayCardModels) {
+    const dayView = new DayView(dayData);
+    const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
-      this._cardsControllers
-        .filter((card) => card.model.dateFrom.toDateString() === day.string)
-        .forEach((card) => card.render(dayEventsListElement));
+    dayCardModels.forEach((cardModel) => {
+      const cardController = new CardController(cardModel, dayEventsListElement, this._allTypes, this._allCities);
 
-      render(this._element, dayView);
+      cardController.render();
+      this._showedCardsControllers.push(cardController);
     });
 
-    render(this._containerElement, this._view);
+    render(this._element, dayView);
   }
 
-  sortCards() {
-    this._cardsListModel.sort();
+  _renderDays() {
+    this._days.forEach((day) => {
+      const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.dateFrom.toDateString() === day.string);
+
+      this._renderDayItem(day, dayCardModels);
+    });
+  }
+
+  _sortByEvent() {
+    this._sortedCardsModels = this._cardsModels.slice();
+  }
+
+  _sortByTime() {
+    this._sortedCardsModels = this._cardsModels
+      .slice()
+      .sort((cardOne, cardTwo) => cardTwo.duration - cardOne.duration);
+  }
+
+  _sortByPrice() {
+    this._sortedCardsModels = this._cardsModels
+      .slice()
+      .sort((cardOne, cardTwo) => cardTwo.price - cardOne.price);
   }
 
   createDaysAndCities() {
@@ -66,11 +91,38 @@ export default class CardsListController {
     this._tripCities = cities;
   }
 
-  render() {
-    this._renderDays();
+  sort(sortType) {
+    this._showedCardsControllers = [];
+    this.clear();
+
+    switch (sortType) {
+      case `event`:
+        this._sortByEvent();
+        this._renderDays();
+        break;
+
+      case `time`:
+        this._sortByTime();
+        this._renderDayItem(null, this._sortedCardsModels);
+        break;
+
+      case `price`:
+        this._sortByPrice();
+        this._renderDayItem(null, this._sortedCardsModels);
+        break;
+    }
   }
 
-  get cards() {
+  clear() {
+    this._element.innerHTML = ``;
+  }
+
+  render() {
+    this._renderDays();
+    render(this._containerElement, this._view);
+  }
+
+  get cardsModels() {
     return this._cardsModels;
   }
 
