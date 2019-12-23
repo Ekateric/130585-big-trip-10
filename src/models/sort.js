@@ -28,7 +28,7 @@ export default class SortModel {
       this._items.find((item) => item.id === this._checkedId).isChecked = false;
     }
     this._checkedId = id;
-    this._items.find((item) => item.id === id).isChecked = true;
+    this._items.find((item) => item.id === this._checkedId).isChecked = true;
   }
 
   get checked() {

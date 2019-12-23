@@ -1,7 +1,6 @@
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
-import NoCardsView from "../views/no-cards";
 import render from "../utils/render";
 
 export default class CardsListController {
@@ -14,16 +13,10 @@ export default class CardsListController {
     this._cardsModels = this._cardsListModel.cardsModels;
     this._view = new DaysListView();
     this._element = this._view.getElement();
-    this._noCardsView = null;
 
     this._days = [];
     this._tripCities = [];
     this.createDaysAndCities();
-  }
-
-  _renderNoCards() {
-    this._noCardsView = new NoCardsView();
-    render(this._containerElement, this._noCardsView);
   }
 
   _renderDays() {
@@ -74,12 +67,7 @@ export default class CardsListController {
   }
 
   render() {
-    if (this._cardsListModel.isEmpty) {
-      this._renderNoCards();
-
-    } else {
-      this._renderDays();
-    }
+    this._renderDays();
   }
 
   get cards() {

@@ -6,7 +6,7 @@ const createSortItemTemplate = (sortItem) => {
   return (
     `<div class="trip-sort__item  trip-sort__item--${id}">
       <input 
-        id="sort-event" 
+        id="sort-${id}" 
         class="trip-sort__input visually-hidden" 
         type="radio" 
         name="trip-sort" 
