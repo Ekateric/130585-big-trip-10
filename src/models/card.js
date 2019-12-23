@@ -19,11 +19,16 @@ export default class CardModel {
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
     this.duration = this._countDuration();
+    this.durationText = this._getDurationText(this.duration);
   }
 
   _countDuration() {
+    return this.dateTo - this.dateFrom;
+  }
+
+  _getDurationText() {
     let durationString = `00M`;
-    const durationInMinutes = Math.floor((this.dateTo - this.dateFrom) / (1000 * 60));
+    const durationInMinutes = Math.floor(this.duration / (1000 * 60));
 
     if (durationInMinutes > 0) {
       durationString = `${castTimeFormat(durationInMinutes % 60)}M`;

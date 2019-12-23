@@ -4,13 +4,16 @@ import render from "../utils/render";
 import replace from "../utils/replace";
 
 export default class CardController {
-  constructor(cardModel, types, cities) {
+  constructor(cardModel, containerElement, types, cities) {
     this._model = cardModel;
+    this._containerElement = containerElement;
     this._view = new CardView(this._model);
+
     this._allTypes = types;
     this._allCities = cities;
     this._formView = new CardFormView(this._model, this._allTypes, this._allCities);
-    this._parentElement = null;
+
+    this._onExitForm = this._onExitForm.bind(this);
   }
 
   _replaceViewToEdit() {
@@ -19,34 +22,31 @@ export default class CardController {
 
   _replaceEditToView() {
     replace(this._view, this._formView);
+    document.removeEventListener(`keydown`, this._onExitForm);
   }
 
-  render(renderToElement) {
-    render(renderToElement, this._view);
-    this._parentElement = renderToElement;
+  _onExitForm(event) {
+    const isEscKey = event.key === `Escape` || event.key === `Esc`;
+
+    if (isEscKey) {
+      this._replaceEditToView();
+    }
+  }
+
+  render() {
+    render(this._containerElement, this._view);
     this.setHandlers();
   }
 
   setHandlers() {
-    const _that = this;
-    const onExitForm = (event) => {
-      const isEscKey = event.key === `Escape` || event.key === `Esc`;
-
-      if (isEscKey) {
-        _that._replaceEditToView();
-        document.removeEventListener(`keydown`, onExitForm);
-      }
-    };
-
     this._view.setClickEditButtonHandler(() => {
       this._replaceViewToEdit();
 
-      document.addEventListener(`keydown`, onExitForm);
+      document.addEventListener(`keydown`, this._onExitForm);
     });
 
     this._formView.setClickUpButtonHandler(() => {
       this._replaceEditToView();
-      document.removeEventListener(`keydown`, onExitForm);
     });
   }
 

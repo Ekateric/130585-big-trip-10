@@ -18,6 +18,16 @@ const createDayTemplate = (date) => {
   );
 };
 
+const createEmptyDayTemplate = () => {
+  return (
+    `<li class="trip-days__item day">
+      <div class="day__info"></div>
+
+      <ul class="trip-events__list"></ul>
+    </li>`
+  );
+};
+
 export default class DayView extends AbstractView {
   constructor(date) {
     super();
@@ -26,6 +36,10 @@ export default class DayView extends AbstractView {
   }
 
   getTemplate() {
-    return createDayTemplate(this._date);
+    if (this._date) {
+      return createDayTemplate(this._date);
+    } else {
+      return createEmptyDayTemplate();
+    }
   }
 }
