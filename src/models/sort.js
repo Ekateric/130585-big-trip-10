@@ -3,7 +3,7 @@ import getSortTypes from "../services/api/getSortTypes";
 export default class SortModel {
   constructor() {
     this._items = this._createItems(this.getSortTypes());
-    this.checkedId = null;
+    this._checkedId = null;
   }
 
   _createItems(data) {
@@ -24,10 +24,14 @@ export default class SortModel {
   }
 
   set checked(id) {
-    if (this.checkedId && this.checkedId !== id) {
-      this._items.find((item) => item.id === this.checkedId).checked = false;
+    if (this._checkedId && this._checkedId !== id) {
+      this._items.find((item) => item.id === this._checkedId).isChecked = false;
     }
-    this.checkedId = id;
-    this._items.find((item) => item.id === id).checked = true;
+    this._checkedId = id;
+    this._items.find((item) => item.id === id).isChecked = true;
+  }
+
+  get checked() {
+    return this._checkedId;
   }
 }
