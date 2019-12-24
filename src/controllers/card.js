@@ -7,11 +7,11 @@ export default class CardController {
   constructor(cardModel, containerElement, types, cities) {
     this._model = cardModel;
     this._containerElement = containerElement;
-    this._view = new CardView(this._model);
-
     this._allTypes = types;
     this._allCities = cities;
-    this._formView = new CardFormView(this._model, this._allTypes, this._allCities);
+
+    this._view = null;
+    this._formView = null;
 
     this._onExitForm = this._onExitForm.bind(this);
   }
@@ -34,8 +34,21 @@ export default class CardController {
   }
 
   render() {
-    render(this._containerElement, this._view);
+    const oldCardView = this._view;
+    const oldCardFormView = this._formView;
+
+    this._view = new CardView(this._model);
+    this._formView = new CardFormView(this._model, this._allTypes, this._allCities);
+
     this.setHandlers();
+
+    if (oldCardView && oldCardFormView) {
+      replace(this._view, oldCardView);
+      replace(this._formView, oldCardFormView);
+
+    } else {
+      render(this._containerElement, this._view);
+    }
   }
 
   setHandlers() {
