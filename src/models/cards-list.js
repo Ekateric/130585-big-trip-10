@@ -39,6 +39,20 @@ export default class CardsListModel {
     this._cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
   }
 
+  updateModelById(modelId, newData) {
+    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
+    let newCardModel = null;
+
+    if (cardIndex > -1) {
+      const oldCardModel = this._cards.find((card) => card.id === modelId);
+
+      newCardModel = new CardModel(Object.assign({}, oldCardModel, newData));
+      this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
+    }
+
+    return newCardModel;
+  }
+
   get cardsModels() {
     return this._cards;
   }

@@ -4,11 +4,12 @@ import render from "../utils/render";
 import replace from "../utils/replace";
 
 export default class CardController {
-  constructor(cardModel, containerElement, types, cities) {
+  constructor(cardModel, containerElement, types, cities, onDataChange) {
     this._model = cardModel;
     this._containerElement = containerElement;
     this._allTypes = types;
     this._allCities = cities;
+    this._onDataChange = onDataChange;
 
     this._view = null;
     this._formView = null;
@@ -61,9 +62,19 @@ export default class CardController {
     this._formView.setClickUpButtonHandler(() => {
       this._replaceEditToView();
     });
+
+    this._formView.setChangeFavoriteInput(() => {
+      this._onDataChange(this, {
+        isFavorite: !this._model.isFavorite
+      });
+    });
   }
 
   get model() {
     return this._model;
+  }
+
+  set model(newModel) {
+    this._model = newModel;
   }
 }

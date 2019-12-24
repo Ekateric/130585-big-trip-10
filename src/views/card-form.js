@@ -192,4 +192,10 @@ export default class CardFormView extends AbstractView {
   getTemplate() {
     return createCardFormTemplate(this._card, this._types, this._cities);
   }
+
+  setChangeFavoriteInput(handler) {
+    this.getElement()
+      .querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, handler);
+  }
 }
