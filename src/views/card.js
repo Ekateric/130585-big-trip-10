@@ -12,7 +12,7 @@ const createOfferTemplate = (offer) => {
 };
 
 const createCardTemplate = (card) => {
-  const {type, icon, city, correctDateFrom, correctDateTo, price, offers, durationText} = card;
+  const {type, icon, destination, correctDateFrom, correctDateTo, price, offers, durationText, placeholder} = card;
   const offersTemplate = Array.from(offers)
     .map((offer) => createOfferTemplate(offer))
     .join(`\n`);
@@ -23,8 +23,8 @@ const createCardTemplate = (card) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${icon}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} to ${city}</h3>
-      
+        <h3 class="event__title">${type} ${placeholder} ${destination.name}</h3>
+
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${correctDateFrom.stringISO}">${correctDateFrom.time}</time>
@@ -33,16 +33,16 @@ const createCardTemplate = (card) => {
           </p>
           <p class="event__duration">${durationText}</p>
         </div>
-      
+
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
-      
+
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
           ${offersTemplate}
         </ul>
-      
+
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
         </button>

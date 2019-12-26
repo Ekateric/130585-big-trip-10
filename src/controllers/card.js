@@ -11,6 +11,7 @@ export default class CardController {
     this._allCities = cities;
     this._onDataChange = onDataChange;
 
+    this._viewModel = null;
     this._view = null;
     this._formView = null;
 
@@ -38,8 +39,9 @@ export default class CardController {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
 
-    this._view = new CardView(this._model);
-    this._formView = new CardFormView(this._model, this._allTypes, this._allCities);
+    this._viewModel = Object.assign({}, this._model);
+    this._view = new CardView(this._viewModel);
+    this._formView = new CardFormView(this._viewModel, this._allTypes, this._allCities);
 
     this.setHandlers();
 

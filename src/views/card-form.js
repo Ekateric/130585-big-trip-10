@@ -1,4 +1,4 @@
-import AbstractView from "./abstract";
+import AbstractSmartView from "./abstract-smart";
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
@@ -7,14 +7,14 @@ const createTypeTemplate = (typeItem, currentType, cardId) => {
 
   return (
     `<div class="event__type-item">
-      <input 
-      id="event-type-${typeLowerCase}-${cardId}" 
-      class="event__type-input visually-hidden" 
-      type="radio" name="event-type" 
+      <input
+      id="event-type-${typeLowerCase}-${cardId}"
+      class="event__type-input visually-hidden"
+      type="radio" name="event-type"
       value="${type}"
       ${isChecked ? `checked` : ``}>
-      <label 
-        class="event__type-label event__type-label--${icon}" 
+      <label
+        class="event__type-label event__type-label--${icon}"
         for="event-type-${typeLowerCase}-${cardId}">${type}</label>
     </div>`
   );
@@ -94,7 +94,8 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormTemplate = (card, types, cities) => {
-  const {id, type, icon, city, correctDateFrom, correctDateTo, price, offers, description, photos, isFavorite} = card;
+  const {id, type, icon, destination, correctDateFrom, correctDateTo, price, offers, isFavorite, placeholder} = card;
+  const {name, description, pictures} = destination;
   const typesGroupsTemplate = types
     .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
     .join(`\n`);
@@ -102,7 +103,7 @@ const createCardFormTemplate = (card, types, cities) => {
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
   const offersTemplate = offers.length ? createOffersSectionTemplate(offers, id) : ``;
-  const destinationTemplate = description.length ? createDestinationTemplate(description, photos) : ``;
+  const destinationTemplate = description.length ? createDestinationTemplate(description, pictures) : ``;
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -121,9 +122,9 @@ const createCardFormTemplate = (card, types, cities) => {
 
         <div class="event__field-group event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-${id}">
-            ${type} at
+            ${type} ${placeholder}
           </label>
-          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
+          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
             ${citiesOptionsTemplate}
           </datalist>
@@ -174,23 +175,33 @@ const createCardFormTemplate = (card, types, cities) => {
   );
 };
 
-export default class CardFormView extends AbstractView {
+export default class CardFormView extends AbstractSmartView {
   constructor(card, types, allCities) {
     super();
 
     this._card = card;
     this._types = types;
     this._cities = allCities;
+
+    this._subscribeOnEvents();
+  }
+
+  _subscribeOnEvents() {
+
+  }
+
+  getTemplate() {
+    return createCardFormTemplate(this._card, this._types, this._cities);
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
   }
 
   setClickUpButtonHandler(handler) {
     this.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
-  }
-
-  getTemplate() {
-    return createCardFormTemplate(this._card, this._types, this._cities);
   }
 
   setChangeFavoriteInput(handler) {

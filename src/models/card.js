@@ -4,12 +4,9 @@ import castTimeFormat from "../utils/castTimeFormat";
 export default class CardModel {
   constructor(data) {
     this.id = data.id;
-    this.typeGroup = data.typeGroup;
     this.type = data.type;
     this.icon = data.icon;
-    this.city = data.city;
-    this.photos = data.photos;
-    this.description = data.description;
+    this.destination = data.destination;
     this.dateFrom = data.dateFrom;
     this.dateTo = data.dateTo;
     this.price = data.price;
@@ -20,6 +17,7 @@ export default class CardModel {
     this.correctDateTo = getCorrectTime(this.dateTo);
     this.duration = this._countDuration();
     this.durationText = this._getDurationText(this.duration);
+    this.placeholder = this.getPlaceholder(this.type);
   }
 
   _countDuration() {
@@ -46,5 +44,25 @@ export default class CardModel {
 
     return durationString;
   }
-}
 
+  getPlaceholder(type) {
+    switch (type) {
+      case `Taxi`:
+      case `Bus`:
+      case `Train`:
+      case `Ship`:
+      case `Transport`:
+      case `Drive`:
+      case `Flight`:
+        return `to`;
+
+      case `Check`:
+      case `Sightseeing`:
+      case `Restaurant`:
+        return `in`;
+
+      default:
+        return ``;
+    }
+  }
+}
