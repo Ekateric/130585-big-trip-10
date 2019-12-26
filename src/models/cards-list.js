@@ -1,6 +1,6 @@
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
-import {getAllCards, getCardById, getAllCities, getAllTypes} from "../services/api/index";
+import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
 
 export default class CardsListModel {
   constructor() {
@@ -33,6 +33,17 @@ export default class CardsListModel {
 
   getAllTypes() {
     return getAllTypes();
+  }
+
+  getOffersByType(type) {
+    const offers = getOffersByType(type);
+
+    offers.map((offer, index) => {
+      offer.id = index;
+      return offer;
+    });
+
+    return offers;
   }
 
   sort() {

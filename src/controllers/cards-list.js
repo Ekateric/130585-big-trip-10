@@ -25,6 +25,7 @@ export default class CardsListController {
     this.createDaysAndCities();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._getOffersByType = this._cardsListModel.getOffersByType;
   }
 
   _onDataChange(cardController, newData) {
@@ -42,7 +43,12 @@ export default class CardsListController {
     const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
     dayCardModels.forEach((cardModel) => {
-      const cardController = new CardController(cardModel, dayEventsListElement, this._allTypes, this._allCities, this._onDataChange);
+      const cardController = new CardController(cardModel, dayEventsListElement, {
+        allTypes: this._allTypes,
+        allCities: this._allCities,
+        onDataChange: this._onDataChange,
+        getOffersByType: this._getOffersByType
+      });
 
       cardController.render();
       this._showedCardsControllers.push(cardController);
@@ -92,7 +98,7 @@ export default class CardsListController {
         }));
       }
 
-      const city = card.city;
+      const city = card.destination.name;
 
       if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
         cities.push(city);

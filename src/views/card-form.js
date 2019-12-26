@@ -37,18 +37,18 @@ const createTypesGroupTemplate = (typeGroup, currentType, cardId) => {
 
 const createOptionTemplate = (value) => `<option value="${value}"></option>`;
 
-const createOfferTemplate = (offer, cardId) => {
-  const {type, name, price} = offer;
+const createOfferTemplate = (offer, isChecked, cardId) => {
+  const {id, title, price} = offer;
 
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox visually-hidden"
-      id="event-offer-${type}-${cardId}"
+      id="event-offer-${cardId}-${id}"
       type="checkbox"
-      name="event-offer-${type}"
-      checked>
-      <label class="event__offer-label" for="event-offer-${type}-${cardId}">
-        <span class="event__offer-title">${name}</span>
+      name="event-offer-${cardId}"
+      ${isChecked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${cardId}-${id}">
+        <span class="event__offer-title">${title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
       </label>
@@ -56,9 +56,13 @@ const createOfferTemplate = (offer, cardId) => {
   );
 };
 
-const createOffersSectionTemplate = (offers, cardId) => {
-  const offersListTemplate = offers
-    .map((offer) => createOfferTemplate(offer, cardId))
+const createOffersSectionTemplate = (allOffers, offers, cardId) => {
+  const offersListTemplate = allOffers
+    .map((offer) => {
+      const isChecked = offers.findIndex((checkedOffer) => checkedOffer.title === offer.title) > -1;
+
+      return createOfferTemplate(offer, isChecked, cardId);
+    })
     .join(`\n`);
 
   return (
@@ -96,14 +100,15 @@ const createDestinationTemplate = (description, photos) => {
 const createCardFormTemplate = (card, data) => {
   const {id, type, icon, destination, correctDateFrom, correctDateTo, price, offers, isFavorite, placeholder} = card;
   const {name, description, pictures} = destination;
+  const {allTypes, allCities, allOffers} = data;
 
-  const typesGroupsTemplate = data.allTypes
+  const typesGroupsTemplate = allTypes
     .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
     .join(`\n`);
-  const citiesOptionsTemplate = data.allCities
+  const citiesOptionsTemplate = allCities
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
-  const offersTemplate = offers.length ? createOffersSectionTemplate(offers, id) : ``;
+  const offersTemplate = allOffers.length ? createOffersSectionTemplate(allOffers, offers, id) : ``;
   const destinationTemplate = description.length ? createDestinationTemplate(description, pictures) : ``;
 
   return (
@@ -182,8 +187,8 @@ export default class CardFormView extends AbstractSmartView {
 
     this._card = card;
     this._data = data;
-    this._getPlaceholder = methods.getPlaceholder;
-    this._getIcon = methods.getIcon;
+
+    this._eventTypeChange = methods.eventTypeChange;
 
     this._subscribeOnEvents();
   }
@@ -197,9 +202,7 @@ export default class CardFormView extends AbstractSmartView {
         const newType = event.target.value;
         const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
 
-        this._card.type = newType;
-        this._card.placeholder = this._getPlaceholder(newType);
-        this._card.icon = this._getIcon(newTypeGroup, newType);
+        this._eventTypeChange(newType, newTypeGroup);
 
         this.rerender();
       });

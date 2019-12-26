@@ -4,18 +4,24 @@ import render from "../utils/render";
 import replace from "../utils/replace";
 
 export default class CardController {
-  constructor(cardModel, containerElement, types, cities, onDataChange) {
+  constructor(cardModel, containerElement, options) {
     this._model = cardModel;
     this._containerElement = containerElement;
-    this._allTypes = types;
-    this._allCities = cities;
-    this._onDataChange = onDataChange;
+
+    this._onDataChange = options.onDataChange;
+    this._getOffersByType = options.getOffersByType;
+    this._data = {
+      allTypes: options.allTypes,
+      allCities: options.allCities,
+      allOffers: this._getOffersByType(this._model.type)
+    };
 
     this._viewModel = null;
     this._view = null;
     this._formView = null;
 
     this._onExitForm = this._onExitForm.bind(this);
+    this._eventTypeChange = this._eventTypeChange.bind(this);
   }
 
   _replaceViewToEdit() {
@@ -35,18 +41,21 @@ export default class CardController {
     }
   }
 
+  _eventTypeChange(newType, newTypeGroup) {
+    this._viewModel.type = newType;
+    this._viewModel.placeholder = this._model.getPlaceholder(newType);
+    this._viewModel.icon = this._model.getIcon(newTypeGroup, newType);
+    this._data.allOffers = this._getOffersByType(newType);
+  }
+
   render() {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
 
     this._viewModel = Object.assign({}, this._model);
     this._view = new CardView(this._viewModel);
-    this._formView = new CardFormView(this._viewModel, {
-      allTypes: this._allTypes,
-      allCities: this._allCities
-    }, {
-      getPlaceholder: this._model.getPlaceholder,
-      getIcon: this._model.getIcon
+    this._formView = new CardFormView(this._viewModel, this._data, {
+      eventTypeChange: this._eventTypeChange
     });
 
     this.setHandlers();
