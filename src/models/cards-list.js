@@ -12,7 +12,7 @@ export default class CardsListModel {
   }
 
   _createCards(data) {
-    return data.map((card) => new CardModel(card));
+    return data.map((card) => new CardModel(card, this._allTypes));
   }
 
   _checkIsEmpty() {

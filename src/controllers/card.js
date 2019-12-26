@@ -41,7 +41,13 @@ export default class CardController {
 
     this._viewModel = Object.assign({}, this._model);
     this._view = new CardView(this._viewModel);
-    this._formView = new CardFormView(this._viewModel, this._allTypes, this._allCities);
+    this._formView = new CardFormView(this._viewModel, {
+      allTypes: this._allTypes,
+      allCities: this._allCities
+    }, {
+      getPlaceholder: this._model.getPlaceholder,
+      getIcon: this._model.getIcon
+    });
 
     this.setHandlers();
 

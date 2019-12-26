@@ -50,7 +50,6 @@ export default class CardsMock {
       id: index,
       typeGroup: Types[typeGroupIndex].group,
       type: Types[typeGroupIndex].types[typeIndex].type,
-      icon: Types[typeGroupIndex].types[typeIndex].icon,
       destination: {
         name: Cities[getRandomInt(0, Cities.length - 1)],
         description: this._getRandomDescription(Description),

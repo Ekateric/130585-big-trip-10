@@ -21,14 +21,14 @@ const createTypeTemplate = (typeItem, currentType, cardId) => {
 };
 
 const createTypesGroupTemplate = (typeGroup, currentType, cardId) => {
-  const {name, types} = typeGroup;
+  const {group, types} = typeGroup;
   const typesTemplate = types
     .map((type) => createTypeTemplate(type, currentType, cardId))
     .join(`\n`);
 
   return (
-    `<fieldset class="event__type-group">
-      <legend class="visually-hidden">${name}</legend>
+    `<fieldset class="event__type-group" data-type-group="${group}">
+      <legend class="visually-hidden">${group}</legend>
 
       ${typesTemplate}
     </fieldset>`
@@ -93,13 +93,14 @@ const createDestinationTemplate = (description, photos) => {
   );
 };
 
-const createCardFormTemplate = (card, types, cities) => {
+const createCardFormTemplate = (card, data) => {
   const {id, type, icon, destination, correctDateFrom, correctDateTo, price, offers, isFavorite, placeholder} = card;
   const {name, description, pictures} = destination;
-  const typesGroupsTemplate = types
+
+  const typesGroupsTemplate = data.allTypes
     .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
     .join(`\n`);
-  const citiesOptionsTemplate = cities
+  const citiesOptionsTemplate = data.allCities
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
   const offersTemplate = offers.length ? createOffersSectionTemplate(offers, id) : ``;
@@ -176,22 +177,41 @@ const createCardFormTemplate = (card, types, cities) => {
 };
 
 export default class CardFormView extends AbstractSmartView {
-  constructor(card, types, allCities) {
+  constructor(card, data, methods) {
     super();
 
     this._card = card;
-    this._types = types;
-    this._cities = allCities;
+    this._data = data;
+    this._getPlaceholder = methods.getPlaceholder;
+    this._getIcon = methods.getIcon;
 
     this._subscribeOnEvents();
   }
 
-  _subscribeOnEvents() {
+  _onEventTypeChange() {
+    const eventTypesInputs = this.getElement()
+      .querySelectorAll(`.event__type-input`);
 
+    Array.from(eventTypesInputs).forEach((input) => {
+      input.addEventListener(`change`, (event) => {
+        const newType = event.target.value;
+        const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
+
+        this._card.type = newType;
+        this._card.placeholder = this._getPlaceholder(newType);
+        this._card.icon = this._getIcon(newTypeGroup, newType);
+
+        this.rerender();
+      });
+    });
+  }
+
+  _subscribeOnEvents() {
+    this._onEventTypeChange();
   }
 
   getTemplate() {
-    return createCardFormTemplate(this._card, this._types, this._cities);
+    return createCardFormTemplate(this._card, this._data);
   }
 
   recoveryListeners() {
