@@ -30,10 +30,10 @@ export default class CardsListController {
   }
 
   _onDataChange(cardController, newData) {
-    const newTaskModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+    const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
 
-    if (newTaskModel) {
-      cardController.model = newTaskModel;
+    if (newCardModel) {
+      cardController.model = newCardModel;
       cardController.render();
       this._cardsModels = this._cardsListModel.cardsModels;
     }
