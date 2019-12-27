@@ -261,4 +261,10 @@ export default class CardFormView extends AbstractSmartView {
 
     this._changeFavoriteHandler = handler;
   }
+
+  reset(card, data) {
+    this._card = card;
+    this._data = data;
+    this.rerender();
+  }
 }

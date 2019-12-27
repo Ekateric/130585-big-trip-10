@@ -35,9 +35,16 @@ export default class CardController {
   }
 
   _replaceEditToView() {
+    this._resetFormData();
     replace(this._view, this._formView);
     this._mode = Mode.DEFAULT;
     document.removeEventListener(`keydown`, this._onExitForm);
+  }
+
+  _resetFormData() {
+    this._viewModel = Object.assign({}, this._model);
+    this._data.allOffers = this._getOffersByType(this._model.type);
+    this._formView.reset(this._viewModel, this._data);
   }
 
   _onExitForm(event) {
