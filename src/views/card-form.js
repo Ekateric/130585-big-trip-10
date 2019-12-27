@@ -191,6 +191,10 @@ export default class CardFormView extends AbstractSmartView {
     this._eventTypeChange = methods.eventTypeChange;
     this._destinationChange = methods.destinationChange;
 
+    this._clickUpButtonHandler = null;
+    this._submitHandler = null;
+    this._changeFavoriteHandler = null;
+
     this._subscribeOnEvents();
   }
 
@@ -229,17 +233,32 @@ export default class CardFormView extends AbstractSmartView {
 
   recoveryListeners() {
     this._subscribeOnEvents();
+    this.setClickUpButtonHandler(this._clickUpButtonHandler);
+    this.setSubmitFormHandler(this._submitHandler);
+    this.setChangeFavoriteInputHandler(this._changeFavoriteHandler);
   }
 
   setClickUpButtonHandler(handler) {
     this.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
+
+    this._clickUpButtonHandler = handler;
   }
 
-  setChangeFavoriteInput(handler) {
+  setSubmitFormHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__save-btn`)
+      .addEventListener(`click`, handler);
+
+    this._submitHandler = handler;
+  }
+
+  setChangeFavoriteInputHandler(handler) {
     this.getElement()
       .querySelector(`.event__favorite-checkbox`)
       .addEventListener(`change`, handler);
+
+    this._changeFavoriteHandler = handler;
   }
 }

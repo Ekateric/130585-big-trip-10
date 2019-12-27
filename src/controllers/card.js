@@ -98,7 +98,12 @@ export default class CardController {
       this._replaceEditToView();
     });
 
-    this._formView.setChangeFavoriteInput(() => {
+    this._formView.setSubmitFormHandler((event) => {
+      event.preventDefault();
+      this._replaceEditToView();
+    });
+
+    this._formView.setChangeFavoriteInputHandler(() => {
       this._onDataChange(this, {
         isFavorite: !this._model.isFavorite
       });
