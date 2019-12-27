@@ -7,12 +7,15 @@ export default class CardsListModel {
     this._mock = new CardsMock();
     this._allTypes = this.getAllTypes();
     this._allCities = this.getAllCities();
+
+    this.getDestinationInfo = this.getDestinationInfo.bind(this);
+
     this._cards = this._createCards(this.getAllCards());
     this._isEmpty = this._checkIsEmpty();
   }
 
   _createCards(data) {
-    return data.map((card) => new CardModel(card, this._allTypes));
+    return data.map((card) => new CardModel(card, this._allTypes, this.getDestinationInfo));
   }
 
   _checkIsEmpty() {
@@ -44,6 +47,10 @@ export default class CardsListModel {
     });
 
     return offers;
+  }
+
+  getDestinationInfo(name) {
+    return this._mock.getDestinationInfo(name);
   }
 
   sort() {

@@ -47,6 +47,14 @@ export default class CardsMock {
     return randomOffers;
   }
 
+  getDestinationInfo(name) {
+    return {
+      name,
+      description: this._getRandomDescription(Description),
+      pictures: this._getRandomPhotos(),
+    };
+  }
+
   createCardData(index) {
     const typeGroupIndex = getRandomInt(0, Types.length - 1);
     const typeIndex = getRandomInt(0, Types[typeGroupIndex].types.length - 1);
@@ -54,16 +62,13 @@ export default class CardsMock {
     const type = Types[typeGroupIndex].types[typeIndex].type;
     const dateFrom = this._getRandomDate(new Date(), 25);
     const dateTo = this._getRandomDate(dateFrom, 2);
+    const city = Cities[getRandomInt(0, Cities.length - 1)];
 
     return {
       id: index,
       typeGroup,
       type,
-      destination: {
-        name: Cities[getRandomInt(0, Cities.length - 1)],
-        description: this._getRandomDescription(Description),
-        pictures: this._getRandomPhotos(),
-      },
+      destination: this.getDestinationInfo(city),
       dateFrom,
       dateTo,
       price: getRandomInt(0, 1000),

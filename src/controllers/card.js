@@ -22,6 +22,7 @@ export default class CardController {
 
     this._onExitForm = this._onExitForm.bind(this);
     this._eventTypeChange = this._eventTypeChange.bind(this);
+    this._destinationChange = this._destinationChange.bind(this);
   }
 
   _replaceViewToEdit() {
@@ -48,6 +49,10 @@ export default class CardController {
     this._data.allOffers = this._getOffersByType(newType);
   }
 
+  _destinationChange(name) {
+    this._viewModel.destination = this._model.getDestinationInfo(name);
+  }
+
   render() {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
@@ -55,7 +60,8 @@ export default class CardController {
     this._viewModel = Object.assign({}, this._model);
     this._view = new CardView(this._viewModel);
     this._formView = new CardFormView(this._viewModel, this._data, {
-      eventTypeChange: this._eventTypeChange
+      eventTypeChange: this._eventTypeChange,
+      destinationChange: this._destinationChange
     });
 
     this.setHandlers();

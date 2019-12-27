@@ -189,6 +189,7 @@ export default class CardFormView extends AbstractSmartView {
     this._data = data;
 
     this._eventTypeChange = methods.eventTypeChange;
+    this._destinationChange = methods.destinationChange;
 
     this._subscribeOnEvents();
   }
@@ -203,14 +204,23 @@ export default class CardFormView extends AbstractSmartView {
         const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
 
         this._eventTypeChange(newType, newTypeGroup);
-
         this.rerender();
       });
     });
   }
 
+  _onDestinationChange() {
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (event) => {
+        this._destinationChange(event.target.value);
+        this.rerender();
+      });
+  }
+
   _subscribeOnEvents() {
     this._onEventTypeChange();
+    this._onDestinationChange();
   }
 
   getTemplate() {

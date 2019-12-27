@@ -2,7 +2,7 @@ import getCorrectTime from "../utils/getCorrectTime";
 import castTimeFormat from "../utils/castTimeFormat";
 
 export default class CardModel {
-  constructor(data, allTypes) {
+  constructor(data, allTypes, getDestinationInfo) {
     this.id = data.id;
     this.typeGroup = data.typeGroup;
     this.type = data.type;
@@ -21,6 +21,7 @@ export default class CardModel {
     this.icon = this.getIcon(this.typeGroup, this.type);
     this.placeholder = this.getPlaceholder(this.type);
 
+    this.getDestinationInfo = getDestinationInfo;
     this.getIcon = this.getIcon.bind(this);
   }
 
