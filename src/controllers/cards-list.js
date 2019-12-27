@@ -25,6 +25,7 @@ export default class CardsListController {
     this.createDaysAndCities();
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
     this._getOffersByType = this._cardsListModel.getOffersByType;
   }
 
@@ -38,6 +39,10 @@ export default class CardsListController {
     }
   }
 
+  _onViewChange() {
+    this._showedCardsControllers.forEach((card) => card.setDefaultView());
+  }
+
   _renderDayItem(dayData, dayCardModels) {
     const dayView = new DayView(dayData);
     const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
@@ -47,6 +52,7 @@ export default class CardsListController {
         allTypes: this._allTypes,
         allCities: this._allCities,
         onDataChange: this._onDataChange,
+        onViewChange: this._onViewChange,
         getOffersByType: this._getOffersByType
       });
 

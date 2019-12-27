@@ -64,7 +64,7 @@ export default class CardsListModel {
     if (cardIndex > -1) {
       const oldCardModel = this._cards.find((card) => card.id === modelId);
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newData));
+      newCardModel = new CardModel(Object.assign({}, oldCardModel, newData), this._allTypes, this.getDestinationInfo);
       this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
     }
 

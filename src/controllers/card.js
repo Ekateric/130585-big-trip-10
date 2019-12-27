@@ -2,6 +2,7 @@ import CardView from "../views/card";
 import CardFormView from "../views/card-form";
 import render from "../utils/render";
 import replace from "../utils/replace";
+import Mode from "../data/mode";
 
 export default class CardController {
   constructor(cardModel, containerElement, options) {
@@ -9,6 +10,7 @@ export default class CardController {
     this._containerElement = containerElement;
 
     this._onDataChange = options.onDataChange;
+    this._onViewChange = options.onViewChange;
     this._getOffersByType = options.getOffersByType;
     this._data = {
       allTypes: options.allTypes,
@@ -19,6 +21,7 @@ export default class CardController {
     this._viewModel = null;
     this._view = null;
     this._formView = null;
+    this._mode = Mode.DEFAULT;
 
     this._onExitForm = this._onExitForm.bind(this);
     this._eventTypeChange = this._eventTypeChange.bind(this);
@@ -26,11 +29,14 @@ export default class CardController {
   }
 
   _replaceViewToEdit() {
+    this._onViewChange();
     replace(this._formView, this._view);
+    this._mode = Mode.EDIT;
   }
 
   _replaceEditToView() {
     replace(this._view, this._formView);
+    this._mode = Mode.DEFAULT;
     document.removeEventListener(`keydown`, this._onExitForm);
   }
 
@@ -51,6 +57,12 @@ export default class CardController {
 
   _destinationChange(name) {
     this._viewModel.destination = this._model.getDestinationInfo(name);
+  }
+
+  setDefaultView() {
+    if (this._mode === Mode.EDIT) {
+      this._replaceEditToView();
+    }
   }
 
   render() {
