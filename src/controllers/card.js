@@ -18,7 +18,7 @@ export default class CardController {
       allOffers: this._getOffersByType(this._model.type)
     };
 
-    this._viewModel = null;
+    this._formViewModel = null;
     this._view = null;
     this._formView = null;
     this._mode = Mode.DEFAULT;
@@ -42,9 +42,9 @@ export default class CardController {
   }
 
   _resetFormData() {
-    this._viewModel = Object.assign({}, this._model);
+    this._formViewModel = Object.assign({}, this._model);
     this._data.allOffers = this._getOffersByType(this._model.type);
-    this._formView.reset(this._viewModel, this._data);
+    this._formView.reset(this._formViewModel, this._data);
   }
 
   _onExitForm(event) {
@@ -56,14 +56,14 @@ export default class CardController {
   }
 
   _eventTypeChange(newType, newTypeGroup) {
-    this._viewModel.type = newType;
-    this._viewModel.placeholder = this._model.getPlaceholder(newType);
-    this._viewModel.icon = this._model.getIcon(newTypeGroup, newType);
+    this._formViewModel.type = newType;
+    this._formViewModel.placeholder = this._model.getPlaceholder(newType);
+    this._formViewModel.icon = this._model.getIcon(newTypeGroup, newType);
     this._data.allOffers = this._getOffersByType(newType);
   }
 
   _destinationChange(name) {
-    this._viewModel.destination = this._model.getDestinationInfo(name);
+    this._formViewModel.destination = this._model.getDestinationInfo(name);
   }
 
   setDefaultView() {
@@ -76,9 +76,8 @@ export default class CardController {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
 
-    this._viewModel = Object.assign({}, this._model);
-    this._view = new CardView(this._viewModel);
-    this._formView = new CardFormView(this._viewModel, this._data, {
+    this._view = new CardView(this._model);
+    this._formView = new CardFormView(this._formViewModel, this._data, {
       eventTypeChange: this._eventTypeChange,
       destinationChange: this._destinationChange
     });
