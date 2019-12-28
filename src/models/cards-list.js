@@ -1,21 +1,18 @@
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
-import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
+import {getAllCards, getCardById, getAllCities, getAllTypes} from "../services/api/index";
 
 export default class CardsListModel {
   constructor() {
     this._mock = new CardsMock();
     this._allTypes = this.getAllTypes();
     this._allCities = this.getAllCities();
-
-    this.getDestinationInfo = this.getDestinationInfo.bind(this);
-
     this._cards = this._createCards(this.getAllCards());
     this._isEmpty = this._checkIsEmpty();
   }
 
   _createCards(data) {
-    return data.map((card) => new CardModel(card, this._allTypes, this.getDestinationInfo));
+    return data.map((card) => new CardModel(card));
   }
 
   _checkIsEmpty() {
@@ -38,37 +35,8 @@ export default class CardsListModel {
     return getAllTypes();
   }
 
-  getOffersByType(type) {
-    const offers = getOffersByType(type);
-
-    offers.map((offer, index) => {
-      offer.id = index;
-      return offer;
-    });
-
-    return offers;
-  }
-
-  getDestinationInfo(name) {
-    return this._mock.getDestinationInfo(name);
-  }
-
   sort() {
     this._cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
-  }
-
-  updateModelById(modelId, newData) {
-    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
-    let newCardModel = null;
-
-    if (cardIndex > -1) {
-      const oldCardModel = this._cards.find((card) => card.id === modelId);
-
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newData), this._allTypes, this.getDestinationInfo);
-      this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
-    }
-
-    return newCardModel;
   }
 
   get cardsModels() {

@@ -32,47 +32,32 @@ export default class CardsMock {
       }).join(`.`);
   }
 
-  _getRandomOffers(offers, type) {
-    const typeOffers = offers.find((offersItem) => offersItem.type === type);
-    let randomOffers = [];
-
-    if (typeof typeOffers !== `undefined` && typeOffers.offers.length) {
-      randomOffers = new Array(getRandomInt(0, 2))
-        .fill(``)
-        .map(() => {
-          return typeOffers.offers[getRandomInt(0, typeOffers.offers.length - 1)];
-        });
-    }
-
-    return randomOffers;
-  }
-
-  getDestinationInfo(name) {
-    return {
-      name,
-      description: this._getRandomDescription(Description),
-      pictures: this._getRandomPhotos(),
-    };
+  _getRandomOffers(offers) {
+    return new Array(getRandomInt(0, 2))
+      .fill(``)
+      .map(() => {
+        return offers[getRandomInt(0, offers.length - 1)];
+      });
   }
 
   createCardData(index) {
     const typeGroupIndex = getRandomInt(0, Types.length - 1);
     const typeIndex = getRandomInt(0, Types[typeGroupIndex].types.length - 1);
-    const typeGroup = Types[typeGroupIndex].group;
-    const type = Types[typeGroupIndex].types[typeIndex].type;
     const dateFrom = this._getRandomDate(new Date(), 25);
     const dateTo = this._getRandomDate(dateFrom, 2);
-    const city = Cities[getRandomInt(0, Cities.length - 1)];
 
     return {
       id: index,
-      typeGroup,
-      type,
-      destination: this.getDestinationInfo(city),
+      typeGroup: Types[typeGroupIndex].group,
+      type: Types[typeGroupIndex].types[typeIndex].type,
+      icon: Types[typeGroupIndex].types[typeIndex].icon,
+      city: Cities[getRandomInt(0, Cities.length - 1)],
+      photos: this._getRandomPhotos(),
+      description: this._getRandomDescription(Description),
       dateFrom,
       dateTo,
       price: getRandomInt(0, 1000),
-      offers: this._getRandomOffers(Offers, type),
+      offers: this._getRandomOffers(Offers),
       isFavorite: Math.random() > 0.5
     };
   }
