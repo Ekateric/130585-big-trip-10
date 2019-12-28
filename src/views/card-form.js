@@ -1,4 +1,4 @@
-import AbstractView from "./abstract";
+import AbstractSmartView from "./abstract-smart";
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
@@ -7,28 +7,28 @@ const createTypeTemplate = (typeItem, currentType, cardId) => {
 
   return (
     `<div class="event__type-item">
-      <input 
-      id="event-type-${typeLowerCase}-${cardId}" 
-      class="event__type-input visually-hidden" 
-      type="radio" name="event-type" 
+      <input
+      id="event-type-${typeLowerCase}-${cardId}"
+      class="event__type-input visually-hidden"
+      type="radio" name="event-type"
       value="${type}"
       ${isChecked ? `checked` : ``}>
-      <label 
-        class="event__type-label event__type-label--${icon}" 
+      <label
+        class="event__type-label event__type-label--${icon}"
         for="event-type-${typeLowerCase}-${cardId}">${type}</label>
     </div>`
   );
 };
 
 const createTypesGroupTemplate = (typeGroup, currentType, cardId) => {
-  const {name, types} = typeGroup;
+  const {group, types} = typeGroup;
   const typesTemplate = types
     .map((type) => createTypeTemplate(type, currentType, cardId))
     .join(`\n`);
 
   return (
-    `<fieldset class="event__type-group">
-      <legend class="visually-hidden">${name}</legend>
+    `<fieldset class="event__type-group" data-type-group="${group}">
+      <legend class="visually-hidden">${group}</legend>
 
       ${typesTemplate}
     </fieldset>`
@@ -37,18 +37,18 @@ const createTypesGroupTemplate = (typeGroup, currentType, cardId) => {
 
 const createOptionTemplate = (value) => `<option value="${value}"></option>`;
 
-const createOfferTemplate = (offer, cardId) => {
-  const {type, name, price} = offer;
+const createOfferTemplate = (offer, isChecked, cardId) => {
+  const {id, title, price} = offer;
 
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox visually-hidden"
-      id="event-offer-${type}-${cardId}"
+      id="event-offer-${cardId}-${id}"
       type="checkbox"
-      name="event-offer-${type}"
-      checked>
-      <label class="event__offer-label" for="event-offer-${type}-${cardId}">
-        <span class="event__offer-title">${name}</span>
+      name="event-offer-${cardId}"
+      ${isChecked ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${cardId}-${id}">
+        <span class="event__offer-title">${title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
       </label>
@@ -56,9 +56,13 @@ const createOfferTemplate = (offer, cardId) => {
   );
 };
 
-const createOffersSectionTemplate = (offers, cardId) => {
-  const offersListTemplate = offers
-    .map((offer) => createOfferTemplate(offer, cardId))
+const createOffersSectionTemplate = (allOffers, offers, cardId) => {
+  const offersListTemplate = allOffers
+    .map((offer) => {
+      const isChecked = offers.findIndex((checkedOffer) => checkedOffer.title === offer.title) > -1;
+
+      return createOfferTemplate(offer, isChecked, cardId);
+    })
     .join(`\n`);
 
   return (
@@ -93,16 +97,19 @@ const createDestinationTemplate = (description, photos) => {
   );
 };
 
-const createCardFormTemplate = (card, types, cities) => {
-  const {id, type, icon, city, correctDateFrom, correctDateTo, price, offers, description, photos, isFavorite} = card;
-  const typesGroupsTemplate = types
+const createCardFormTemplate = (card, data) => {
+  const {id, type, icon, destination, correctDateFrom, correctDateTo, price, offers, isFavorite, placeholder} = card;
+  const {name, description, pictures} = destination;
+  const {allTypes, allCities, allOffers} = data;
+
+  const typesGroupsTemplate = allTypes
     .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
     .join(`\n`);
-  const citiesOptionsTemplate = cities
+  const citiesOptionsTemplate = allCities
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
-  const offersTemplate = offers.length ? createOffersSectionTemplate(offers, id) : ``;
-  const destinationTemplate = description.length ? createDestinationTemplate(description, photos) : ``;
+  const offersTemplate = allOffers.length ? createOffersSectionTemplate(allOffers, offers, id) : ``;
+  const destinationTemplate = description.length ? createDestinationTemplate(description, pictures) : ``;
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -121,9 +128,9 @@ const createCardFormTemplate = (card, types, cities) => {
 
         <div class="event__field-group event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-${id}">
-            ${type} at
+            ${type} ${placeholder}
           </label>
-          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${city}" list="destination-list-${id}">
+          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
             ${citiesOptionsTemplate}
           </datalist>
@@ -174,22 +181,90 @@ const createCardFormTemplate = (card, types, cities) => {
   );
 };
 
-export default class CardFormView extends AbstractView {
-  constructor(card, types, allCities) {
+export default class CardFormView extends AbstractSmartView {
+  constructor(card, data, methods) {
     super();
 
     this._card = card;
-    this._types = types;
-    this._cities = allCities;
+    this._data = data;
+
+    this._eventTypeChange = methods.eventTypeChange;
+    this._destinationChange = methods.destinationChange;
+
+    this._clickUpButtonHandler = null;
+    this._submitHandler = null;
+    this._changeFavoriteHandler = null;
+
+    this._subscribeOnEvents();
+  }
+
+  _onEventTypeChange() {
+    const eventTypesInputs = this.getElement()
+      .querySelectorAll(`.event__type-input`);
+
+    Array.from(eventTypesInputs).forEach((input) => {
+      input.addEventListener(`change`, (event) => {
+        const newType = event.target.value;
+        const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
+
+        this._eventTypeChange(newType, newTypeGroup);
+        this.rerender();
+      });
+    });
+  }
+
+  _onDestinationChange() {
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, (event) => {
+        this._destinationChange(event.target.value);
+        this.rerender();
+      });
+  }
+
+  _subscribeOnEvents() {
+    this._onEventTypeChange();
+    this._onDestinationChange();
+  }
+
+  getTemplate() {
+    return createCardFormTemplate(this._card, this._data);
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+    this.setClickUpButtonHandler(this._clickUpButtonHandler);
+    this.setSubmitFormHandler(this._submitHandler);
+    this.setChangeFavoriteInputHandler(this._changeFavoriteHandler);
   }
 
   setClickUpButtonHandler(handler) {
     this.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
+
+    this._clickUpButtonHandler = handler;
   }
 
-  getTemplate() {
-    return createCardFormTemplate(this._card, this._types, this._cities);
+  setSubmitFormHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__save-btn`)
+      .addEventListener(`click`, handler);
+
+    this._submitHandler = handler;
+  }
+
+  setChangeFavoriteInputHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, handler);
+
+    this._changeFavoriteHandler = handler;
+  }
+
+  reset(card, data) {
+    this._card = card;
+    this._data = data;
+    this.rerender();
   }
 }

@@ -23,6 +23,24 @@ export default class CardsListController {
     this._days = [];
     this._tripCities = [];
     this.createDaysAndCities();
+
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
+    this._getOffersByType = this._cardsListModel.getOffersByType;
+  }
+
+  _onDataChange(cardController, newData) {
+    const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+
+    if (newCardModel) {
+      cardController.model = newCardModel;
+      cardController.render();
+      this._cardsModels = this._cardsListModel.cardsModels;
+    }
+  }
+
+  _onViewChange() {
+    this._showedCardsControllers.forEach((card) => card.setDefaultView());
   }
 
   _renderDayItem(dayData, dayCardModels) {
@@ -30,7 +48,13 @@ export default class CardsListController {
     const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
     dayCardModels.forEach((cardModel) => {
-      const cardController = new CardController(cardModel, dayEventsListElement, this._allTypes, this._allCities);
+      const cardController = new CardController(cardModel, dayEventsListElement, {
+        allTypes: this._allTypes,
+        allCities: this._allCities,
+        onDataChange: this._onDataChange,
+        onViewChange: this._onViewChange,
+        getOffersByType: this._getOffersByType
+      });
 
       cardController.render();
       this._showedCardsControllers.push(cardController);
@@ -80,7 +104,7 @@ export default class CardsListController {
         }));
       }
 
-      const city = card.city;
+      const city = card.destination.name;
 
       if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
         cities.push(city);
