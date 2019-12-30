@@ -1,4 +1,5 @@
 import AbstractSmartView from "./abstract-smart";
+import flatpickr from "flatpickr";
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
@@ -98,7 +99,7 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormTemplate = (card, data) => {
-  const {id, type, icon, destination, correctDateFrom, correctDateTo, price, offers, isFavorite, placeholder} = card;
+  const {id, type, icon, destination, dateFrom, dateTo, price, offers, isFavorite, placeholder} = card;
   const {name, description, pictures} = destination;
   const {allTypes, allCities, allOffers} = data;
 
@@ -140,12 +141,12 @@ const createCardFormTemplate = (card, data) => {
           <label class="visually-hidden" for="event-start-time-${id}">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${correctDateFrom.string}">
+          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${correctDateTo.string}">
+          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -187,6 +188,7 @@ export default class CardFormView extends AbstractSmartView {
 
     this._card = card;
     this._data = data;
+    this._flatpickr = null;
 
     this._eventTypeChange = methods.eventTypeChange;
     this._destinationChange = methods.destinationChange;
@@ -195,14 +197,66 @@ export default class CardFormView extends AbstractSmartView {
     this._submitHandler = null;
     this._changeFavoriteHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.from.destroy();
+      this._flatpickr.to.destroy();
+      this._flatpickr.from = null;
+      this._flatpickr.to = null;
+    }
+
+    this._flatpickr = {};
+
+    const dateStartElement = this.getElement().querySelector(`#event-start-time-${this._card.id}`);
+    const dateEndElement = this.getElement().querySelector(`#event-end-time-${this._card.id}`);
+    const commonOptions = {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      minuteIncrement: 1,
+      altFormat: `d/m/y H:i`
+    };
+
+    this._flatpickr.from = flatpickr(dateStartElement,
+        Object.assign({},
+            commonOptions,
+            {
+              defaultDate: this._card.dateFrom,
+              maxDate: this._card.dateTo,
+              maxTime: this._card.dateTo,
+              onChange: (selectedDates) => {
+                this._flatpickr.to.config.minDate = selectedDates[0];
+                this._flatpickr.to.config.minTime = selectedDates[0];
+              }
+            }
+        )
+    );
+
+    this._flatpickr.to = flatpickr(dateEndElement,
+        Object.assign({},
+            commonOptions,
+            {
+              defaultDate: this._card.dateTo,
+              minDate: this._card.dateFrom,
+              minTime: this._card.dateFrom,
+              onChange: (selectedDates) => {
+                this._flatpickr.from.config.maxDate = selectedDates[0];
+                this._flatpickr.from.config.maxTime = selectedDates[0];
+              }
+            }
+        )
+    );
   }
 
   _onEventTypeChange() {
     const eventTypesInputs = this.getElement()
       .querySelectorAll(`.event__type-input`);
 
-    Array.from(eventTypesInputs).forEach((input) => {
+    [...eventTypesInputs].forEach((input) => {
       input.addEventListener(`change`, (event) => {
         const newType = event.target.value;
         const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
@@ -260,6 +314,12 @@ export default class CardFormView extends AbstractSmartView {
       .addEventListener(`change`, handler);
 
     this._changeFavoriteHandler = handler;
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
   }
 
   reset(card, data) {

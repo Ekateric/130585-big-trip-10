@@ -76,6 +76,7 @@ export default class CardController {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
 
+    this._formViewModel = Object.assign({}, this._model);
     this._view = new CardView(this._model);
     this._formView = new CardFormView(this._formViewModel, this._data, {
       eventTypeChange: this._eventTypeChange,

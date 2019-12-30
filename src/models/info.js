@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export default class InfoModel {
   constructor(cities, cards) {
     this._cities = cities;
@@ -28,25 +30,31 @@ export default class InfoModel {
   }
 
   _calcInfoDates() {
-    const dateFrom = this._cards[0].dateFrom;
-    const dateTo = this._cards[this._cards.length - 1].dateTo;
-    const dateFromCorrect = this._cards[0].correctDateFrom;
-    let dateFromText = `${dateFromCorrect.monthText} ${dateFromCorrect.day}`;
-    let intervalText = dateFromText;
+    const dateFrom = this._cards[0].correctDateFrom.date;
+    const dateTo = this._cards[this._cards.length - 1].correctDateTo.date;
+    const dateFromMoment = moment(dateFrom, `DD/MM/YYYY`);
+    const dateToMoment = moment(dateTo, `DD/MM/YYYY`);
 
-    if (dateFrom.toString() !== dateTo.toString()) {
-      const dateToCorrect = this._cards[this._cards.length - 1].correctDateTo;
+    let dateFromText = dateFromMoment.format(`MMM DD`);
+    let intervalText = ``;
+
+    if (dateFrom === dateTo) {
+      intervalText = dateFromText;
+
+    } else {
       let dateToText = ``;
 
-      if (dateFromCorrect.year === dateToCorrect.year) {
-        if (dateFromCorrect.monthText === dateToCorrect.monthText) {
-          dateToText = `${dateToCorrect.day}`;
+      if (dateFromMoment.year() === dateToMoment.year()) {
+        if (dateFromMoment.month() === dateToMoment.month()) {
+          dateToText = dateToMoment.format(`DD`);
+
         } else {
-          dateToText = `${dateToCorrect.monthText} ${dateToCorrect.day}`;
+          dateToText = dateToMoment.format(`MMM DD`);
         }
+
       } else {
-        dateFromText += `, ${dateFromCorrect.year}`;
-        dateToText = `${dateToCorrect.monthText} ${dateToCorrect.day}, ${dateToCorrect.year}`;
+        dateFromText = dateFromMoment.format(`MMM DD, YYYY`);
+        dateToText = dateToMoment.format(`MMM DD, YYYY`);
       }
 
       intervalText = `${dateFromText}&nbsp;&mdash;&nbsp;${dateToText}`;

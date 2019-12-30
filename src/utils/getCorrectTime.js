@@ -1,21 +1,12 @@
-import MONTHS from "../data/months";
-import castTimeFormat from "./castTimeFormat";
+import moment from "moment";
 
-export default (date) => {
-  const day = castTimeFormat(date.getDate());
-  const monthIndex = date.getMonth();
-  const month = castTimeFormat(monthIndex + 1);
-  const year = date.getFullYear();
-  const hours = castTimeFormat(date.getHours());
-  const minutes = castTimeFormat(date.getMinutes());
+export default (dateValue) => {
+  const date = moment(dateValue).format(`DD/MM/YYYY`);
+  const time = moment(dateValue).format(`HH:mm`);
 
   return {
-    day,
-    month,
-    year,
-    monthText: MONTHS[monthIndex],
-    time: `${hours}:${minutes}`,
-    string: `${day}/${month}/${year} ${hours}:${minutes}`,
-    stringISO: `${year}-${month}-${day}T${hours}:${minutes}`
+    date,
+    time,
+    string: `${date} ${time}`
   };
 };

@@ -12,7 +12,7 @@ const createOfferTemplate = (offer) => {
 };
 
 const createCardTemplate = (card) => {
-  const {type, icon, destination, correctDateFrom, correctDateTo, price, offers, durationText, placeholder} = card;
+  const {type, icon, destination, dateFrom, dateTo, correctDateFrom, correctDateTo, price, offers, durationText, placeholder} = card;
   const offersTemplate = Array.from(offers)
     .map((offer) => createOfferTemplate(offer))
     .join(`\n`);
@@ -27,9 +27,9 @@ const createCardTemplate = (card) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${correctDateFrom.stringISO}">${correctDateFrom.time}</time>
+            <time class="event__start-time" datetime="${dateFrom}">${correctDateFrom.time}</time>
             &mdash;
-            <time class="event__end-time" datetime="${correctDateTo.stringISO}">${correctDateTo.time}</time>
+            <time class="event__end-time" datetime="${dateTo}">${correctDateTo.time}</time>
           </p>
           <p class="event__duration">${durationText}</p>
         </div>
