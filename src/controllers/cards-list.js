@@ -65,7 +65,7 @@ export default class CardsListController {
 
   _renderDays() {
     this._days.forEach((day) => {
-      const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.dateFrom.toDateString() === day.string);
+      const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.correctDateFrom.date === day.string);
 
       this._renderDayItem(day, dayCardModels);
     });
@@ -92,16 +92,10 @@ export default class CardsListController {
     let cities = [];
 
     this._cardsModels.forEach((card) => {
-      const dateString = card.dateFrom.toDateString();
+      const dateString = card.correctDateFrom.date;
 
       if (days.find((day) => day.string === dateString) === undefined) {
-        days.push(new DayModel({
-          string: dateString,
-          day: card.correctDateFrom.day,
-          month: card.correctDateFrom.month,
-          monthText: card.correctDateFrom.monthText,
-          year: card.correctDateFrom.year
-        }));
+        days.push(new DayModel(dateString));
       }
 
       const city = card.destination.name;

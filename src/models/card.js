@@ -1,5 +1,6 @@
 import getCorrectTime from "../utils/getCorrectTime";
 import castTimeFormat from "../utils/castTimeFormat";
+import moment from "moment";
 
 export default class CardModel {
   constructor(data, allTypes, getDestinationInfo) {
@@ -29,20 +30,22 @@ export default class CardModel {
     return this.dateTo - this.dateFrom;
   }
 
-  _getDurationText() {
+  _getDurationText(milliseconds) {
+    const duration = moment.duration(milliseconds);
     let durationString = `00M`;
-    const durationInMinutes = Math.floor(this.duration / (1000 * 60));
+
+    const durationInMinutes = duration.asMinutes();
 
     if (durationInMinutes > 0) {
-      durationString = `${castTimeFormat(durationInMinutes % 60)}M`;
+      durationString = `${castTimeFormat(duration.minutes())}M`;
     }
 
     if (durationInMinutes >= 60) {
-      const durationInHours = Math.floor(durationInMinutes / 60);
-      durationString = `${castTimeFormat(durationInHours % 24)}H ${durationString}`;
+      const durationInHours = duration.asHours();
+      durationString = `${castTimeFormat(duration.hours())}H ${durationString}`;
 
       if (durationInHours >= 24) {
-        const durationInDays = Math.floor(durationInHours / 24);
+        const durationInDays = Math.floor(duration.asDays());
         durationString = `${castTimeFormat(durationInDays)}D ${durationString}`;
       }
     }
