@@ -71,7 +71,7 @@ export default class CardsListModel {
     return newCardModel;
   }
 
-  get cardsModels() {
+  get cards() {
     return this._cards;
   }
 
@@ -85,5 +85,9 @@ export default class CardsListModel {
 
   get allCities() {
     return this._allCities;
+  }
+
+  set cards(cards) {
+    this._cards = this._createCards(Array.from(cards));
   }
 }

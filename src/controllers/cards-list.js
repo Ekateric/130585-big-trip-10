@@ -11,7 +11,7 @@ export default class CardsListController {
 
     this._cardsListModel.sort();
 
-    this._cardsModels = this._cardsListModel.cardsModels; // всегда отсортированы по дате
+    this._cardsModels = this._cardsListModel.cards; // всегда отсортированы по дате
     this._sortedCardsModels = this._cardsModels.slice();
     this._showedCardsControllers = [];
 
@@ -35,7 +35,7 @@ export default class CardsListController {
     if (newCardModel) {
       cardController.model = newCardModel;
       cardController.render();
-      this._cardsModels = this._cardsListModel.cardsModels;
+      this._cardsModels = this._cardsListModel.cards;
     }
   }
 
