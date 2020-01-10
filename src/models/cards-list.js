@@ -71,6 +71,10 @@ export default class CardsListModel {
     return newCardModel;
   }
 
+  setFilter(filterName) {
+
+  }
+
   get cards() {
     return this._cards;
   }

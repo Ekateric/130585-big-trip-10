@@ -36,9 +36,18 @@ export default class FiltersView extends AbstractView {
     super();
 
     this._filters = filters;
+    this._filtersElements = this.getElement().querySelectorAll('.trip-filters__filter-input');
   }
 
   getTemplate() {
     return createFiltersTemplate(this._filters);
+  }
+
+  setChangeFilterHandler(handler) {
+    [...this._filtersElements].forEach((input) => {
+      input.addEventListener(`change`, function (event) {
+        handler(event.target.value);
+      });
+    });
   }
 }

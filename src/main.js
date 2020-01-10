@@ -18,7 +18,7 @@ const menuModel = new MenuModel();
 const menuController = new MenuController(menuModel, tripControlsElement.querySelector(`h2`));
 
 const filtersModel = new FiltersModel(Filters);
-const filtersController = new FiltersController(filtersModel, tripControlsElement);
+const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
 
 menuController.render(RenderPosition.AFTEREND);
 filtersController.render();
