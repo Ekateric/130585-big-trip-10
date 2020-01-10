@@ -1,7 +1,7 @@
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
-import render from "../utils/render";
-import replace from "../utils/replace";
+import render from "../utils/common/render";
+import replace from "../utils/common/replace";
 import Mode from "../data/mode";
 
 export default class CardController {

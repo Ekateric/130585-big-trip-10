@@ -5,7 +5,7 @@ import InfoController from "./info";
 import SortModel from "../models/sort";
 import SortController from "./sort";
 import NoCardsView from "../views/no-cards";
-import render from "../utils/render";
+import render from "../utils/common/render";
 import RenderPosition from "../data/render-position";
 
 export default class TripController {

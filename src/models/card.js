@@ -1,5 +1,5 @@
-import getCorrectTime from "../utils/getCorrectTime";
-import castTimeFormat from "../utils/castTimeFormat";
+import getCorrectTime from "../utils/common/getCorrectTime";
+import castTimeFormat from "../utils/common/castTimeFormat";
 import moment from "moment";
 
 export default class CardModel {

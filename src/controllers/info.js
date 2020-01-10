@@ -1,5 +1,5 @@
 import InfoView from "../views/info";
-import render from "../utils/render";
+import render from "../utils/common/render";
 
 export default class InfoController {
   constructor(infoModel, containerElement) {

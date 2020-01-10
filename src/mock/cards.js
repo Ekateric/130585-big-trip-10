@@ -1,4 +1,4 @@
-import getRandomInt from "../utils/getRandomInt";
+import getRandomInt from "../utils/common/getRandomInt";
 import {Types, Cities, Description, Offers} from "./const/index";
 
 export default class CardsMock {

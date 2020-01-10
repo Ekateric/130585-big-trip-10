@@ -1,4 +1,4 @@
-import RenderPosition from "../data/render-position";
+import RenderPosition from "../../data/render-position";
 
 export default (container, view, place = RenderPosition.BEFOREEND) => {
   switch (place) {

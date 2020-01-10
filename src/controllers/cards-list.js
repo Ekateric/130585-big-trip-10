@@ -2,7 +2,7 @@ import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
 import CardController from "./card";
-import render from "../utils/render";
+import render from "../utils/common/render";
 
 export default class CardsListController {
   constructor(cardsListModel, containerElement) {

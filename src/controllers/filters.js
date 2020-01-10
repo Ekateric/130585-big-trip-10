@@ -1,5 +1,5 @@
 import FiltersView from "../views/filters";
-import render from "../utils/render";
+import render from "../utils/common/render";
 
 export default class FiltersController {
   constructor(filtersModel, containerElement) {

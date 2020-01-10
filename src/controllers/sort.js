@@ -1,5 +1,5 @@
 import SortView from "../views/sort";
-import render from "../utils/render";
+import render from "../utils/common/render";
 
 export default class SortController {
   constructor(sortModel, containerElement, changeSortTypeHandler) {
