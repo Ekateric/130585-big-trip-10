@@ -45,9 +45,7 @@ export default class FiltersView extends AbstractView {
 
   setChangeFilterHandler(handler) {
     [...this._filtersElements].forEach((input) => {
-      input.addEventListener(`change`, function (event) {
-        handler(event.target.value);
-      });
+      input.addEventListener(`change`, (event) => handler(event.target.value));
     });
   }
 }

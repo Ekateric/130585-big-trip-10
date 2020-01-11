@@ -1,19 +1,19 @@
 import AbstractView from "./abstract";
 
 const createSortItemTemplate = (sortItem) => {
-  const {id, isChecked} = sortItem;
+  const {id, checked} = sortItem;
 
   return (
     `<div class="trip-sort__item  trip-sort__item--${id}">
-      <input 
-        id="sort-${id}" 
-        class="trip-sort__input visually-hidden" 
-        type="radio" 
-        name="trip-sort" 
-        value="${id}" 
-        ${isChecked ? `checked` : ``}>
-      <label 
-        class="trip-sort__btn" 
+      <input
+        id="sort-${id}"
+        class="trip-sort__input visually-hidden"
+        type="radio"
+        name="trip-sort"
+        value="${id}"
+        ${checked ? `checked` : ``}>
+      <label
+        class="trip-sort__btn"
         for="sort-${id}"
       >${id}</label>
     </div>`
@@ -48,7 +48,7 @@ export default class SortView extends AbstractView {
   }
 
   setChangeSortHandler(handler) {
-    Array.from(this._inputsElements).forEach((input) => {
+    [...this._inputsElements].forEach((input) => {
       input.addEventListener(`change`, (event) => handler(event.target.value));
     });
   }

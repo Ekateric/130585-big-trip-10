@@ -1,3 +1,4 @@
+import SortTypes from "../data/sort-types";
 import TripView from "../views/trip";
 import CardsListController from "./cards-list";
 import InfoModel from "../models/info";
@@ -25,7 +26,7 @@ export default class TripController {
     this._infoModel = new InfoModel(this._cardsController.tripCities, this._cardsController.cardsModels);
     this._infoController = new InfoController(this._infoModel, this._tripMainElement);
 
-     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
 
     this._cardsListModel.setFilterChangeHandler(this._onFilterChange);
@@ -36,7 +37,7 @@ export default class TripController {
   }
 
   _renderSort() {
-    this._sortModel = new SortModel();
+    this._sortModel = new SortModel(Object.values(SortTypes));
     this._sortController = new SortController(this._sortModel, this._element, this._onSortTypeChange);
     this._sortController.render();
   }

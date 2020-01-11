@@ -1,3 +1,4 @@
+import SortTypes from "../data/sort-types";
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
@@ -13,7 +14,7 @@ export default class CardsListController {
 
     this._cardsModels = this._cardsListModel.cards; // всегда отсортированы по дате
     this._sortedCardsModels = this._cardsModels.slice();
-    this._sortType = `event`;
+    this._sortType = SortTypes.EVENT;
     this._showedCardsControllers = [];
 
     this._view = new DaysListView();
@@ -119,17 +120,17 @@ export default class CardsListController {
     this._sortType = sortType;
 
     switch (sortType) {
-      case `event`:
+      case SortTypes.EVENT:
         this._sortByEvent();
         this._renderDays();
         break;
 
-      case `time`:
+      case SortTypes.TIME:
         this._sortByTime();
         this._renderDayItem(null, this._sortedCardsModels);
         break;
 
-      case `price`:
+      case SortTypes.PRICE:
         this._sortByPrice();
         this._renderDayItem(null, this._sortedCardsModels);
         break;
