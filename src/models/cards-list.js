@@ -1,6 +1,8 @@
+import Filters from "../data/filters";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
 import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
+import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
   constructor() {
@@ -12,6 +14,9 @@ export default class CardsListModel {
 
     this._cards = this._createCards(this.getAllCards());
     this._isEmpty = this._checkIsEmpty();
+
+    this._filter = Filters.EVERYTHING;
+    this._filterChangeHandlers = [];
   }
 
   _createCards(data) {
@@ -20,6 +25,10 @@ export default class CardsListModel {
 
   _checkIsEmpty() {
     return this._cards.length === 0;
+  }
+
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 
   getAllCards() {
@@ -72,10 +81,19 @@ export default class CardsListModel {
   }
 
   setFilter(filterName) {
+    this._filter = filterName;
+    this._callHandlers(this._filterChangeHandlers);
+  }
 
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
   }
 
   get cards() {
+    return getFilteredCards(this._cards, this._filter);
+  }
+
+  get allCards() {
     return this._cards;
   }
 

@@ -25,7 +25,10 @@ export default class TripController {
     this._infoModel = new InfoModel(this._cardsController.tripCities, this._cardsController.cardsModels);
     this._infoController = new InfoController(this._infoModel, this._tripMainElement);
 
-    this._changeSortType = this._changeSortType.bind(this);
+     this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+
+    this._cardsListModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   _renderInfo() {
@@ -34,7 +37,7 @@ export default class TripController {
 
   _renderSort() {
     this._sortModel = new SortModel();
-    this._sortController = new SortController(this._sortModel, this._element, this._changeSortType);
+    this._sortController = new SortController(this._sortModel, this._element, this._onSortTypeChange);
     this._sortController.render();
   }
 
@@ -47,10 +50,16 @@ export default class TripController {
     render(this._element, this._noCardsView);
   }
 
-  _changeSortType() {
+  _onSortTypeChange() {
     if (this._sortModel) {
+      this._cardsController.clear();
       this._cardsController.sort(this._sortModel.checked);
     }
+  }
+
+  _onFilterChange() {
+    this._cardsController.clear();
+    this._cardsController.updateCardsData();
   }
 
   render() {

@@ -13,6 +13,7 @@ export default class CardsListController {
 
     this._cardsModels = this._cardsListModel.cards; // всегда отсортированы по дате
     this._sortedCardsModels = this._cardsModels.slice();
+    this._sortType = `event`;
     this._showedCardsControllers = [];
 
     this._view = new DaysListView();
@@ -20,9 +21,8 @@ export default class CardsListController {
 
     this._allTypes = this._cardsListModel.allTypes;
     this._allCities = this._cardsListModel.allCities;
-    this._days = [];
-    this._tripCities = [];
-    this.createDaysAndCities();
+    this._days = this._createDays();
+    this._tripCities = this._createCities();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
@@ -87,9 +87,8 @@ export default class CardsListController {
       .sort((cardOne, cardTwo) => cardTwo.price - cardOne.price);
   }
 
-  createDaysAndCities() {
+  _createDays() {
     let days = [];
-    let cities = [];
 
     this._cardsModels.forEach((card) => {
       const dateString = card.correctDateFrom.date;
@@ -97,7 +96,15 @@ export default class CardsListController {
       if (days.find((day) => day.string === dateString) === undefined) {
         days.push(new DayModel(dateString));
       }
+    });
 
+    return days;
+  }
+
+  _createCities() {
+    let cities = [];
+
+    this._cardsModels.forEach((card) => {
       const city = card.destination.name;
 
       if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
@@ -105,13 +112,11 @@ export default class CardsListController {
       }
     });
 
-    this._days = days;
-    this._tripCities = cities;
+    return cities;
   }
 
   sort(sortType) {
-    this._showedCardsControllers = [];
-    this.clear();
+    this._sortType = sortType;
 
     switch (sortType) {
       case `event`:
@@ -131,7 +136,14 @@ export default class CardsListController {
     }
   }
 
+  updateCardsData() {
+    this._cardsModels = this._cardsListModel.cards;
+    this._days = this._createDays();
+    this.sort(this._sortType);
+  }
+
   clear() {
+    this._showedCardsControllers = [];
     this._element.innerHTML = ``;
   }
 

@@ -36,7 +36,7 @@ export default class FiltersView extends AbstractView {
     super();
 
     this._filters = filters;
-    this._filtersElements = this.getElement().querySelectorAll('.trip-filters__filter-input');
+    this._filtersElements = this.getElement().querySelectorAll(`.trip-filters__filter-input`);
   }
 
   getTemplate() {

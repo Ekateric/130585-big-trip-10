@@ -1,3 +1,4 @@
+import Filters from "../data/filters";
 import FiltersView from "../views/filters";
 import render from "../utils/common/render";
 
@@ -7,7 +8,7 @@ export default class FiltersController {
     this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
 
-    this._model.checked = `everything`;
+    this._model.checked = Filters.EVERYTHING;
     this._view = new FiltersView(this._model.filters);
 
     this._changeFilterHandler = this._changeFilterHandler.bind(this);

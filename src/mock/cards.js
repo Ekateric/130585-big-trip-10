@@ -7,11 +7,13 @@ export default class CardsMock {
     this._data = this.createCardsData(this._cardsCount);
   }
 
-  _getRandomDate(fromDate, daysAfter) {
-    // Получаем рандомную дату в промежутке между заданной датой fromDate
-    // и заданным количеством дней после нее daysAfter
-    let toDate = new Date(fromDate);
+  _getRandomDate(currentDate, daysBefore, daysAfter) {
+    // Получаем рандомную дату в промежутке между заданным количеством дней до daysBefore
+    // заданной даты currentDate и заданным количеством дней после нее daysAfter
+    let fromDate = new Date(currentDate);
+    let toDate = new Date(currentDate);
 
+    fromDate.setDate(fromDate.getDate() + daysBefore);
     toDate.setDate(toDate.getDate() + daysAfter);
     fromDate = fromDate.getTime();
     toDate = toDate.getTime();
@@ -60,8 +62,8 @@ export default class CardsMock {
     const typeIndex = getRandomInt(0, Types[typeGroupIndex].types.length - 1);
     const typeGroup = Types[typeGroupIndex].group;
     const type = Types[typeGroupIndex].types[typeIndex].type;
-    const dateFrom = this._getRandomDate(new Date(), 25);
-    const dateTo = this._getRandomDate(dateFrom, 2);
+    const dateFrom = this._getRandomDate(new Date(), -10, 10);
+    const dateTo = this._getRandomDate(dateFrom, 0, 5);
     const city = Cities[getRandomInt(0, Cities.length - 1)];
 
     return {
