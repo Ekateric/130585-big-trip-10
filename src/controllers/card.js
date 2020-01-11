@@ -1,8 +1,9 @@
+import Mode from "../data/mode";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
 import render from "../utils/common/render";
 import replace from "../utils/common/replace";
-import Mode from "../data/mode";
+import remove from "../utils/common/remove";
 
 export default class CardController {
   constructor(cardModel, containerElement, options) {
@@ -115,6 +116,14 @@ export default class CardController {
         isFavorite: !this._model.isFavorite
       });
     });
+
+    this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null));
+  }
+
+  destroy() {
+    remove(this._view);
+    remove(this._formView);
+    document.removeEventListener(`keydown`, this._onExitForm);
   }
 
   get model() {

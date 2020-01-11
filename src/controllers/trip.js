@@ -55,12 +55,12 @@ export default class TripController {
     if (this._sortModel) {
       this._cardsController.clear();
       this._cardsController.sort(this._sortModel.checked);
+      this._cardsController.renderDays();
     }
   }
 
   _onFilterChange() {
-    this._cardsController.clear();
-    this._cardsController.updateCardsData();
+    this._cardsController.updateCards();
   }
 
   render() {

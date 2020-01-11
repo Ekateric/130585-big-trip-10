@@ -195,6 +195,7 @@ export default class CardFormView extends AbstractSmartView {
 
     this._clickUpButtonHandler = null;
     this._submitHandler = null;
+    this._clickDeleteButtonHandler = null;
     this._changeFavoriteHandler = null;
 
     this._applyFlatpickr();
@@ -289,6 +290,7 @@ export default class CardFormView extends AbstractSmartView {
     this._subscribeOnEvents();
     this.setClickUpButtonHandler(this._clickUpButtonHandler);
     this.setSubmitFormHandler(this._submitHandler);
+    this.setClickDeleteButtonHandler(this._clickDeleteButtonHandler);
     this.setChangeFavoriteInputHandler(this._changeFavoriteHandler);
   }
 
@@ -306,6 +308,14 @@ export default class CardFormView extends AbstractSmartView {
       .addEventListener(`click`, handler);
 
     this._submitHandler = handler;
+  }
+
+  setClickDeleteButtonHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._clickDeleteButtonHandler = handler;
   }
 
   setChangeFavoriteInputHandler(handler) {

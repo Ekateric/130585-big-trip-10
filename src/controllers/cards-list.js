@@ -31,12 +31,21 @@ export default class CardsListController {
   }
 
   _onDataChange(cardController, newData) {
-    const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+    if (newData === null) {
+      const isDeleted = this._cardsListModel.deleteModelById(cardController.model.id);
 
-    if (newCardModel) {
-      cardController.model = newCardModel;
-      cardController.render();
-      this._cardsModels = this._cardsListModel.cards;
+      if (isDeleted) {
+        this.updateCards();
+      }
+
+    } else {
+      const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+
+      if (newCardModel) {
+        cardController.model = newCardModel;
+        cardController.render();
+        this._cardsModels = this._cardsListModel.cards;
+      }
     }
   }
 
@@ -62,14 +71,6 @@ export default class CardsListController {
     });
 
     render(this._element, dayView);
-  }
-
-  _renderDays() {
-    this._days.forEach((day) => {
-      const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.correctDateFrom.date === day.string);
-
-      this._renderDayItem(day, dayCardModels);
-    });
   }
 
   _sortByEvent() {
@@ -116,31 +117,27 @@ export default class CardsListController {
     return cities;
   }
 
+  _updateCardsData() {
+    this._cardsModels = this._cardsListModel.cards;
+    this._days = this._createDays();
+  }
+
   sort(sortType) {
     this._sortType = sortType;
 
     switch (sortType) {
       case SortTypes.EVENT:
         this._sortByEvent();
-        this._renderDays();
         break;
 
       case SortTypes.TIME:
         this._sortByTime();
-        this._renderDayItem(null, this._sortedCardsModels);
         break;
 
       case SortTypes.PRICE:
         this._sortByPrice();
-        this._renderDayItem(null, this._sortedCardsModels);
         break;
     }
-  }
-
-  updateCardsData() {
-    this._cardsModels = this._cardsListModel.cards;
-    this._days = this._createDays();
-    this.sort(this._sortType);
   }
 
   clear() {
@@ -148,8 +145,28 @@ export default class CardsListController {
     this._element.innerHTML = ``;
   }
 
+  updateCards() {
+    this.clear();
+    this._updateCardsData();
+    this.sort(this._sortType);
+    this.renderDays();
+  }
+
+  renderDays() {
+    if (this._sortType === SortTypes.EVENT) {
+      this._days.forEach((day) => {
+        const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.correctDateFrom.date === day.string);
+
+        this._renderDayItem(day, dayCardModels);
+      });
+
+    } else {
+      this._renderDayItem(null, this._sortedCardsModels);
+    }
+  }
+
   render() {
-    this._renderDays();
+    this.renderDays();
     render(this._containerElement, this._view);
   }
 

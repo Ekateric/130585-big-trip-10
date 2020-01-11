@@ -17,6 +17,7 @@ export default class CardsListModel {
 
     this._filter = Filters.EVERYTHING;
     this._filterChangeHandlers = [];
+    this._dataChangeHandlers = [];
   }
 
   _createCards(data) {
@@ -80,6 +81,20 @@ export default class CardsListModel {
     return newCardModel;
   }
 
+  deleteModelById(modelId) {
+    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
+    let isDeleted = false;
+
+    if (cardIndex > -1) {
+      this._cards = [].concat(this._cards.slice(0, cardIndex), this._cards.slice(cardIndex + 1));
+      this._callHandlers(this._dataChangeHandlers);
+
+      isDeleted = true;
+    }
+
+    return isDeleted;
+  }
+
   setFilter(filterName) {
     this._filter = filterName;
     this._callHandlers(this._filterChangeHandlers);
@@ -87,6 +102,10 @@ export default class CardsListModel {
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 
   get cards() {
