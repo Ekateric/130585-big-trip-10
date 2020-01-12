@@ -67,14 +67,14 @@ export default class CardsListModel {
     this._cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
   }
 
-  updateModelById(modelId, newData) {
+  updateModelById(modelId, newCardData) {
     const cardIndex = this._cards.findIndex((card) => card.id === modelId);
     let newCardModel = null;
 
     if (cardIndex > -1) {
       const oldCardModel = this._cards.find((card) => card.id === modelId);
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newData), this._allTypes, this.getDestinationInfo);
+      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._allTypes, this.getDestinationInfo);
       this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
     }
 
@@ -93,6 +93,12 @@ export default class CardsListModel {
     }
 
     return isDeleted;
+  }
+
+  addModel(cardData) {
+    const newCardModel = new CardModel(Object.assign({}, cardData), this._allTypes, this.getDestinationInfo);
+    this._cards = [].concat(newCardModel, this._cards);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilter(filterName) {

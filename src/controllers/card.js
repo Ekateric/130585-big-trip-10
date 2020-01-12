@@ -90,6 +90,10 @@ export default class CardController {
       replace(this._view, oldCardView);
       replace(this._formView, oldCardFormView);
 
+      if (this._mode === Mode.EDIT) {
+        this._replaceEditToView();
+      }
+
     } else {
       render(this._containerElement, this._view);
     }
@@ -108,7 +112,9 @@ export default class CardController {
 
     this._formView.setSubmitFormHandler((event) => {
       event.preventDefault();
-      this._replaceEditToView();
+
+      const formData = this._formView.getData();
+      this._onDataChange(this, formData);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {

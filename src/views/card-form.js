@@ -1,6 +1,27 @@
 import AbstractSmartView from "./abstract-smart";
 import flatpickr from "flatpickr";
 
+const getCheckedOffers = (checkedOffers, allOffers) => {
+  return checkedOffers.map((offer) => {
+    return {
+      title: offer,
+      price: allOffers.find((item) => item.title === offer).price
+    };
+  });
+};
+
+const parseFormData = (formData, allOffers) => {
+  return {
+    type: formData.get(`event-type`),
+    destination: formData.get(`event-destination`),
+    dateFrom: formData.get(`event-start-time`),
+    dateTo: formData.get(`event-end-time`),
+    price: Number(formData.get(`event-price`)),
+    offers: getCheckedOffers(formData.getAll(`event-offer`), allOffers),
+    isFavorite: !!formData.get(`event-favorite`)
+  };
+};
+
 const createTypeTemplate = (typeItem, currentType, cardId) => {
   const {type, icon} = typeItem;
   const isChecked = type === currentType;
@@ -46,7 +67,8 @@ const createOfferTemplate = (offer, isChecked, cardId) => {
       <input class="event__offer-checkbox visually-hidden"
       id="event-offer-${cardId}-${id}"
       type="checkbox"
-      name="event-offer-${cardId}"
+      name="event-offer"
+      value="${title}"
       ${isChecked ? `checked` : ``}>
       <label class="event__offer-label" for="event-offer-${cardId}-${id}">
         <span class="event__offer-title">${title}</span>
@@ -116,11 +138,11 @@ const createCardFormTemplate = (card, data) => {
     `<form class="trip-events__item event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
+          <label class="event__type event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${icon}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
           <div class="event__type-list">
             ${typesGroupsTemplate}
@@ -128,7 +150,7 @@ const createCardFormTemplate = (card, data) => {
         </div>
 
         <div class="event__field-group event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-${id}">
+          <label class="event__label event__type-output" for="event-destination-${id}">
             ${type} ${placeholder}
           </label>
           <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
@@ -137,24 +159,24 @@ const createCardFormTemplate = (card, data) => {
           </datalist>
         </div>
 
-        <div class="event__field-group  event__field-group--time">
+        <div class="event__field-group event__field-group--time">
           <label class="visually-hidden" for="event-start-time-${id}">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}">
+          <input class="event__input event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-${id}">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}">
+          <input class="event__input event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}">
         </div>
 
-        <div class="event__field-group  event__field-group--price">
+        <div class="event__field-group event__field-group--price">
           <label class="event__label" for="event-price-${id}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+          <input class="event__input event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -219,6 +241,7 @@ export default class CardFormView extends AbstractSmartView {
       allowInput: true,
       enableTime: true,
       minuteIncrement: 1,
+      dateFormat: `Z`,
       altFormat: `d/m/y H:i`
     };
 
@@ -284,6 +307,13 @@ export default class CardFormView extends AbstractSmartView {
 
   getTemplate() {
     return createCardFormTemplate(this._card, this._data);
+  }
+
+  getData() {
+    const cardForm = this.getElement();
+    const formData = new FormData(cardForm);
+
+    return parseFormData(formData, this._data.allOffers);
   }
 
   recoveryListeners() {
