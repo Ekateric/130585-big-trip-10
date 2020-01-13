@@ -75,6 +75,7 @@ export default class CardsListModel {
       const oldCardModel = this._cards.find((card) => card.id === modelId);
 
       newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._allTypes, this.getDestinationInfo);
+      newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
       this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
     }
 
@@ -97,6 +98,8 @@ export default class CardsListModel {
 
   addModel(cardData) {
     const newCardModel = new CardModel(Object.assign({}, cardData), this._allTypes, this.getDestinationInfo);
+
+    newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
     this._cards = [].concat(newCardModel, this._cards);
     this._callHandlers(this._dataChangeHandlers);
   }

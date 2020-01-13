@@ -1,5 +1,6 @@
 import AbstractSmartView from "./abstract-smart";
 import flatpickr from "flatpickr";
+import he from "he";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
   return checkedOffers.map((offer) => {
@@ -13,13 +14,46 @@ const getCheckedOffers = (checkedOffers, allOffers) => {
 const parseFormData = (formData, allOffers) => {
   return {
     type: formData.get(`event-type`),
-    destination: formData.get(`event-destination`),
+    destination: {
+      name: formData.get(`event-destination`)
+    },
     dateFrom: formData.get(`event-start-time`),
     dateTo: formData.get(`event-end-time`),
     price: Number(formData.get(`event-price`)),
     offers: getCheckedOffers(formData.getAll(`event-offer`), allOffers),
     isFavorite: !!formData.get(`event-favorite`)
   };
+};
+
+const isFilledInput = (value) => {
+  return value && value.toString().replace(/^\s+|\s+$/g, ``).length > 0;
+};
+
+const isSelectedAtList = (selectedValue, list) => {
+  return list.indexOf(selectedValue) !== -1;
+};
+
+const isIntegerPositiveValue = (value) => {
+  return typeof value === `number`
+    && Number.isFinite(value)
+    && !(value % 1)
+    && value >= 0;
+};
+
+const isBlockSaveButton = (cardData, allCities) => {
+  const isFilledDestinationName = isFilledInput(cardData.destination.name);
+  const isDestinationNameAtList = isSelectedAtList(cardData.destination.name, allCities);
+  const isFilledDateFrom = isFilledInput(cardData.dateFrom);
+  const isFilledDateTo = isFilledInput(cardData.dateTo);
+  const isFilledPrice = isFilledInput(cardData.price);
+  const isIntegerPrice = isIntegerPositiveValue(cardData.price);
+
+  return !(isFilledDestinationName
+    && isDestinationNameAtList
+    && isFilledDateFrom
+    && isFilledDateTo
+    && isFilledPrice
+    && isIntegerPrice);
 };
 
 const createTypeTemplate = (typeItem, currentType, cardId) => {
@@ -121,9 +155,16 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormTemplate = (card, data) => {
-  const {id, type, icon, destination, dateFrom, dateTo, price, offers, isFavorite, placeholder} = card;
-  const {name, description, pictures} = destination;
+  const {id, type, icon, destination, offers, isFavorite, placeholder} = card;
+  let {dateFrom, dateTo, price} = card;
+  const {description, pictures} = destination;
+  let {name} = destination;
   const {allTypes, allCities, allOffers} = data;
+
+  name = he.encode(name.toString());
+  dateFrom = he.encode(dateFrom.toString());
+  dateTo = he.encode(dateTo.toString());
+  price = he.encode(price.toString());
 
   const typesGroupsTemplate = allTypes
     .map((typeGroup) => createTypesGroupTemplate(typeGroup, type, id))
@@ -132,7 +173,7 @@ const createCardFormTemplate = (card, data) => {
     .map((item) => createOptionTemplate(item))
     .join(`\n`);
   const offersTemplate = allOffers.length ? createOffersSectionTemplate(allOffers, offers, id) : ``;
-  const destinationTemplate = description.length ? createDestinationTemplate(description, pictures) : ``;
+  const destinationTemplate = (description && description.length) ? createDestinationTemplate(description, pictures) : ``;
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -238,7 +279,6 @@ export default class CardFormView extends AbstractSmartView {
     const dateEndElement = this.getElement().querySelector(`#event-end-time-${this._card.id}`);
     const commonOptions = {
       altInput: true,
-      allowInput: true,
       enableTime: true,
       minuteIncrement: 1,
       dateFormat: `Z`,
@@ -253,8 +293,10 @@ export default class CardFormView extends AbstractSmartView {
               maxDate: this._card.dateTo,
               maxTime: this._card.dateTo,
               onChange: (selectedDates) => {
+                this._card.dateFrom = selectedDates[0];
                 this._flatpickr.to.config.minDate = selectedDates[0];
                 this._flatpickr.to.config.minTime = selectedDates[0];
+                this._checkSaveButton();
               }
             }
         )
@@ -268,8 +310,10 @@ export default class CardFormView extends AbstractSmartView {
               minDate: this._card.dateFrom,
               minTime: this._card.dateFrom,
               onChange: (selectedDates) => {
+                this._card.dateTo = selectedDates[0];
                 this._flatpickr.from.config.maxDate = selectedDates[0];
                 this._flatpickr.from.config.maxTime = selectedDates[0];
+                this._checkSaveButton();
               }
             }
         )
@@ -287,6 +331,7 @@ export default class CardFormView extends AbstractSmartView {
 
         this._eventTypeChange(newType, newTypeGroup);
         this.rerender();
+        this._checkSaveButton();
       });
     });
   }
@@ -297,12 +342,29 @@ export default class CardFormView extends AbstractSmartView {
       .addEventListener(`change`, (event) => {
         this._destinationChange(event.target.value);
         this.rerender();
+        this._checkSaveButton();
+      });
+  }
+
+  _onPriceChange() {
+    this.getElement()
+      .querySelector(`.event__input--price`)
+      .addEventListener(`change`, (event) => {
+        this._card.price = Number(event.target.value);
+        this._checkSaveButton();
       });
   }
 
   _subscribeOnEvents() {
     this._onEventTypeChange();
     this._onDestinationChange();
+    this._onPriceChange();
+  }
+
+  _checkSaveButton() {
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
+
+    saveButtonElement.disabled = isBlockSaveButton(this._card, this._data.allCities);
   }
 
   getTemplate() {

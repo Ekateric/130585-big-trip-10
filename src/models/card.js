@@ -27,7 +27,7 @@ export default class CardModel {
   }
 
   _countDuration() {
-    return this.dateTo - this.dateFrom;
+    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
   }
 
   _getDurationText(milliseconds) {

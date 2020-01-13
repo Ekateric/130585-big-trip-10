@@ -1,4 +1,5 @@
 import AbstractView from "./abstract";
+import he from "he";
 
 const createOfferTemplate = (offer) => {
   const {title, price} = offer;
@@ -12,10 +13,16 @@ const createOfferTemplate = (offer) => {
 };
 
 const createCardTemplate = (card) => {
-  const {type, icon, destination, dateFrom, dateTo, correctDateFrom, correctDateTo, price, offers, durationText, placeholder} = card;
+  const {type, icon, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder} = card;
+  let {dateFrom, dateTo, price} = card;
   const offersTemplate = Array.from(offers)
     .map((offer) => createOfferTemplate(offer))
     .join(`\n`);
+
+  const name = he.encode(destination.name.toString());
+  dateFrom = he.encode(dateFrom.toString());
+  dateTo = he.encode(dateTo.toString());
+  price = he.encode(price.toString());
 
   return (
     `<li class="trip-events__item">
@@ -23,7 +30,7 @@ const createCardTemplate = (card) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${icon}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${placeholder} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${placeholder} ${name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
