@@ -3,6 +3,7 @@ import TripView from "../views/trip";
 import CardsListController from "./cards-list";
 import InfoModel from "../models/info";
 import InfoController from "./info";
+import ButtonAddView from "../views/buttonAdd";
 import SortModel from "../models/sort";
 import SortController from "./sort";
 import NoCardsView from "../views/no-cards";
@@ -25,6 +26,7 @@ export default class TripController {
     this._cardsController = new CardsListController(this._cardsListModel, this._element);
     this._infoModel = new InfoModel(this._cardsController.tripCities, this._cardsController.cardsModels);
     this._infoController = new InfoController(this._infoModel, this._tripMainElement);
+    this._buttonAddView = new ButtonAddView();
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
@@ -34,6 +36,10 @@ export default class TripController {
 
   _renderInfo() {
     this._infoController.render(RenderPosition.AFTERBEGIN);
+  }
+
+  _renderButtonAdd() {
+    render(this._tripMainElement, this._buttonAddView);
   }
 
   _renderSort() {
@@ -63,8 +69,15 @@ export default class TripController {
     this._cardsController.updateCards();
   }
 
+  setHandlers() {
+    this._buttonAddView.setClickButtonHandler(() => {
+
+    });
+  }
+
   render() {
     this._renderInfo();
+    this._renderButtonAdd();
 
     if (this._cardsListModel.isEmpty) {
       this._renderNoCards();
@@ -73,6 +86,8 @@ export default class TripController {
       this._renderSort();
       this._renderCardsList();
     }
+
+    this.setHandlers();
 
     render(this._containerElement, this._view);
   }
