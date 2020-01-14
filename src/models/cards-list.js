@@ -2,12 +2,13 @@ import Filters from "../data/filters";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
 import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
+import createTypesGroups from "../utils/common/createTypesGroups";
 import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
   constructor() {
     this._mock = new CardsMock();
-    this._allTypes = this.getAllTypes();
+    this._allTypes = createTypesGroups(this.getAllTypes());
     this._allCities = this.getAllCities();
 
     this.getDestinationInfo = this.getDestinationInfo.bind(this);

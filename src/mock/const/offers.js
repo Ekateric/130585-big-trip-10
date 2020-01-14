@@ -1,6 +1,6 @@
 export default [
   {
-    type: `Taxi`,
+    type: `taxi`,
     offers: [
       {
         title: `Order One Uber`,
@@ -17,7 +17,7 @@ export default [
     ]
   },
   {
-    type: `Train`,
+    type: `train`,
     offers: [
       {
         title: `Stop train & see sightseeing`,
@@ -34,7 +34,7 @@ export default [
     ]
   },
   {
-    type: `Ship`,
+    type: `ship`,
     offers: [
       {
         title: `Take a boat`,
@@ -51,7 +51,7 @@ export default [
     ]
   },
   {
-    type: `Sightseeing`,
+    type: `sightseeing`,
     offers: [
       {
         title: `Book tickets`,
@@ -60,7 +60,7 @@ export default [
     ]
   },
   {
-    type: `Check`,
+    type: `check`,
     offers: [
       {
         title: `Add breakfast`,
@@ -81,7 +81,7 @@ export default [
     ]
   },
   {
-    type: `Transport`,
+    type: `transport`,
     offers: [
       {
         title: `Order Transport`,
@@ -98,7 +98,7 @@ export default [
     ]
   },
   {
-    type: `Flight`,
+    type: `flight`,
     offers: [
       {
         title: `Add luggage`,

@@ -1,4 +1,5 @@
 import AbstractSmartView from "./abstract-smart";
+import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
 import he from "he";
 
@@ -56,22 +57,21 @@ const isBlockSaveButton = (cardData, allCities) => {
     && isIntegerPrice);
 };
 
-const createTypeTemplate = (typeItem, currentType, cardId) => {
-  const {type, icon} = typeItem;
+const createTypeTemplate = (type, currentType, cardId) => {
   const isChecked = type === currentType;
-  const typeLowerCase = type.toLowerCase();
+  const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
   return (
     `<div class="event__type-item">
       <input
-      id="event-type-${typeLowerCase}-${cardId}"
+      id="event-type-${type}-${cardId}"
       class="event__type-input visually-hidden"
       type="radio" name="event-type"
       value="${type}"
       ${isChecked ? `checked` : ``}>
       <label
-        class="event__type-label event__type-label--${icon}"
-        for="event-type-${typeLowerCase}-${cardId}">${type}</label>
+        class="event__type-label event__type-label--${type}"
+        for="event-type-${type}-${cardId}">${firstCharUpperCaseType}</label>
     </div>`
   );
 };
@@ -155,11 +155,13 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormTemplate = (card, data) => {
-  const {id, type, icon, destination, offers, isFavorite, placeholder} = card;
+  const {id, type, destination, offers, isFavorite, placeholder} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
   let {name} = destination;
   const {allTypes, allCities, allOffers} = data;
+
+  const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
   name = he.encode(name.toString());
   dateFrom = he.encode(dateFrom.toString());
@@ -181,7 +183,7 @@ const createCardFormTemplate = (card, data) => {
         <div class="event__type-wrapper">
           <label class="event__type event__type-btn" for="event-type-toggle-${id}">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${icon}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
@@ -192,7 +194,7 @@ const createCardFormTemplate = (card, data) => {
 
         <div class="event__field-group event__field-group--destination">
           <label class="event__label event__type-output" for="event-destination-${id}">
-            ${type} ${placeholder}
+            ${firstCharUpperCaseType} ${placeholder}
           </label>
           <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
           <datalist id="destination-list-${id}">
@@ -327,9 +329,8 @@ export default class CardFormView extends AbstractSmartView {
     [...eventTypesInputs].forEach((input) => {
       input.addEventListener(`change`, (event) => {
         const newType = event.target.value;
-        const newTypeGroup = event.target.closest(`.event__type-group`).dataset.typeGroup;
 
-        this._eventTypeChange(newType, newTypeGroup);
+        this._eventTypeChange(newType);
         this.rerender();
         this._checkSaveButton();
       });

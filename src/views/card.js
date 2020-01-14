@@ -1,4 +1,5 @@
 import AbstractView from "./abstract";
+import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import he from "he";
 
 const createOfferTemplate = (offer) => {
@@ -13,8 +14,10 @@ const createOfferTemplate = (offer) => {
 };
 
 const createCardTemplate = (card) => {
-  const {type, icon, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder} = card;
+  const {type, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder} = card;
   let {dateFrom, dateTo, price} = card;
+  const firstCharUpperCaseType = makeFirstCharUpperCase(type);
+
   const offersTemplate = Array.from(offers)
     .map((offer) => createOfferTemplate(offer))
     .join(`\n`);
@@ -28,9 +31,9 @@ const createCardTemplate = (card) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${icon}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} ${placeholder} ${name}</h3>
+        <h3 class="event__title">${firstCharUpperCaseType} ${placeholder} ${name}</h3>
 
         <div class="event__schedule">
           <p class="event__time">

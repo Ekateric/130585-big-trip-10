@@ -56,10 +56,12 @@ export default class CardController {
     }
   }
 
-  _eventTypeChange(newType, newTypeGroup) {
+  _eventTypeChange(newType) {
+    const newTypeGroup = this._model.getTypeGroup(newType);
+
     this._formViewModel.type = newType;
-    this._formViewModel.placeholder = this._model.getPlaceholder(newType);
-    this._formViewModel.icon = this._model.getIcon(newTypeGroup, newType);
+    this._formViewModel.typeGroup = newTypeGroup;
+    this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
     this._data.allOffers = this._getOffersByType(newType);
   }
 

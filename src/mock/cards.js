@@ -58,17 +58,13 @@ export default class CardsMock {
   }
 
   createCardData(index) {
-    const typeGroupIndex = getRandomInt(0, Types.length - 1);
-    const typeIndex = getRandomInt(0, Types[typeGroupIndex].types.length - 1);
-    const typeGroup = Types[typeGroupIndex].group;
-    const type = Types[typeGroupIndex].types[typeIndex].type;
     const dateFrom = this._getRandomDate(new Date(), -10, 10);
     const dateTo = this._getRandomDate(dateFrom, 0, 5);
     const city = Cities[getRandomInt(0, Cities.length - 1)];
+    const type = Types[getRandomInt(0, Types.length - 1)];
 
     return {
       id: index,
-      typeGroup,
       type,
       destination: this.getDestinationInfo(city),
       dateFrom,
