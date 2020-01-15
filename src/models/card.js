@@ -5,7 +5,7 @@ import moment from "moment";
 
 export default class CardModel {
   constructor(data, allTypes, getDestinationInfo) {
-    this.id = data.id;
+    this.id = typeof data.id !== `undefined` ? data.id : Math.random().toString().slice(2);
     this.type = data.type;
     this.destination = data.destination;
     this.dateFrom = data.dateFrom;

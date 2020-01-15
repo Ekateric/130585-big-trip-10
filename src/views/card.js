@@ -23,15 +23,15 @@ const createCardTemplate = (card) => {
     .join(`\n`);
 
   const name = he.encode(destination.name.toString());
-  dateFrom = he.encode(dateFrom.toString());
-  dateTo = he.encode(dateTo.toString());
+  dateFrom = dateFrom ? he.encode(dateFrom.toString()) : ``;
+  dateTo = dateTo ? he.encode(dateTo.toString()) : ``;
   price = he.encode(price.toString());
 
   return (
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type ? type : `trip`}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${firstCharUpperCaseType} ${placeholder} ${name}</h3>
 

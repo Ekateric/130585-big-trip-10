@@ -1,5 +1,6 @@
 export default {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
-  AFTEREND: `afterend`
+  AFTEREND: `afterend`,
+  BEFOREBEGIN: `beforebegin`
 };

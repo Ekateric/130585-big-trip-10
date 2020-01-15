@@ -1,15 +1,21 @@
 import RenderPosition from "../../data/render-position";
 
 export default (container, view, place = RenderPosition.BEFOREEND) => {
+  const parentContainer = container.parentNode;
+  const element = view.getElement();
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(view.getElement());
+      container.prepend(element);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(view.getElement());
+      container.append(element);
       break;
     case RenderPosition.AFTEREND:
-      container.after(view.getElement());
+      parentContainer.insertBefore(element, container.nextSibling);
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      parentContainer.insertBefore(element, container);
       break;
   }
 };

@@ -1,8 +1,13 @@
 export default (type) => {
-  let group = `transfer`;
+  let group = ``;
 
-  if (type === `check-in` || type === `sightseeing` || type === `restaurant`) {
-    group = `activity`;
+  if (type) {
+    if (type === `check-in` || type === `sightseeing` || type === `restaurant`) {
+      group = `activity`;
+
+    } else {
+      group = `transfer`;
+    }
   }
 
   return group;

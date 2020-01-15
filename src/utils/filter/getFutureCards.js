@@ -1,1 +1,1 @@
-export default (cards, time) => cards.filter((card) => card.dateFrom > time);
+export default (cards, time) => cards.filter((card) => Date.parse(card.dateFrom) > time);

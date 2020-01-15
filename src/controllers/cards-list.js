@@ -1,14 +1,19 @@
 import SortTypes from "../data/sort-types";
+import RenderPosition from "../data/render-position";
+import Mode from "../data/mode";
 import DaysListView from "../views/days-list";
 import DayModel from "../models/day";
 import DayView from "../views/day";
 import CardController from "./card";
 import render from "../utils/common/render";
+import remove from "../utils/common/remove";
 
 export default class CardsListController {
-  constructor(cardsListModel, containerElement) {
+  constructor(cardsListModel, containerElement, onDeleteCard, onAddCard) {
     this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
+    this._onDeleteCard = onDeleteCard;
+    this._onAddCard = onAddCard;
 
     this._cardsListModel.sort();
 
@@ -16,26 +21,49 @@ export default class CardsListController {
     this._sortedCardsModels = this._cardsModels.slice();
     this._sortType = SortTypes.EVENT;
     this._showedCardsControllers = [];
+    this._creatingCard = null;
 
     this._view = new DaysListView();
     this._element = this._view.getElement();
 
-    this._allTypes = this._cardsListModel.allTypes;
-    this._allCities = this._cardsListModel.allCities;
     this._days = this._createDays();
     this._tripCities = this._createCities();
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._getOffersByType = this._cardsListModel.getOffersByType;
+
+    this._cardControllerOptions = {
+      allTypes: this._cardsListModel.allTypes,
+      allCities: this._cardsListModel.allCities,
+      onDataChange: this._onDataChange,
+      onViewChange: this._onViewChange,
+      getOffersByType: this._getOffersByType
+    };
   }
 
-  _onDataChange(cardController, newData) {
-    if (newData === null) {
+  _onDataChange(cardController, newData, mode = Mode.EDIT) {
+    if (mode === Mode.ADD) {
+      this._creatingCard = null;
+
+      if (newData === null) {
+        cardController.destroy();
+        this._onDeleteCard();
+
+      } else {
+        this._onAddCard();
+        this._cardsListModel.addModel(newData);
+
+        cardController.destroy();
+        this.updateCards();
+      }
+
+    } else if (newData === null) {
       const isDeleted = this._cardsListModel.deleteModelById(cardController.model.id);
 
       if (isDeleted) {
         this.updateCards();
+        this._onDeleteCard();
       }
 
     } else {
@@ -43,7 +71,7 @@ export default class CardsListController {
 
       if (newCardModel) {
         cardController.model = newCardModel;
-        cardController.render();
+        cardController.render(Mode.DEFAULT);
         this._cardsModels = this._cardsListModel.cards;
       }
     }
@@ -58,15 +86,9 @@ export default class CardsListController {
     const dayEventsListElement = dayView.getElement().querySelector(`.trip-events__list`);
 
     dayCardModels.forEach((cardModel) => {
-      const cardController = new CardController(cardModel, dayEventsListElement, {
-        allTypes: this._allTypes,
-        allCities: this._allCities,
-        onDataChange: this._onDataChange,
-        onViewChange: this._onViewChange,
-        getOffersByType: this._getOffersByType
-      });
+      const cardController = new CardController(cardModel, this._cardControllerOptions);
 
-      cardController.render();
+      cardController.render(Mode.DEFAULT, dayEventsListElement);
       this._showedCardsControllers.push(cardController);
     });
 
@@ -152,6 +174,15 @@ export default class CardsListController {
     this.renderDays();
   }
 
+  createCard(containerElement = this._element, position = RenderPosition.BEFOREBEGIN) {
+    if (!this._creatingCard) {
+      const emptyCardModel = this._cardsListModel.createEmptyCardModel();
+
+      this._creatingCard = new CardController(emptyCardModel, this._cardControllerOptions);
+      this._creatingCard.render(Mode.ADD, containerElement, position);
+    }
+  }
+
   renderDays() {
     if (this._sortType === SortTypes.EVENT) {
       this._days.forEach((day) => {
@@ -166,8 +197,13 @@ export default class CardsListController {
   }
 
   render() {
+    this._element = this._view.getElement();
     this.renderDays();
     render(this._containerElement, this._view);
+  }
+
+  destroy() {
+    remove(this._view);
   }
 
   get cardsModels() {

@@ -1,4 +1,5 @@
 import SortTypes from "../data/sort-types";
+import RenderPosition from "../data/render-position";
 import TripView from "../views/trip";
 import CardsListController from "./cards-list";
 import InfoModel from "../models/info";
@@ -8,7 +9,7 @@ import SortModel from "../models/sort";
 import SortController from "./sort";
 import NoCardsView from "../views/no-cards";
 import render from "../utils/common/render";
-import RenderPosition from "../data/render-position";
+import remove from "../utils/common/remove";
 
 export default class TripController {
   constructor(cardsListModel, containerElement, tripMainElement) {
@@ -23,13 +24,15 @@ export default class TripController {
     this._sortController = null;
     this._noCardsView = null;
 
-    this._cardsController = new CardsListController(this._cardsListModel, this._element);
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._onDeleteCard = this._onDeleteCard.bind(this);
+    this._onAddCard = this._onAddCard.bind(this);
+
+    this._cardsController = new CardsListController(this._cardsListModel, this._element, this._onDeleteCard, this._onAddCard);
     this._infoModel = new InfoModel(this._cardsController.tripCities, this._cardsController.cardsModels);
     this._infoController = new InfoController(this._infoModel, this._tripMainElement);
     this._buttonAddView = new ButtonAddView();
-
-    this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._cardsListModel.setFilterChangeHandler(this._onFilterChange);
   }
@@ -48,13 +51,27 @@ export default class TripController {
     this._sortController.render();
   }
 
+  _removeSort() {
+    this._sortController.destroy();
+    this._sortModel = null;
+    this._sortController = null;
+  }
+
   _renderCardsList() {
     this._cardsController.render();
+  }
+
+  _removeCardsList() {
+    this._cardsController.destroy();
   }
 
   _renderNoCards() {
     this._noCardsView = new NoCardsView();
     render(this._element, this._noCardsView);
+  }
+
+  _removeNoCards() {
+    remove(this._noCardsView);
   }
 
   _onSortTypeChange() {
@@ -69,9 +86,31 @@ export default class TripController {
     this._cardsController.updateCards();
   }
 
+  _onDeleteCard() {
+    if (this._cardsListModel.isEmpty) {
+      this._removeSort();
+      this._removeCardsList();
+      this._renderNoCards();
+    }
+  }
+
+  _onAddCard() {
+    if (this._cardsListModel.isEmpty) {
+      this._removeNoCards();
+      this._renderSort();
+      this._renderCardsList();
+    }
+  }
+
   setHandlers() {
     this._buttonAddView.setClickButtonHandler(() => {
+      if (this._cardsListModel.isEmpty) {
+        this._cardsController.createCard(this._element, RenderPosition.BEFOREEND);
+        this._removeNoCards();
 
+      } else {
+        this._cardsController.createCard();
+      }
     });
   }
 

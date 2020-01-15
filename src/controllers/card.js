@@ -6,9 +6,8 @@ import replace from "../utils/common/replace";
 import remove from "../utils/common/remove";
 
 export default class CardController {
-  constructor(cardModel, containerElement, options) {
+  constructor(cardModel, options) {
     this._model = cardModel;
-    this._containerElement = containerElement;
 
     this._onDataChange = options.onDataChange;
     this._onViewChange = options.onViewChange;
@@ -19,6 +18,8 @@ export default class CardController {
       allOffers: this._getOffersByType(this._model.type)
     };
 
+    this._containerElement = null;
+    this._position = null;
     this._formViewModel = null;
     this._view = null;
     this._formView = null;
@@ -52,6 +53,10 @@ export default class CardController {
     const isEscKey = event.key === `Escape` || event.key === `Esc`;
 
     if (isEscKey) {
+      if (this._mode === Mode.ADD) {
+        this._onDataChange(this, null, this._mode);
+      }
+
       this._replaceEditToView();
     }
   }
@@ -75,32 +80,6 @@ export default class CardController {
     }
   }
 
-  render() {
-    const oldCardView = this._view;
-    const oldCardFormView = this._formView;
-
-    this._formViewModel = Object.assign({}, this._model);
-    this._view = new CardView(this._model);
-    this._formView = new CardFormView(this._formViewModel, this._data, {
-      eventTypeChange: this._eventTypeChange,
-      destinationChange: this._destinationChange
-    });
-
-    this.setHandlers();
-
-    if (oldCardView && oldCardFormView) {
-      replace(this._view, oldCardView);
-      replace(this._formView, oldCardFormView);
-
-      if (this._mode === Mode.EDIT) {
-        this._replaceEditToView();
-      }
-
-    } else {
-      render(this._containerElement, this._view);
-    }
-  }
-
   setHandlers() {
     this._view.setClickEditButtonHandler(() => {
       this._replaceViewToEdit();
@@ -116,7 +95,7 @@ export default class CardController {
       event.preventDefault();
 
       const formData = this._formView.getData();
-      this._onDataChange(this, formData);
+      this._onDataChange(this, formData, this._mode);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
@@ -125,7 +104,53 @@ export default class CardController {
       });
     });
 
-    this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null));
+    this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null, this._mode));
+  }
+
+  render(mode, containerElement, position) {
+    this._containerElement = containerElement;
+    this._position = position;
+
+    const oldCardView = this._view;
+    const oldCardFormView = this._formView;
+
+    this._formViewModel = Object.assign({}, this._model);
+    this._view = new CardView(this._model);
+    this._formView = new CardFormView(this._formViewModel, this._data, mode, {
+      eventTypeChange: this._eventTypeChange,
+      destinationChange: this._destinationChange
+    });
+
+    this.setHandlers();
+
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (oldCardView && oldCardFormView) {
+          replace(this._view, oldCardView);
+          replace(this._formView, oldCardFormView);
+
+          if (this._mode === Mode.EDIT) {
+            this._replaceEditToView();
+          }
+
+        } else {
+          render(this._containerElement, this._view, this._position);
+        }
+        break;
+
+      case Mode.ADD:
+        if (oldCardView && oldCardFormView) {
+          remove(oldCardView);
+          remove(oldCardFormView);
+        }
+
+        document.addEventListener(`keydown`, this._onExitForm);
+        this._onViewChange();
+        render(this._containerElement, this._formView, this._position);
+        break;
+    }
+
+    this._mode = mode;
   }
 
   destroy() {

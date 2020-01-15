@@ -1,6 +1,7 @@
 import SortTypes from "../data/sort-types";
 import SortView from "../views/sort";
 import render from "../utils/common/render";
+import remove from "../utils/common/remove";
 
 export default class SortController {
   constructor(sortModel, containerElement, changeSortTypeHandler) {
@@ -24,5 +25,9 @@ export default class SortController {
   render() {
     render(this._containerElement, this._view);
     this.setHandlers();
+  }
+
+  destroy() {
+    remove(this._view);
   }
 }

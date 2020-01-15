@@ -1,4 +1,5 @@
 import Filters from "../data/filters";
+import EmptyCard from "../data/empty-card";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
 import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
@@ -14,7 +15,6 @@ export default class CardsListModel {
     this.getDestinationInfo = this.getDestinationInfo.bind(this);
 
     this._cards = this._createCards(this.getAllCards());
-    this._isEmpty = this._checkIsEmpty();
 
     this._filter = Filters.EVERYTHING;
     this._filterChangeHandlers = [];
@@ -65,7 +65,7 @@ export default class CardsListModel {
   }
 
   sort() {
-    this._cards.sort((cardOne, cardTwo) => cardOne.dateFrom - cardTwo.dateFrom);
+    this._cards.sort((cardOne, cardTwo) => Date.parse(cardOne.dateFrom) - Date.parse(cardTwo.dateFrom));
   }
 
   updateModelById(modelId, newCardData) {
@@ -97,12 +97,19 @@ export default class CardsListModel {
     return isDeleted;
   }
 
+  createEmptyCardModel() {
+    return new CardModel(EmptyCard, this._allTypes, this.getDestinationInfo);
+  }
+
   addModel(cardData) {
     const newCardModel = new CardModel(Object.assign({}, cardData), this._allTypes, this.getDestinationInfo);
 
     newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
     this._cards = [].concat(newCardModel, this._cards);
+    this.sort();
     this._callHandlers(this._dataChangeHandlers);
+
+    return newCardModel;
   }
 
   setFilter(filterName) {
@@ -127,7 +134,7 @@ export default class CardsListModel {
   }
 
   get isEmpty() {
-    return this._isEmpty;
+    return this._checkIsEmpty();
   }
 
   get allTypes() {

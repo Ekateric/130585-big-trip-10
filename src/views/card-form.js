@@ -1,3 +1,4 @@
+import Mode from "../data/mode";
 import AbstractSmartView from "./abstract-smart";
 import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
@@ -27,7 +28,9 @@ const parseFormData = (formData, allOffers) => {
 };
 
 const isFilledInput = (value) => {
-  return value && value.toString().replace(/^\s+|\s+$/g, ``).length > 0;
+  return typeof value !== `undefined`
+    && value !== null
+    && value.toString().replace(/^\s+|\s+$/g, ``).length > 0;
 };
 
 const isSelectedAtList = (selectedValue, list) => {
@@ -42,6 +45,7 @@ const isIntegerPositiveValue = (value) => {
 };
 
 const isBlockSaveButton = (cardData, allCities) => {
+  const isFilledType = isFilledInput(cardData.type);
   const isFilledDestinationName = isFilledInput(cardData.destination.name);
   const isDestinationNameAtList = isSelectedAtList(cardData.destination.name, allCities);
   const isFilledDateFrom = isFilledInput(cardData.dateFrom);
@@ -49,7 +53,8 @@ const isBlockSaveButton = (cardData, allCities) => {
   const isFilledPrice = isFilledInput(cardData.price);
   const isIntegerPrice = isIntegerPositiveValue(cardData.price);
 
-  return !(isFilledDestinationName
+  return !(isFilledType
+    && isFilledDestinationName
     && isDestinationNameAtList
     && isFilledDateFrom
     && isFilledDateTo
@@ -154,7 +159,7 @@ const createDestinationTemplate = (description, photos) => {
   );
 };
 
-const createCardFormTemplate = (card, data) => {
+const createCardFormInnerTemplate = (card, data, mode) => {
   const {id, type, destination, offers, isFavorite, placeholder} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
@@ -164,8 +169,8 @@ const createCardFormTemplate = (card, data) => {
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
   name = he.encode(name.toString());
-  dateFrom = he.encode(dateFrom.toString());
-  dateTo = he.encode(dateTo.toString());
+  dateFrom = dateFrom ? he.encode(dateFrom.toString()) : ``;
+  dateTo = dateTo ? he.encode(dateTo.toString()) : ``;
   price = he.encode(price.toString());
 
   const typesGroupsTemplate = allTypes
@@ -176,83 +181,103 @@ const createCardFormTemplate = (card, data) => {
     .join(`\n`);
   const offersTemplate = allOffers.length ? createOffersSectionTemplate(allOffers, offers, id) : ``;
   const destinationTemplate = (description && description.length) ? createDestinationTemplate(description, pictures) : ``;
+  const isShowDetailsSection = offersTemplate || destinationTemplate;
+  const isDisabledSaveButton = isBlockSaveButton(card, allCities);
 
   return (
-    `<form class="trip-events__item event event--edit" action="#" method="post">
-      <header class="event__header">
-        <div class="event__type-wrapper">
-          <label class="event__type event__type-btn" for="event-type-toggle-${id}">
-            <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
-          </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
+    `<header class="event__header">
+      <div class="event__type-wrapper">
+        <label class="event__type event__type-btn" for="event-type-toggle-${id}">
+          <span class="visually-hidden">Choose event type</span>
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${type ? type : `trip`}.png" alt="Event type icon">
+        </label>
+        <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
-          <div class="event__type-list">
-            ${typesGroupsTemplate}
-          </div>
+        <div class="event__type-list">
+          ${typesGroupsTemplate}
         </div>
+      </div>
 
-        <div class="event__field-group event__field-group--destination">
-          <label class="event__label event__type-output" for="event-destination-${id}">
-            ${firstCharUpperCaseType} ${placeholder}
-          </label>
-          <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
-          <datalist id="destination-list-${id}">
-            ${citiesOptionsTemplate}
-          </datalist>
-        </div>
+      <div class="event__field-group event__field-group--destination">
+        <label class="event__label event__type-output" for="event-destination-${id}">
+          ${type ? firstCharUpperCaseType : `Destination`} ${placeholder}
+        </label>
+        <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
+        <datalist id="destination-list-${id}">
+          ${citiesOptionsTemplate}
+        </datalist>
+      </div>
 
-        <div class="event__field-group event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-${id}">
-            From
-          </label>
-          <input class="event__input event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}">
-          &mdash;
-          <label class="visually-hidden" for="event-end-time-${id}">
-            To
-          </label>
-          <input class="event__input event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}">
-        </div>
+      <div class="event__field-group event__field-group--time">
+        <label class="visually-hidden" for="event-start-time-${id}">
+          From
+        </label>
+        <input class="event__input event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}" placeholder="Date from">
+        &mdash;
+        <label class="visually-hidden" for="event-end-time-${id}">
+          To
+        </label>
+        <input class="event__input event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}" placeholder="Date to">
+      </div>
 
-        <div class="event__field-group event__field-group--price">
-          <label class="event__label" for="event-price-${id}">
-            <span class="visually-hidden">Price</span>
-            &euro;
-          </label>
-          <input class="event__input event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
-        </div>
+      <div class="event__field-group event__field-group--price">
+        <label class="event__label" for="event-price-${id}">
+          <span class="visually-hidden">Price</span>
+          &euro;
+        </label>
+        <input class="event__input event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+      </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__save-btn btn btn--blue" type="submit"${isDisabledSaveButton ? ` disabled` : ``}>Save</button>
+      <button class="event__reset-btn" type="reset">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
 
+      ${mode === Mode.DEFAULT ? `
         <input id="event-favorite-${id}" class="event__favorite-checkbox visually-hidden" type="checkbox" name="event-favorite"${isFavorite ? ` checked` : ``}>
         <label class="event__favorite-btn" for="event-favorite-${id}">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
             <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
           </svg>
-        </label>
+        </label>` : ``}
 
+      ${isShowDetailsSection && mode === Mode.DEFAULT ? `
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
-      </header>
-
+        </button>` : ``}
+    </header>
+    ${isShowDetailsSection ? `
       <section class="event__details">
         ${offersTemplate}
 
         ${destinationTemplate}
-      </section>
-    </form>`
+      </section>` : ``}`
   );
 };
 
+const createCardFormTemplate = (card, data, mode) => {
+  const cardFormInnerTemplate = createCardFormInnerTemplate(card, data, mode);
+
+  if (mode === Mode.ADD) {
+    return `<form class="trip-events__item event event--edit" action="#" method="post">
+      ${cardFormInnerTemplate}
+    </form>`;
+
+  } else {
+    return `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        ${cardFormInnerTemplate}
+      </form>
+    </li>`;
+  }
+};
+
 export default class CardFormView extends AbstractSmartView {
-  constructor(card, data, methods) {
+  constructor(card, data, mode, methods) {
     super();
 
     this._card = card;
     this._data = data;
+    this._mode = mode;
     this._flatpickr = null;
 
     this._eventTypeChange = methods.eventTypeChange;
@@ -332,7 +357,6 @@ export default class CardFormView extends AbstractSmartView {
 
         this._eventTypeChange(newType);
         this.rerender();
-        this._checkSaveButton();
       });
     });
   }
@@ -343,7 +367,6 @@ export default class CardFormView extends AbstractSmartView {
       .addEventListener(`change`, (event) => {
         this._destinationChange(event.target.value);
         this.rerender();
-        this._checkSaveButton();
       });
   }
 
@@ -369,11 +392,16 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   getTemplate() {
-    return createCardFormTemplate(this._card, this._data);
+    return createCardFormTemplate(this._card, this._data, this._mode);
   }
 
   getData() {
-    const cardForm = this.getElement();
+    let cardForm = this.getElement();
+
+    if (this._mode === Mode.DEFAULT) {
+      cardForm = cardForm.querySelector(`form`);
+    }
+
     const formData = new FormData(cardForm);
 
     return parseFormData(formData, this._data.allOffers);
@@ -388,11 +416,13 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   setClickUpButtonHandler(handler) {
-    this.getElement()
-      .querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
+    const clickUpButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
 
-    this._clickUpButtonHandler = handler;
+    if (clickUpButtonElement) {
+      clickUpButtonElement.addEventListener(`click`, handler);
+
+      this._clickUpButtonHandler = handler;
+    }
   }
 
   setSubmitFormHandler(handler) {
@@ -412,11 +442,13 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   setChangeFavoriteInputHandler(handler) {
-    this.getElement()
-      .querySelector(`.event__favorite-checkbox`)
-      .addEventListener(`change`, handler);
+    const favoriteInputElement = this.getElement().querySelector(`.event__favorite-checkbox`);
 
-    this._changeFavoriteHandler = handler;
+    if (favoriteInputElement) {
+      favoriteInputElement.addEventListener(`change`, handler);
+
+      this._changeFavoriteHandler = handler;
+    }
   }
 
   rerender() {
