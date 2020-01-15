@@ -2,7 +2,6 @@ import SortTypes from "../data/sort-types";
 import RenderPosition from "../data/render-position";
 import TripView from "../views/trip";
 import CardsListController from "./cards-list";
-import InfoModel from "../models/info";
 import InfoController from "./info";
 import ButtonAddView from "../views/buttonAdd";
 import SortModel from "../models/sort";
@@ -26,12 +25,15 @@ export default class TripController {
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-    this._onDeleteCard = this._onDeleteCard.bind(this);
-    this._onAddCard = this._onAddCard.bind(this);
 
-    this._cardsController = new CardsListController(this._cardsListModel, this._element, this._onDeleteCard, this._onAddCard);
-    this._infoModel = new InfoModel(this._cardsController.tripCities, this._cardsController.cardsModels);
-    this._infoController = new InfoController(this._infoModel, this._tripMainElement);
+    this._cardsControllerHandlers = {
+      onDeleteCard: this._onDeleteCard.bind(this),
+      onAddCard: this._onAddCard.bind(this),
+      onUpdateCard: this._onUpdateCard.bind(this)
+    };
+
+    this._cardsController = new CardsListController(this._cardsListModel, this._element, this._cardsControllerHandlers);
+    this._infoController = new InfoController(this._cardsListModel, this._tripMainElement);
     this._buttonAddView = new ButtonAddView();
 
     this._cardsListModel.setFilterChangeHandler(this._onFilterChange);
@@ -39,6 +41,10 @@ export default class TripController {
 
   _renderInfo() {
     this._infoController.render(RenderPosition.AFTERBEGIN);
+  }
+
+  _updateInfo() {
+    this._infoController.update();
   }
 
   _renderButtonAdd() {
@@ -87,6 +93,8 @@ export default class TripController {
   }
 
   _onDeleteCard() {
+    this._updateInfo();
+
     if (this._cardsListModel.isEmpty) {
       this._removeSort();
       this._removeCardsList();
@@ -95,11 +103,17 @@ export default class TripController {
   }
 
   _onAddCard() {
-    if (this._cardsListModel.isEmpty) {
+    this._updateInfo();
+
+    if (this._cardsListModel.allCards.length === 1) {
       this._removeNoCards();
       this._renderSort();
       this._renderCardsList();
     }
+  }
+
+  _onUpdateCard() {
+    this._updateInfo();
   }
 
   setHandlers() {

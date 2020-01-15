@@ -9,11 +9,10 @@ import render from "../utils/common/render";
 import remove from "../utils/common/remove";
 
 export default class CardsListController {
-  constructor(cardsListModel, containerElement, onDeleteCard, onAddCard) {
+  constructor(cardsListModel, containerElement, handlers) {
     this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
-    this._onDeleteCard = onDeleteCard;
-    this._onAddCard = onAddCard;
+    this._handlers = handlers;
 
     this._cardsListModel.sort();
 
@@ -27,18 +26,13 @@ export default class CardsListController {
     this._element = this._view.getElement();
 
     this._days = this._createDays();
-    this._tripCities = this._createCities();
-
-    this._onDataChange = this._onDataChange.bind(this);
-    this._onViewChange = this._onViewChange.bind(this);
-    this._getOffersByType = this._cardsListModel.getOffersByType;
 
     this._cardControllerOptions = {
       allTypes: this._cardsListModel.allTypes,
       allCities: this._cardsListModel.allCities,
-      onDataChange: this._onDataChange,
-      onViewChange: this._onViewChange,
-      getOffersByType: this._getOffersByType
+      onDataChange: this._onDataChange.bind(this),
+      onViewChange: this._onViewChange.bind(this),
+      getOffersByType: this._cardsListModel.getOffersByType
     };
   }
 
@@ -48,14 +42,14 @@ export default class CardsListController {
 
       if (newData === null) {
         cardController.destroy();
-        this._onDeleteCard();
+        this._handlers.onDeleteCard();
 
       } else {
-        this._onAddCard();
-        this._cardsListModel.addModel(newData);
-
         cardController.destroy();
+
+        this._cardsListModel.addModel(newData);
         this.updateCards();
+        this._handlers.onAddCard();
       }
 
     } else if (newData === null) {
@@ -63,7 +57,7 @@ export default class CardsListController {
 
       if (isDeleted) {
         this.updateCards();
-        this._onDeleteCard();
+        this._handlers.onDeleteCard();
       }
 
     } else {
@@ -73,6 +67,7 @@ export default class CardsListController {
         cardController.model = newCardModel;
         cardController.render(Mode.DEFAULT);
         this._cardsModels = this._cardsListModel.cards;
+        this._handlers.onUpdateCard();
       }
     }
   }
@@ -123,20 +118,6 @@ export default class CardsListController {
     });
 
     return days;
-  }
-
-  _createCities() {
-    let cities = [];
-
-    this._cardsModels.forEach((card) => {
-      const city = card.destination.name;
-
-      if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
-        cities.push(city);
-      }
-    });
-
-    return cities;
   }
 
   _updateCardsData() {
@@ -208,9 +189,5 @@ export default class CardsListController {
 
   get cardsModels() {
     return this._cardsModels;
-  }
-
-  get tripCities() {
-    return this._tripCities;
   }
 }

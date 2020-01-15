@@ -1,14 +1,34 @@
+import InfoModel from "../models/info";
 import InfoView from "../views/info";
 import render from "../utils/common/render";
+import replace from "../utils/common/replace";
 
 export default class InfoController {
-  constructor(infoModel, containerElement) {
-    this._model = infoModel;
-    this._view = new InfoView(this._model);
+  constructor(cardsListModel, containerElement) {
+    this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
+
+    this._model = new InfoModel(this._cardsListModel);
+    this._view = null;
+    this._position = null;
   }
 
-  render(place) {
-    render(this._containerElement, this._view, place);
+  render(position) {
+    const oldView = this._view;
+
+    this._position = position;
+    this._view = new InfoView(this._model);
+
+    if (oldView) {
+      replace(this._view, oldView);
+
+    } else {
+      render(this._containerElement, this._view, this._position);
+    }
+  }
+
+  update() {
+    this._model.countInfo();
+    this.render(this._position);
   }
 }
