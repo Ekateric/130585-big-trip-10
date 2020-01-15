@@ -19,7 +19,6 @@ export default class TripController {
     this._view = new TripView();
     this._element = this._view.getElement();
 
-    this._sortModel = null;
     this._sortController = null;
     this._noCardsView = null;
 
@@ -52,14 +51,12 @@ export default class TripController {
   }
 
   _renderSort() {
-    this._sortModel = new SortModel(Object.values(SortTypes));
-    this._sortController = new SortController(this._sortModel, this._element, this._onSortTypeChange);
+    this._sortController = new SortController(this._element, this._onSortTypeChange);
     this._sortController.render();
   }
 
   _removeSort() {
     this._sortController.destroy();
-    this._sortModel = null;
     this._sortController = null;
   }
 
@@ -81,9 +78,9 @@ export default class TripController {
   }
 
   _onSortTypeChange() {
-    if (this._sortModel) {
+    if (this._sortController) {
       this._cardsController.clear();
-      this._cardsController.sort(this._sortModel.checked);
+      this._cardsController.sort(this._sortController.checked);
       this._cardsController.renderDays();
     }
   }
