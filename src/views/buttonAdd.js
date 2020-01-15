@@ -10,4 +10,8 @@ export default class ButtonAddView extends AbstractView {
   setClickButtonHandler(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
+
+  set disabled(isDisabled) {
+    this.getElement().disabled = isDisabled;
+  }
 }
