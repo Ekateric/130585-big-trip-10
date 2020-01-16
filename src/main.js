@@ -1,6 +1,6 @@
 import Filters from "./data/filters";
+import MenuItems from "./data/menu-items";
 import CardsListModel from "./models/cards-list";
-import MenuModel from "./models/menu";
 import MenuController from "./controllers/menu";
 import FiltersModel from "./models/filters";
 import FiltersController from "./controllers/filters";
@@ -28,3 +28,15 @@ tripController.render();
 statsController.render();
 statsController.hide();
 
+menuController.setClickMenuHandler((menuItem) => {
+  switch (menuItem) {
+    case MenuItems.TABLE:
+      statsController.hide();
+      tripController.show();
+      break;
+    case MenuItems.STATS:
+      tripController.hide();
+      statsController.show();
+      break;
+  }
+});

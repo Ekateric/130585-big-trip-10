@@ -9,7 +9,17 @@ export default class MenuController {
 
     this._model = new MenuModel(Object.values(MenuItems));
     this._model.active = MenuItems.TABLE;
-    this._view = new MenuView(this._model.items);
+    this._view = new MenuView(this._model.items, this._model.active);
+  }
+
+  setClickMenuHandler(handler) {
+    this._view.setClickMenuHandler((activeItem) => {
+      if (this._model.active !== activeItem) {
+        this._model.active = activeItem;
+        this._view.setActiveItem(activeItem);
+        handler(activeItem);
+      }
+    });
   }
 
   render(position) {
