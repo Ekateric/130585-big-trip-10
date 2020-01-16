@@ -5,6 +5,7 @@ import MenuController from "./controllers/menu";
 import FiltersModel from "./models/filters";
 import FiltersController from "./controllers/filters";
 import TripController from "./controllers/trip";
+import StatsController from "./controllers/stats";
 import RenderPosition from "./data/render-position";
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -20,7 +21,10 @@ const menuController = new MenuController(menuModel, tripControlsElement.querySe
 const filtersModel = new FiltersModel(Filters);
 const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
 
+const statsController = new StatsController(pageMainContainerElement);
+
 menuController.render(RenderPosition.AFTEREND);
 filtersController.render();
 tripController.render();
+statsController.render();
 
