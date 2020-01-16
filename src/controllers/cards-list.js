@@ -43,6 +43,7 @@ export default class CardsListController {
       if (newData === null) {
         cardController.destroy();
         this._handlers.onDeleteCard();
+        this._showedCardsControllers = this._showedCardsControllers.slice(1);
 
       } else {
         cardController.destroy();
@@ -161,6 +162,7 @@ export default class CardsListController {
 
       this._creatingCard = new CardController(emptyCardModel, this._cardControllerOptions);
       this._creatingCard.render(Mode.ADD, containerElement, position);
+      this._showedCardsControllers = [].concat(this._creatingCard, this._showedCardsControllers);
     }
   }
 

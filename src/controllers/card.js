@@ -37,9 +37,15 @@ export default class CardController {
   }
 
   _replaceEditToView() {
-    this._resetFormData();
-    replace(this._view, this._formView);
-    this._mode = Mode.DEFAULT;
+    if (this._mode === Mode.ADD) {
+      this._onDataChange(this, null, this._mode);
+
+    } else {
+      this._resetFormData();
+      replace(this._view, this._formView);
+      this._mode = Mode.DEFAULT;
+    }
+
     document.removeEventListener(`keydown`, this._onExitForm);
   }
 
@@ -53,10 +59,6 @@ export default class CardController {
     const isEscKey = event.key === `Escape` || event.key === `Esc`;
 
     if (isEscKey) {
-      if (this._mode === Mode.ADD) {
-        this._onDataChange(this, null, this._mode);
-      }
-
       this._replaceEditToView();
     }
   }
@@ -75,7 +77,7 @@ export default class CardController {
   }
 
   setDefaultView() {
-    if (this._mode === Mode.EDIT) {
+    if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToView();
     }
   }
@@ -143,10 +145,9 @@ export default class CardController {
           remove(oldCardView);
           remove(oldCardFormView);
         }
-
-        document.addEventListener(`keydown`, this._onExitForm);
         this._onViewChange();
         render(this._containerElement, this._formView, this._position);
+        document.addEventListener(`keydown`, this._onExitForm);
         break;
     }
 
