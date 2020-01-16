@@ -27,4 +27,5 @@ menuController.render(RenderPosition.AFTEREND);
 filtersController.render();
 tripController.render();
 statsController.render();
+statsController.hide();
 

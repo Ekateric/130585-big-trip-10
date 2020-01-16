@@ -146,4 +146,12 @@ export default class TripController {
 
     render(this._containerElement, this._view);
   }
+
+  hide() {
+    this._view.hide();
+  }
+
+  show() {
+    this._view.show();
+  }
 }
