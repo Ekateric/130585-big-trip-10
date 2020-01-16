@@ -1,18 +1,30 @@
 import moment from "moment";
 
 export default class InfoModel {
-  constructor(cities, cards) {
-    this._cities = cities;
-    this._cards = cards;
+  constructor(cardsListModel) {
+    this._cardsListModel = cardsListModel;
+
+    this._cards = [];
+    this._cities = [];
     this.title = null;
     this.datesInterval = null;
     this.sum = 0;
 
-    if (this._cards.length > 0) {
-      this.title = this._calcInfoTitle();
-      this.datesInterval = this._calcInfoDates();
-      this.countTripSum();
-    }
+    this.countInfo();
+  }
+
+  _createCities() {
+    let cities = [];
+
+    this._cards.forEach((card) => {
+      const city = card.destination.name;
+
+      if (typeof city !== `undefined` && cities[cities.length - 1] !== city) {
+        cities.push(city);
+      }
+    });
+
+    return cities;
   }
 
   _calcInfoTitle() {
@@ -63,15 +75,30 @@ export default class InfoModel {
     return intervalText;
   }
 
-  countTripSum() {
-    this.sum = this._cards.reduce((cardsAccumulator, currentCard) => {
+  _countTripSum() {
+    return this._cards.reduce((cardsAccumulator, currentCard) => {
       const offersSum = currentCard.offers.reduce((offersAccumulator, currentOffer) => {
         return offersAccumulator + currentOffer.price;
       }, 0);
 
       return cardsAccumulator + currentCard.price + offersSum;
     }, 0);
+  }
 
-    return this.sum;
+  countInfo() {
+    this._cards = this._cardsListModel.allCards;
+
+    if (this._cards.length > 0) {
+      this._cities = this._createCities();
+      this.title = this._calcInfoTitle();
+      this.datesInterval = this._calcInfoDates();
+      this.sum = this._countTripSum();
+
+    } else {
+      this._cities = [];
+      this.title = null;
+      this.datesInterval = null;
+      this.sum = 0;
+    }
   }
 }

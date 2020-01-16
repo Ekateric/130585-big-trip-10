@@ -1,8 +1,9 @@
+import Filters from "./data/filters";
 import CardsListModel from "./models/cards-list";
 import MenuModel from "./models/menu";
 import MenuController from "./controllers/menu";
-import FiltersListModel from "./models/filters-list";
-import FiltersListController from "./controllers/filters-list";
+import FiltersModel from "./models/filters";
+import FiltersController from "./controllers/filters";
 import TripController from "./controllers/trip";
 import RenderPosition from "./data/render-position";
 
@@ -16,8 +17,8 @@ const tripController = new TripController(cardsListModel, pageMainContainerEleme
 const menuModel = new MenuModel();
 const menuController = new MenuController(menuModel, tripControlsElement.querySelector(`h2`));
 
-const filtersModel = new FiltersListModel();
-const filtersController = new FiltersListController(filtersModel, tripControlsElement);
+const filtersModel = new FiltersModel(Filters);
+const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
 
 menuController.render(RenderPosition.AFTEREND);
 filtersController.render();

@@ -1,8 +1,6 @@
-import getSortTypes from "../services/api/getSortTypes";
-
 export default class SortModel {
-  constructor() {
-    this._items = this._createItems(this.getSortTypes());
+  constructor(items) {
+    this._items = this._createItems(items);
     this._checkedId = null;
   }
 
@@ -10,28 +8,24 @@ export default class SortModel {
     return data.map((sortId) => {
       return {
         id: sortId,
-        isChecked: false
+        checked: false
       };
     });
-  }
-
-  getSortTypes() {
-    return getSortTypes();
   }
 
   get items() {
     return this._items;
   }
 
-  set checked(id) {
-    if (this._checkedId) {
-      this._items.find((item) => item.id === this._checkedId).isChecked = false;
-    }
-    this._checkedId = id;
-    this._items.find((item) => item.id === this._checkedId).isChecked = true;
-  }
-
   get checked() {
     return this._checkedId;
+  }
+
+  set checked(id) {
+    if (this._checkedId) {
+      this._items.find((item) => item.id === this._checkedId).checked = false;
+    }
+    this._checkedId = id;
+    this._items.find((item) => item.id === this._checkedId).checked = true;
   }
 }
