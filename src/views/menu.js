@@ -2,9 +2,9 @@ import AbstractView from "./abstract";
 
 const createMenuItemTemplate = (item) => {
   const {name, isActive} = item;
-  const activeClass = isActive ? `trip-tabs__btn--active` : ``;
+  const activeClass = isActive ? ` trip-tabs__btn--active` : ``;
 
-  return `<a class="trip-tabs__btn ${activeClass}" href="#">${name}</a>`;
+  return `<a class="trip-tabs__btn${activeClass}" href="#">${name}</a>`;
 };
 
 const createMenuTemplate = (menuItems) => {

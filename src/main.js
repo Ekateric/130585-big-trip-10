@@ -15,8 +15,7 @@ const pageMainContainerElement = document.querySelector(`.page-main .page-body__
 const cardsListModel = new CardsListModel();
 const tripController = new TripController(cardsListModel, pageMainContainerElement, tripMainElement);
 
-const menuModel = new MenuModel();
-const menuController = new MenuController(menuModel, tripControlsElement.querySelector(`h2`));
+const menuController = new MenuController(tripControlsElement.querySelector(`h2`));
 
 const filtersModel = new FiltersModel(Filters);
 const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
