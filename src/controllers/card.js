@@ -101,9 +101,10 @@ export default class CardController {
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
+      this._formViewModel.isFavorite = !this._model.isFavorite;
       this._onDataChange(this, {
         isFavorite: !this._model.isFavorite
-      });
+      }, this._mode, false);
     });
 
     this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null, this._mode));

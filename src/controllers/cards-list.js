@@ -36,7 +36,7 @@ export default class CardsListController {
     };
   }
 
-  _onDataChange(cardController, newData, mode = Mode.EDIT) {
+  _onDataChange(cardController, newData, mode = Mode.EDIT, withRender = true) {
     if (mode === Mode.ADD) {
       this._creatingCard = null;
 
@@ -66,7 +66,11 @@ export default class CardsListController {
 
       if (newCardModel) {
         cardController.model = newCardModel;
-        cardController.render(Mode.DEFAULT);
+
+        if (withRender) {
+          cardController.render(Mode.DEFAULT);
+        }
+
         this._cardsModels = this._cardsListModel.cards;
         this._handlers.onUpdateCard();
       }
