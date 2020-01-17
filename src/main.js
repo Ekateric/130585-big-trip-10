@@ -20,7 +20,7 @@ const menuController = new MenuController(tripControlsElement.querySelector(`h2`
 const filtersModel = new FiltersModel(Filters);
 const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
 
-const statsController = new StatsController(pageMainContainerElement);
+const statsController = new StatsController(pageMainContainerElement, cardsListModel);
 
 menuController.render(RenderPosition.AFTEREND);
 filtersController.render();

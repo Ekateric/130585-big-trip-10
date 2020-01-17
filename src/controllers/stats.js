@@ -1,12 +1,14 @@
+import StatsModel from "../models/stats";
 import StatsView from "../views/stats";
 import render from "../utils/common/render";
 
 export default class StatsController {
-  constructor(containerElement) {
+  constructor(containerElement, cardsListModel) {
     this._containerElement = containerElement;
+    this._cardsListModel = cardsListModel;
 
-    this._view = new StatsView();
-    this._element = this._view.getElement();
+    this._model = new StatsModel(this._cardsListModel);
+    this._view = new StatsView(this._model);
   }
 
   render() {
