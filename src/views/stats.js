@@ -1,4 +1,6 @@
 import AbstractView from "./abstract";
+import Chart from 'chart.js';
+
 
 const createStatsTemplate = () => {
   return (
