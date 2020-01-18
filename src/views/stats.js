@@ -28,14 +28,16 @@ const countCtxHeight = (barsCount) => {
   return Math.max(barsCount * BAR_THICKNESS / BAR_PERCENTAGE, MIN_CTX_HEIGHT);
 };
 
-const renderMoneyChart = (moneyCtx, moneyInfo) => {
-  return new Chart(moneyCtx, {
+const renderChart = (ctx, chartInfo, options) => {
+  ctx.height = countCtxHeight(chartInfo.labels.length);
+
+  return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: moneyInfo.types,
+      labels: chartInfo.labels,
       datasets: [{
-        data: moneyInfo.moneySums,
+        data: chartInfo.data,
         backgroundColor: Colors.BAR,
         barPercentage: BAR_PERCENTAGE,
         categoryPercentage: CATEGORY_PERCENTAGE,
@@ -49,7 +51,7 @@ const renderMoneyChart = (moneyCtx, moneyInfo) => {
       plugins: {
         datalabels: {
           formatter(val) {
-            return `€ ${val}`;
+            return options.datalabelsFormatter(val);
           },
           font: {
             size: LABELS_FONT_SIZE
@@ -66,7 +68,7 @@ const renderMoneyChart = (moneyCtx, moneyInfo) => {
       },
       title: {
         display: true,
-        text: `MONEY`,
+        text: options.title,
         fontSize: TITLE_FONT_SIZE,
         fontColor: Colors.TEXT,
         position: TITLE_POSITION
@@ -82,8 +84,8 @@ const renderMoneyChart = (moneyCtx, moneyInfo) => {
             fontStyle: TICKS_FONT_STYLE,
             fontSize: TICKS_FONT_SIZE,
             fontColor: Colors.TEXT,
-            callback(value) {
-              return `${getEmojiIcon(value)} ${makeFirstCharUpperCase(value)}`;
+            callback(val) {
+              return options.yTicksCallback(val);
             }
           },
           gridLines: {
@@ -134,6 +136,7 @@ export default class StatsView extends AbstractSmartComponent {
     this._info = statsInfo;
     this._element = this.getElement();
     this._moneyChart = null;
+    this._transportChart = null;
 
     this._renderCharts();
   }
@@ -141,8 +144,27 @@ export default class StatsView extends AbstractSmartComponent {
   _renderCharts() {
     const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
 
-    moneyCtx.height = countCtxHeight(this._info.moneyInfo.types.length);
-    this._moneyChart = renderMoneyChart(moneyCtx, this._info.moneyInfo);
+    this._moneyChart = renderChart(moneyCtx, this._info.moneyInfo, {
+      title: `MONEY`,
+      datalabelsFormatter(val) {
+        return `€ ${val}`;
+      },
+      yTicksCallback(val) {
+        return `${getEmojiIcon(val)} ${makeFirstCharUpperCase(val)}`;
+      }
+    });
+
+    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
+
+    this._transportChart = renderChart(transportCtx, this._info.transportInfo, {
+      title: `TRANSPORT`,
+      datalabelsFormatter(val) {
+        return `${val}x`;
+      },
+      yTicksCallback(val) {
+        return `${getEmojiIcon(val)} ${makeFirstCharUpperCase(val)}`;
+      }
+    });
   }
 
   getTemplate() {
