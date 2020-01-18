@@ -29,4 +29,12 @@ export default class FiltersController {
     render(this._containerElement, this._view);
     this.setHandlers();
   }
+
+  hide() {
+    this._view.hide();
+  }
+
+  show() {
+    this._view.show();
+  }
 }

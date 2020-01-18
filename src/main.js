@@ -33,9 +33,11 @@ menuController.setClickMenuHandler((menuItem) => {
     case MenuItems.TABLE:
       statsController.hide();
       tripController.show();
+      filtersController.show();
       break;
     case MenuItems.STATS:
       tripController.hide();
+      filtersController.hide();
       statsController.show();
       break;
   }
