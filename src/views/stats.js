@@ -3,6 +3,7 @@ import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import getEmojiIcon from "../utils/common/getEmojiIcon";
+import getDurationText from "../utils/common/getDurationText";
 
 const Colors = {
   BACKGROUND: `#f2f2f2`,
@@ -22,7 +23,6 @@ const LAYOUT_PADDING_LEFT = 40;
 const TITLE_FONT_SIZE = 20;
 const TITLE_POSITION = `left`;
 const TICKS_FONT_SIZE = 14;
-const TICKS_FONT_STYLE = `bold`;
 
 const countCtxHeight = (barsCount) => {
   return Math.max(barsCount * BAR_THICKNESS / BAR_PERCENTAGE, MIN_CTX_HEIGHT);
@@ -81,7 +81,6 @@ const renderChart = (ctx, chartInfo, options) => {
         yAxes: [{
           ticks: {
             beginAtZero: true,
-            fontStyle: TICKS_FONT_STYLE,
             fontSize: TICKS_FONT_SIZE,
             fontColor: Colors.TEXT,
             callback(val) {
@@ -137,6 +136,7 @@ export default class StatsView extends AbstractSmartComponent {
     this._element = this.getElement();
     this._moneyChart = null;
     this._transportChart = null;
+    this._timeChart = null;
 
     this._renderCharts();
   }
@@ -160,6 +160,18 @@ export default class StatsView extends AbstractSmartComponent {
       title: `TRANSPORT`,
       datalabelsFormatter(val) {
         return `${val}x`;
+      },
+      yTicksCallback(val) {
+        return `${getEmojiIcon(val)} ${makeFirstCharUpperCase(val)}`;
+      }
+    });
+
+    const timeCtx = this.getElement().querySelector(`.statistics__chart--time`);
+
+    this._timeChart = renderChart(timeCtx, this._info.timeInfo, {
+      title: `TIME SPENT`,
+      datalabelsFormatter(val) {
+        return `${getDurationText(val)}`;
       },
       yTicksCallback(val) {
         return `${getEmojiIcon(val)} ${makeFirstCharUpperCase(val)}`;
