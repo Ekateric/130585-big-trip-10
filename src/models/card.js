@@ -1,7 +1,6 @@
 import getCorrectTime from "../utils/common/getCorrectTime";
-import castTimeFormat from "../utils/common/castTimeFormat";
 import getTypeGroup from "../utils/common/getTypeGroup";
-import moment from "moment";
+import getDurationText from "../utils/common/getDurationText";
 
 export default class CardModel {
   constructor(data, allTypes, getDestinationInfo) {
@@ -30,26 +29,7 @@ export default class CardModel {
   }
 
   _getDurationText(milliseconds) {
-    const duration = moment.duration(milliseconds);
-    let durationString = `00M`;
-
-    const durationInMinutes = duration.asMinutes();
-
-    if (durationInMinutes > 0) {
-      durationString = `${castTimeFormat(duration.minutes())}M`;
-    }
-
-    if (durationInMinutes >= 60) {
-      const durationInHours = duration.asHours();
-      durationString = `${castTimeFormat(duration.hours())}H ${durationString}`;
-
-      if (durationInHours >= 24) {
-        const durationInDays = Math.floor(duration.asDays());
-        durationString = `${castTimeFormat(durationInDays)}D ${durationString}`;
-      }
-    }
-
-    return durationString;
+    return getDurationText(milliseconds);
   }
 
   getTypeGroup(type) {

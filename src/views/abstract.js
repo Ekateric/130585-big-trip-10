@@ -1,5 +1,7 @@
 import createElement from "../utils/common/createElement";
 
+const HIDDEN_CLASS = `visually-hidden`;
+
 export default class AbstractView {
   constructor() {
     if (new.target === AbstractView) {
@@ -23,5 +25,17 @@ export default class AbstractView {
 
   removeElement() {
     this._element = null;
+  }
+
+  show() {
+    if (this._element) {
+      this._element.classList.remove(HIDDEN_CLASS);
+    }
+  }
+
+  hide() {
+    if (this._element) {
+      this._element.classList.add(HIDDEN_CLASS);
+    }
   }
 }

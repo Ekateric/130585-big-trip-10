@@ -146,4 +146,14 @@ export default class TripController {
 
     render(this._containerElement, this._view);
   }
+
+  hide() {
+    this._view.hide();
+    this._setButtonAddDisabled(true);
+  }
+
+  show() {
+    this._view.show();
+    this._setButtonAddDisabled(false);
+  }
 }

@@ -1,8 +1,7 @@
-import {getMenuItems} from "../services/api/index";
-
 export default class MenuModel {
-  constructor() {
-    this._items = this._createItems(this.getMenuItems());
+  constructor(items) {
+    this._items = this._createItems(items);
+    this._active = null;
   }
 
   _createItems(data) {
@@ -14,16 +13,19 @@ export default class MenuModel {
     });
   }
 
-  getMenuItems() {
-    return getMenuItems();
-  }
-
-  checkActive(index) {
-    // черновой вариант
-    this.items[index].isActive = true;
-  }
-
   get items() {
     return this._items;
+  }
+
+  get active() {
+    return this._active;
+  }
+
+  set active(name) {
+    if (this._active) {
+      this._items.find((item) => item.name === this._active).isActive = false;
+    }
+    this._active = name;
+    this._items.find((item) => item.name === this._active).isActive = true;
   }
 }
