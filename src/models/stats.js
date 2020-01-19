@@ -14,8 +14,8 @@ export default class StatsModel {
   constructor(cardsListModel) {
     this._cardsListModel = cardsListModel;
 
-    this._cards = this._cardsListModel.allCards;
-    this._typesGroups = this._cardsListModel.allTypes;
+    this._cards = [];
+    this._typesGroups = [];
 
     this.moneyInfo = null;
     this.transportInfo = null;
@@ -67,6 +67,9 @@ export default class StatsModel {
   }
 
   countStats() {
+    this._cards = this._cardsListModel.allCards;
+    this._typesGroups = this._cardsListModel.allTypes;
+
     this.moneyInfo = this._createMoneyInfo();
     this.transportInfo = this._createTransportInfo();
     this.timeInfo = this._createTimeInfo();

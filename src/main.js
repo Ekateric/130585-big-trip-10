@@ -25,8 +25,6 @@ const statsController = new StatsController(pageMainContainerElement, cardsListM
 menuController.render(RenderPosition.AFTEREND);
 filtersController.render();
 tripController.render();
-statsController.render();
-statsController.hide();
 
 menuController.setClickMenuHandler((menuItem) => {
   switch (menuItem) {

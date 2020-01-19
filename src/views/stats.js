@@ -133,7 +133,6 @@ export default class StatsView extends AbstractSmartComponent {
     super();
 
     this._info = statsInfo;
-    this._element = this.getElement();
     this._moneyChart = null;
     this._transportChart = null;
     this._timeChart = null;
@@ -142,7 +141,8 @@ export default class StatsView extends AbstractSmartComponent {
   }
 
   _renderCharts() {
-    const moneyCtx = this.getElement().querySelector(`.statistics__chart--money`);
+    const element = this.getElement();
+    const moneyCtx = element.querySelector(`.statistics__chart--money`);
 
     this._moneyChart = renderChart(moneyCtx, this._info.moneyInfo, {
       title: `MONEY`,
@@ -154,7 +154,7 @@ export default class StatsView extends AbstractSmartComponent {
       }
     });
 
-    const transportCtx = this.getElement().querySelector(`.statistics__chart--transport`);
+    const transportCtx = element.querySelector(`.statistics__chart--transport`);
 
     this._transportChart = renderChart(transportCtx, this._info.transportInfo, {
       title: `TRANSPORT`,
@@ -166,7 +166,7 @@ export default class StatsView extends AbstractSmartComponent {
       }
     });
 
-    const timeCtx = this.getElement().querySelector(`.statistics__chart--time`);
+    const timeCtx = element.querySelector(`.statistics__chart--time`);
 
     this._timeChart = renderChart(timeCtx, this._info.timeInfo, {
       title: `TIME SPENT`,
@@ -179,7 +179,33 @@ export default class StatsView extends AbstractSmartComponent {
     });
   }
 
+  _resetCharts() {
+    if (this._moneyChart) {
+      this._moneyChart.destroy();
+      this._moneyChart = null;
+    }
+
+    if (this._transportChart) {
+      this._transportChart.destroy();
+      this._transportChart = null;
+    }
+
+    if (this._timeChart) {
+      this._timeChart.destroy();
+      this._timeChart = null;
+    }
+  }
+
   getTemplate() {
     return createStatsTemplate();
+  }
+
+  recoveryListeners() {}
+
+  rerender() {
+    super.rerender();
+
+    this._resetCharts();
+    this._renderCharts();
   }
 }
