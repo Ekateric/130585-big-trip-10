@@ -1,13 +1,14 @@
 import Filters from "../data/filters";
+import FiltersModel from "../models/filters";
 import FiltersView from "../views/filters";
 import render from "../utils/common/render";
 
 export default class FiltersController {
-  constructor(filtersModel, cardsListModel, containerElement) {
-    this._model = filtersModel;
+  constructor(cardsListModel, containerElement) {
     this._cardsListModel = cardsListModel;
     this._containerElement = containerElement;
 
+    this._model = new FiltersModel(Filters);
     this._model.checked = Filters.EVERYTHING;
     this._view = new FiltersView(this._model.filters);
 

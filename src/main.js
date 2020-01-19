@@ -1,8 +1,6 @@
-import Filters from "./data/filters";
 import MenuItems from "./data/menu-items";
 import CardsListModel from "./models/cards-list";
 import MenuController from "./controllers/menu";
-import FiltersModel from "./models/filters";
 import FiltersController from "./controllers/filters";
 import TripController from "./controllers/trip";
 import StatsController from "./controllers/stats";
@@ -16,9 +14,7 @@ const cardsListModel = new CardsListModel();
 const tripController = new TripController(cardsListModel, pageMainContainerElement, tripMainElement);
 
 const menuController = new MenuController(tripControlsElement.querySelector(`h2`));
-
-const filtersModel = new FiltersModel(Filters);
-const filtersController = new FiltersController(filtersModel, cardsListModel, tripControlsElement);
+const filtersController = new FiltersController(cardsListModel, tripControlsElement);
 
 const statsController = new StatsController(pageMainContainerElement, cardsListModel);
 
