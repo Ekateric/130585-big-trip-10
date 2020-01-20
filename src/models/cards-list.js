@@ -147,5 +147,6 @@ export default class CardsListModel {
 
   set cards(cards) {
     this._cards = this._createCards(Array.from(cards));
+    this._callHandlers(this._dataChangeHandlers);
   }
 }
