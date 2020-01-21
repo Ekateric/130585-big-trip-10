@@ -10,8 +10,6 @@ export default class InfoModel {
     this.title = null;
     this.datesInterval = null;
     this.sum = 0;
-
-    this.countInfo();
   }
 
   _createCities() {

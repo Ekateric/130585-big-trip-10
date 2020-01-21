@@ -3,16 +3,22 @@ import getTypeGroup from "../utils/common/getTypeGroup";
 import getDurationText from "../utils/common/getDurationText";
 
 export default class CardModel {
-  constructor(data, allTypes, getDestinationInfo) {
-    this.id = typeof data.id !== `undefined` ? data.id : Math.random().toString().slice(2);
-    this.type = data.type;
-    this.destination = data.destination;
-    this.dateFrom = data.dateFrom;
-    this.dateTo = data.dateTo;
-    this.price = data.price;
-    this.offers = data.offers;
-    this.isFavorite = data.isFavorite;
+  constructor(card, allTypes, getDestinationInfo) {
+    this.id = typeof card[`id`] !== `undefined` ? card[`id`] : Math.random().toString().slice(2);
+    this.type = card[`type`];
+    this.destination = {
+      name: card[`destination`][`name`],
+      description: card[`destination`][`description`],
+      pictures: card[`destination`][`pictures`]
+    };
+    this.dateFrom = new Date(card[`date_from`]);
+    this.dateTo = new Date(card[`date_to`]);
+    this.price = card[`base_price`];
+    this.offers = card[`offers`];
+    this.isFavorite = Boolean(card[`is_favorite`]);
+
     this._allTypes = allTypes;
+    this.getDestinationInfo = getDestinationInfo;
 
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
@@ -20,8 +26,6 @@ export default class CardModel {
     this.durationText = this._getDurationText(this.duration);
     this.typeGroup = this.getTypeGroup(this.type);
     this.placeholder = this.getPlaceholder(this.typeGroup);
-
-    this.getDestinationInfo = getDestinationInfo;
   }
 
   _countDuration() {

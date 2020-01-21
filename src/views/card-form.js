@@ -138,11 +138,15 @@ const createOffersSectionTemplate = (allOffers, offers, cardId) => {
   );
 };
 
-const createPhotoTemplate = (photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`;
+const createPhotoTemplate = (picture) => {
+  const {src, description} = picture;
 
-const createDestinationTemplate = (description, photos) => {
-  const photosListTemplate = photos
-    .map((photo) => createPhotoTemplate(photo))
+  return `<img class="event__photo" src="${src}" alt="${description}">`;
+};
+
+const createDestinationTemplate = (description, pictures) => {
+  const photosListTemplate = pictures
+    .map((picture) => createPhotoTemplate(picture))
     .join(`\n`);
 
   return (

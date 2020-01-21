@@ -2,23 +2,24 @@ import Filters from "../data/filters";
 import EmptyCard from "../data/empty-card";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
-import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
+import {getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
 import createTypesGroups from "../utils/common/createTypesGroups";
 import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
-  constructor() {
+  constructor(api) {
+    this._api = api;
     this._mock = new CardsMock();
     this._allTypes = createTypesGroups(this.getAllTypes());
     this._allCities = this.getAllCities();
 
     this.getDestinationInfo = this.getDestinationInfo.bind(this);
 
-    this._cards = this._createCards(this.getAllCards());
-
+    this._cards = [];
     this._filter = Filters.EVERYTHING;
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];
+    this._dataLoadHandlers = [];
   }
 
   _createCards(data) {
@@ -34,7 +35,11 @@ export default class CardsListModel {
   }
 
   getAllCards() {
-    return getAllCards(this._mock);
+    this._api.getCards()
+      .then((cards) => {
+        this.cards = cards;
+        this._callHandlers(this._dataLoadHandlers);
+      });
   }
 
   getCardById(id) {
@@ -123,6 +128,10 @@ export default class CardsListModel {
 
   setDataChangeHandler(handler) {
     this._dataChangeHandlers.push(handler);
+  }
+
+  setDataLoadHandler(handler) {
+    this._dataLoadHandlers.push(handler);
   }
 
   get cards() {

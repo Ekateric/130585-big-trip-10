@@ -16,8 +16,8 @@ export default class CardsListController {
 
     this._cardsListModel.sort();
 
-    this._cardsModels = this._cardsListModel.cards; // всегда отсортированы по дате
-    this._sortedCardsModels = this._cardsModels.slice();
+    this._cardsModels = []; // всегда отсортированы по дате
+    this._sortedCardsModels = [];
     this._sortType = SortTypes.EVENT;
     this._showedCardsControllers = [];
     this._creatingCard = null;
@@ -127,6 +127,7 @@ export default class CardsListController {
 
   _updateCardsData() {
     this._cardsModels = this._cardsListModel.cards;
+    this._sortedCardsModels = this._cardsModels.slice();
     this._days = this._createDays();
   }
 
@@ -185,7 +186,9 @@ export default class CardsListController {
 
   render() {
     this._element = this._view.getElement();
+    this._updateCardsData();
     this.renderDays();
+
     render(this._containerElement, this._view);
   }
 
