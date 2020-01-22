@@ -28,12 +28,21 @@ export default class CardModel {
     this.placeholder = this.getPlaceholder(this.typeGroup);
   }
 
-  _countDuration() {
-    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
-  }
-
-  _getDurationText(milliseconds) {
-    return getDurationText(milliseconds);
+  toRAW() {
+    return {
+      'id': this.id,
+      'type': this.type,
+      'destination': {
+        'name': this.destination.name,
+        'description': this.destination.description,
+        'pictures': this.destination.pictures
+      },
+      'date_from': this.dateFrom.toISOString(),
+      'date_to': this.dateTo.toISOString(),
+      'base_price': this.price,
+      'offers': this.offers,
+      'is_favorite': this.isFavorite
+    };
   }
 
   getTypeGroup(type) {
@@ -49,5 +58,17 @@ export default class CardModel {
       default:
         return ``;
     }
+  }
+
+  _getDurationText(milliseconds) {
+    return getDurationText(milliseconds);
+  }
+
+  _countDuration() {
+    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
+  }
+
+  static parseCard(card) {
+    return new CardModel(card);
   }
 }

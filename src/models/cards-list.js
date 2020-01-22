@@ -22,8 +22,8 @@ export default class CardsListModel {
     this._dataLoadHandlers = [];
   }
 
-  _createCards(data) {
-    return data.map((card) => new CardModel(card, this._allTypes, this.getDestinationInfo));
+  _createCards(cards) {
+    return cards.map((card) => CardModel.parseCard(card, this._allTypes, this.getDestinationInfo));
   }
 
   _checkIsEmpty() {
