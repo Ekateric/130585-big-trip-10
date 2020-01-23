@@ -1,6 +1,3 @@
-import getCardById from "./getCardById";
-import getAllCities from "./getAllCities";
-
 const Method = {
   GET: `GET`,
   POST: `POST`,
@@ -32,8 +29,13 @@ export default class Api {
       .then((response) => response.json());
   }
 
+  getDestinations() {
+    return this._load({url: `destinations`})
+      .then((response) => response.json());
+  }
+
   getAllData() {
-    return Promise.all([this.getCards(), this.getOffers()]);
+    return Promise.all([this.getCards(), this.getOffers(), this.getDestinations()]);
   }
 
   createCard(card) {
@@ -58,5 +60,3 @@ export default class Api {
       });
   }
 }
-
-export {getCardById, getAllCities};

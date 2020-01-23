@@ -3,19 +3,22 @@ import EmptyCard from "../data/empty-card";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
 import TypesModel from "./types";
-import {getCardById, getAllCities} from "../services/api/index";
+import DestinationsModel from "./destinations";
 import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
   constructor(api) {
     this._api = api;
+
     this._typesModel = null;
     this._typesGroups = [];
-    this._mock = new CardsMock();
-    this._allCities = this.getAllCities();
+    this._destinationsModel = null;
+    this._allCities = [];
 
-    this.getDestinationInfo = this.getDestinationInfo.bind(this);
-    this.getOffersByType = this.getOffersByType.bind(this);
+    this._mock = new CardsMock();
+
+    this.getDestinationInfo = null;
+    this.getOffersByType = null;
 
     this._cards = [];
     this._filter = Filters.EVERYTHING;
@@ -38,20 +41,13 @@ export default class CardsListModel {
 
   getAllData() {
     this._api.getAllData()
-      .then(([cards, types]) => {
+      .then(([cards, types, destinations]) => {
         this.types = types;
+        this.destinations = destinations;
         this.cards = cards;
 
         this._callHandlers(this._dataLoadHandlers);
       });
-  }
-
-  getCardById(id) {
-    return getCardById(id, this._mock);
-  }
-
-  getAllCities() {
-    return getAllCities();
   }
 
   getOffersByType(type) {
@@ -59,7 +55,7 @@ export default class CardsListModel {
   }
 
   getDestinationInfo(name) {
-    return this._mock.getDestinationInfo(name);
+    return this._destinationsModel.getDestinationInfo(name);
   }
 
   sort() {
@@ -156,5 +152,12 @@ export default class CardsListModel {
   set types(types) {
     this._typesModel = TypesModel.parseTypes(types);
     this._typesGroups = this._typesModel.groups;
+    this.getOffersByType = this._typesModel.getOffersByType;
+  }
+
+  set destinations(destinations) {
+    this._destinationsModel = DestinationsModel.parseDestinations(destinations);
+    this._allCities = this._destinationsModel.cities;
+    this.getDestinationInfo = this._destinationsModel.getDestinationInfo;
   }
 }
