@@ -27,6 +27,7 @@ export default class CardModel {
     this.durationText = this._getDurationText(this.duration);
     this.typeGroup = this.getTypeGroup(this.type);
     this.placeholder = this.getPlaceholder(this.typeGroup);
+    this.allOffers = this.getOffersByType(this.type);
   }
 
   toRAW() {

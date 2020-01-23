@@ -164,11 +164,11 @@ const createDestinationTemplate = (description, pictures) => {
 };
 
 const createCardFormInnerTemplate = (card, data, mode) => {
-  const {id, type, destination, offers, isFavorite, placeholder} = card;
+  const {id, type, destination, offers, isFavorite, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
   let {name} = destination;
-  const {allTypes, allCities, allOffers} = data;
+  const {allTypes, allCities} = data;
 
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
@@ -408,7 +408,7 @@ export default class CardFormView extends AbstractSmartView {
 
     const formData = new FormData(cardForm);
 
-    return parseFormData(formData, this._data.allOffers);
+    return parseFormData(formData, this._model.allOffers);
   }
 
   recoveryListeners() {
