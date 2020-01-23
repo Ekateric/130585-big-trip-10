@@ -11,11 +11,10 @@ export default class CardController {
 
     this._onDataChange = options.onDataChange;
     this._onViewChange = options.onViewChange;
-    this._getOffersByType = options.getOffersByType;
     this._data = {
       allTypes: options.allTypes,
       allCities: options.allCities,
-      allOffers: this._getOffersByType(this._model.type)
+      allOffers: this._model.getOffersByType(this._model.type)
     };
 
     this._containerElement = null;
@@ -51,7 +50,7 @@ export default class CardController {
 
   _resetFormData() {
     this._formViewModel = Object.assign({}, this._model);
-    this._data.allOffers = this._getOffersByType(this._model.type);
+    this._data.allOffers = this._model.getOffersByType(this._model.type);
     this._formView.reset(this._formViewModel, this._data);
   }
 
@@ -69,7 +68,7 @@ export default class CardController {
     this._formViewModel.type = newType;
     this._formViewModel.typeGroup = newTypeGroup;
     this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
-    this._data.allOffers = this._getOffersByType(newType);
+    this._data.allOffers = this._model.getOffersByType(newType);
   }
 
   _destinationChange(name) {

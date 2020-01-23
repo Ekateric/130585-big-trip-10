@@ -127,8 +127,7 @@ export default class CardsListController {
       allTypes: this._cardsListModel.allTypes,
       allCities: this._cardsListModel.allCities,
       onDataChange: this._onDataChange.bind(this),
-      onViewChange: this._onViewChange.bind(this),
-      getOffersByType: this._cardsListModel.getOffersByType
+      onViewChange: this._onViewChange.bind(this)
     };
   }
 

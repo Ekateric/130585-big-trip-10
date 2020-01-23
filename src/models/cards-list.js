@@ -25,7 +25,7 @@ export default class CardsListModel {
   }
 
   _createCards(cards) {
-    return cards.map((card) => CardModel.parseCard(card, this._typesGroups, this.getDestinationInfo));
+    return cards.map((card) => new CardModel(card, this._typesGroups, this.getDestinationInfo, this.getOffersByType));
   }
 
   _checkIsEmpty() {
@@ -73,7 +73,7 @@ export default class CardsListModel {
     if (cardIndex > -1) {
       const oldCardModel = this._cards.find((card) => card.id === modelId);
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._typesGroups, this.getDestinationInfo);
+      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._typesGroups, this.getDestinationInfo, this.getOffersByType);
       newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
       this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
     }
@@ -96,11 +96,11 @@ export default class CardsListModel {
   }
 
   createEmptyCardModel() {
-    return new CardModel(EmptyCard, this._typesGroups, this.getDestinationInfo);
+    return new CardModel(EmptyCard, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
   }
 
   addModel(cardData) {
-    const newCardModel = new CardModel(Object.assign({}, cardData), this._typesGroups, this.getDestinationInfo);
+    const newCardModel = new CardModel(Object.assign({}, cardData), this._typesGroups, this.getDestinationInfo, this.getOffersByType);
 
     newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
     this._cards = [].concat(newCardModel, this._cards);

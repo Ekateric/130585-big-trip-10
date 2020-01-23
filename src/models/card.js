@@ -3,7 +3,7 @@ import getTypeGroup from "../utils/common/getTypeGroup";
 import getDurationText from "../utils/common/getDurationText";
 
 export default class CardModel {
-  constructor(card, allTypes, getDestinationInfo) {
+  constructor(card, allTypes, getDestinationInfo, getOffersByType) {
     this.id = typeof card[`id`] !== `undefined` ? card[`id`] : Math.random().toString().slice(2);
     this.type = card[`type`];
     this.destination = {
@@ -19,6 +19,7 @@ export default class CardModel {
 
     this._allTypes = allTypes;
     this.getDestinationInfo = getDestinationInfo;
+    this.getOffersByType = getOffersByType;
 
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
@@ -66,9 +67,5 @@ export default class CardModel {
 
   _countDuration() {
     return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
-  }
-
-  static parseCard(card) {
-    return new CardModel(card);
   }
 }
