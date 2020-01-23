@@ -2,18 +2,20 @@ import Filters from "../data/filters";
 import EmptyCard from "../data/empty-card";
 import CardsMock from "../mock/cards";
 import CardModel from "./card";
-import {getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
-import createTypesGroups from "../utils/common/createTypesGroups";
+import TypesModel from "./types";
+import {getCardById, getAllCities} from "../services/api/index";
 import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
   constructor(api) {
     this._api = api;
+    this._typesModel = null;
+    this._typesGroups = [];
     this._mock = new CardsMock();
-    this._allTypes = createTypesGroups(this.getAllTypes());
     this._allCities = this.getAllCities();
 
     this.getDestinationInfo = this.getDestinationInfo.bind(this);
+    this.getOffersByType = this.getOffersByType.bind(this);
 
     this._cards = [];
     this._filter = Filters.EVERYTHING;
@@ -23,7 +25,7 @@ export default class CardsListModel {
   }
 
   _createCards(cards) {
-    return cards.map((card) => CardModel.parseCard(card, this._allTypes, this.getDestinationInfo));
+    return cards.map((card) => CardModel.parseCard(card, this._typesGroups, this.getDestinationInfo));
   }
 
   _checkIsEmpty() {
@@ -34,10 +36,12 @@ export default class CardsListModel {
     handlers.forEach((handler) => handler());
   }
 
-  getAllCards() {
-    this._api.getCards()
-      .then((cards) => {
+  getAllData() {
+    this._api.getAllData()
+      .then(([cards, types]) => {
+        this.types = types;
         this.cards = cards;
+
         this._callHandlers(this._dataLoadHandlers);
       });
   }
@@ -50,19 +54,8 @@ export default class CardsListModel {
     return getAllCities();
   }
 
-  getAllTypes() {
-    return getAllTypes();
-  }
-
   getOffersByType(type) {
-    const offers = getOffersByType(type);
-
-    offers.map((offer, index) => {
-      offer.id = index;
-      return offer;
-    });
-
-    return offers;
+    return this._typesModel.getOffersByType(type);
   }
 
   getDestinationInfo(name) {
@@ -80,7 +73,7 @@ export default class CardsListModel {
     if (cardIndex > -1) {
       const oldCardModel = this._cards.find((card) => card.id === modelId);
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._allTypes, this.getDestinationInfo);
+      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._typesGroups, this.getDestinationInfo);
       newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
       this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
     }
@@ -103,11 +96,11 @@ export default class CardsListModel {
   }
 
   createEmptyCardModel() {
-    return new CardModel(EmptyCard, this._allTypes, this.getDestinationInfo);
+    return new CardModel(EmptyCard, this._typesGroups, this.getDestinationInfo);
   }
 
   addModel(cardData) {
-    const newCardModel = new CardModel(Object.assign({}, cardData), this._allTypes, this.getDestinationInfo);
+    const newCardModel = new CardModel(Object.assign({}, cardData), this._typesGroups, this.getDestinationInfo);
 
     newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
     this._cards = [].concat(newCardModel, this._cards);
@@ -147,7 +140,7 @@ export default class CardsListModel {
   }
 
   get allTypes() {
-    return this._allTypes;
+    return this._typesGroups;
   }
 
   get allCities() {
@@ -157,5 +150,11 @@ export default class CardsListModel {
   set cards(cards) {
     this._cards = this._createCards(Array.from(cards));
     this._callHandlers(this._dataChangeHandlers);
+    this.sort();
+  }
+
+  set types(types) {
+    this._typesModel = TypesModel.parseTypes(types);
+    this._typesGroups = this._typesModel.groups;
   }
 }

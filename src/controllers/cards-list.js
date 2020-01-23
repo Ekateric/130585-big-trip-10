@@ -14,26 +14,17 @@ export default class CardsListController {
     this._containerElement = containerElement;
     this._handlers = handlers;
 
-    this._cardsListModel.sort();
-
     this._cardsModels = []; // всегда отсортированы по дате
     this._sortedCardsModels = [];
+    this._days = [];
     this._sortType = SortTypes.EVENT;
     this._showedCardsControllers = [];
     this._creatingCard = null;
 
     this._view = new DaysListView();
-    this._element = this._view.getElement();
+    this._element = null;
 
-    this._days = this._createDays();
-
-    this._cardControllerOptions = {
-      allTypes: this._cardsListModel.allTypes,
-      allCities: this._cardsListModel.allCities,
-      onDataChange: this._onDataChange.bind(this),
-      onViewChange: this._onViewChange.bind(this),
-      getOffersByType: this._cardsListModel.getOffersByType
-    };
+    this._cardControllerOptions = null;
   }
 
   _onDataChange(cardController, newData, mode = Mode.EDIT, withRender = true) {
@@ -131,6 +122,16 @@ export default class CardsListController {
     this._days = this._createDays();
   }
 
+  _getCardControllerOptions() {
+    return {
+      allTypes: this._cardsListModel.allTypes,
+      allCities: this._cardsListModel.allCities,
+      onDataChange: this._onDataChange.bind(this),
+      onViewChange: this._onViewChange.bind(this),
+      getOffersByType: this._cardsListModel.getOffersByType
+    };
+  }
+
   sort(sortType) {
     this._sortType = sortType;
 
@@ -186,6 +187,7 @@ export default class CardsListController {
 
   render() {
     this._element = this._view.getElement();
+    this._cardControllerOptions = this._getCardControllerOptions();
     this._updateCardsData();
     this.renderDays();
 
@@ -194,9 +196,5 @@ export default class CardsListController {
 
   destroy() {
     remove(this._view);
-  }
-
-  get cardsModels() {
-    return this._cardsModels;
   }
 }

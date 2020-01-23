@@ -1,8 +1,5 @@
-import getAllCards from "./getAllCards";
 import getCardById from "./getCardById";
 import getAllCities from "./getAllCities";
-import getAllTypes from "./getAllTypes";
-import getOffersByType from "./getOffersByType";
 
 const Method = {
   GET: `GET`,
@@ -30,6 +27,15 @@ export default class Api {
       .then((response) => response.json());
   }
 
+  getOffers() {
+    return this._load({url: `offers`})
+      .then((response) => response.json());
+  }
+
+  getAllData() {
+    return Promise.all([this.getCards(), this.getOffers()]);
+  }
+
   createCard(card) {
 
   }
@@ -53,4 +59,4 @@ export default class Api {
   }
 }
 
-export {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType};
+export {getCardById, getAllCities};

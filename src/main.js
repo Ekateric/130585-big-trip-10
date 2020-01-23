@@ -26,7 +26,7 @@ cardsListModel.setDataLoadHandler(() => {
   filtersController.render();
   tripController.render();
 });
-cardsListModel.getAllCards();
+cardsListModel.getAllData();
 
 menuController.render(RenderPosition.AFTEREND);
 menuController.setClickMenuHandler((menuItem) => {
