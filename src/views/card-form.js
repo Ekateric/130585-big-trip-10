@@ -4,29 +4,6 @@ import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
 import he from "he";
 
-const getCheckedOffers = (checkedOffers, allOffers) => {
-  return checkedOffers.map((offer) => {
-    return {
-      title: offer,
-      price: allOffers.find((item) => item.title === offer).price
-    };
-  });
-};
-
-const parseFormData = (formData, allOffers) => {
-  return {
-    type: formData.get(`event-type`),
-    destination: {
-      name: formData.get(`event-destination`)
-    },
-    dateFrom: formData.get(`event-start-time`),
-    dateTo: formData.get(`event-end-time`),
-    price: Number(formData.get(`event-price`)),
-    offers: getCheckedOffers(formData.getAll(`event-offer`), allOffers),
-    isFavorite: !!formData.get(`event-favorite`)
-  };
-};
-
 const isFilledInput = (value) => {
   return typeof value !== `undefined`
     && value !== null
@@ -406,9 +383,7 @@ export default class CardFormView extends AbstractSmartView {
       cardForm = cardForm.querySelector(`form`);
     }
 
-    const formData = new FormData(cardForm);
-
-    return parseFormData(formData, this._model.allOffers);
+    return new FormData(cardForm);
   }
 
   recoveryListeners() {

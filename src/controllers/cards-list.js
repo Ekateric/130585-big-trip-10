@@ -53,18 +53,19 @@ export default class CardsListController {
       }
 
     } else {
-      const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+      this._cardsListModel.updateModelById(cardController.model.id, newData)
+        .then((newCardModel) => {
+          if (newCardModel) {
+            cardController.model = newCardModel;
 
-      if (newCardModel) {
-        cardController.model = newCardModel;
+            if (withRender) {
+              cardController.render(Mode.DEFAULT);
+            }
 
-        if (withRender) {
-          cardController.render(Mode.DEFAULT);
-        }
-
-        this._cardsModels = this._cardsListModel.cards;
-        this._handlers.onUpdateCard();
-      }
+            this._updateCardsData();
+            this._handlers.onUpdateCard();
+          }
+        });
     }
   }
 
@@ -118,7 +119,6 @@ export default class CardsListController {
 
   _updateCardsData() {
     this._cardsModels = this._cardsListModel.cards;
-    this._sortedCardsModels = this._cardsModels.slice();
     this._days = this._createDays();
   }
 
@@ -188,6 +188,8 @@ export default class CardsListController {
     this._element = this._view.getElement();
     this._cardControllerOptions = this._getCardControllerOptions();
     this._updateCardsData();
+    this._sortedCardsModels = this._cardsModels.slice();
+
     this.renderDays();
 
     render(this._containerElement, this._view);

@@ -59,19 +59,20 @@ export default class CardsListModel {
     this._cards.sort((cardOne, cardTwo) => Date.parse(cardOne.dateFrom) - Date.parse(cardTwo.dateFrom));
   }
 
-  updateModelById(modelId, newCardData) {
-    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
-    let newCardModel = null;
+  updateModelById(modelId, sendCardModel) {
+    return this._api.updateCard(modelId, sendCardModel)
+      .then((newCardData) => {
+        let newCardModel = null;
+        const cardIndex = this._cards.findIndex((card) => card.id === modelId);
 
-    if (cardIndex > -1) {
-      const oldCardModel = this._cards.find((card) => card.id === modelId);
+        if (cardIndex > -1) {
+          // потому что данные с сервера могут прийти обновлённые
+          newCardModel = new CardModel(newCardData, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
+          this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
+        }
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._typesGroups, this.getDestinationInfo, this.getOffersByType);
-      newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
-      this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
-    }
-
-    return newCardModel;
+        return newCardModel;
+      });
   }
 
   deleteModelById(modelId) {

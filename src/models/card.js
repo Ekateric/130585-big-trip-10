@@ -30,6 +30,10 @@ export default class CardModel {
     this.allOffers = this.getOffersByType(this.type);
   }
 
+  get allTypes() {
+    return this._allTypes;
+  }
+
   toRAW() {
     return {
       'id': this.id,
@@ -68,5 +72,9 @@ export default class CardModel {
 
   _countDuration() {
     return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
+  }
+
+  static clone(card) {
+    return new CardModel(card.toRAW(), card.allTypes, card.getDestinationInfo, card.getOffersByType);
   }
 }

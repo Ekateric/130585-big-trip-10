@@ -38,17 +38,23 @@ export default class Api {
     return Promise.all([this.getCards(), this.getOffers(), this.getDestinations()]);
   }
 
-  createCard(card) {
-
+  updateCard(id, card) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(card.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
   }
 
-  updateCard(id, data) {
+  /* createCard(card) {
 
   }
 
   deleteCard(id) {
 
-  }
+  }*/
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
