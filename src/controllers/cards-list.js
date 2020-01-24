@@ -14,26 +14,17 @@ export default class CardsListController {
     this._containerElement = containerElement;
     this._handlers = handlers;
 
-    this._cardsListModel.sort();
-
-    this._cardsModels = this._cardsListModel.cards; // всегда отсортированы по дате
-    this._sortedCardsModels = this._cardsModels.slice();
+    this._cardsModels = []; // всегда отсортированы по дате
+    this._sortedCardsModels = [];
+    this._days = [];
     this._sortType = SortTypes.EVENT;
     this._showedCardsControllers = [];
     this._creatingCard = null;
 
     this._view = new DaysListView();
-    this._element = this._view.getElement();
+    this._element = null;
 
-    this._days = this._createDays();
-
-    this._cardControllerOptions = {
-      allTypes: this._cardsListModel.allTypes,
-      allCities: this._cardsListModel.allCities,
-      onDataChange: this._onDataChange.bind(this),
-      onViewChange: this._onViewChange.bind(this),
-      getOffersByType: this._cardsListModel.getOffersByType
-    };
+    this._cardControllerOptions = null;
   }
 
   _onDataChange(cardController, newData, mode = Mode.EDIT, withRender = true) {
@@ -62,18 +53,19 @@ export default class CardsListController {
       }
 
     } else {
-      const newCardModel = this._cardsListModel.updateModelById(cardController.model.id, newData);
+      this._cardsListModel.updateModelById(cardController.model.id, newData)
+        .then((newCardModel) => {
+          if (newCardModel) {
+            cardController.model = newCardModel;
 
-      if (newCardModel) {
-        cardController.model = newCardModel;
+            if (withRender) {
+              cardController.render(Mode.DEFAULT);
+            }
 
-        if (withRender) {
-          cardController.render(Mode.DEFAULT);
-        }
-
-        this._cardsModels = this._cardsListModel.cards;
-        this._handlers.onUpdateCard();
-      }
+            this._updateCardsData();
+            this._handlers.onUpdateCard();
+          }
+        });
     }
   }
 
@@ -128,6 +120,15 @@ export default class CardsListController {
   _updateCardsData() {
     this._cardsModels = this._cardsListModel.cards;
     this._days = this._createDays();
+  }
+
+  _getCardControllerOptions() {
+    return {
+      allTypes: this._cardsListModel.allTypes,
+      allCities: this._cardsListModel.allCities,
+      onDataChange: this._onDataChange.bind(this),
+      onViewChange: this._onViewChange.bind(this)
+    };
   }
 
   sort(sortType) {
@@ -185,15 +186,16 @@ export default class CardsListController {
 
   render() {
     this._element = this._view.getElement();
+    this._cardControllerOptions = this._getCardControllerOptions();
+    this._updateCardsData();
+    this._sortedCardsModels = this._cardsModels.slice();
+
     this.renderDays();
+
     render(this._containerElement, this._view);
   }
 
   destroy() {
     remove(this._view);
-  }
-
-  get cardsModels() {
-    return this._cardsModels;
   }
 }

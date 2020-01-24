@@ -1,28 +1,31 @@
 import Filters from "../data/filters";
 import EmptyCard from "../data/empty-card";
-import CardsMock from "../mock/cards";
 import CardModel from "./card";
-import {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType} from "../services/api/index";
-import createTypesGroups from "../utils/common/createTypesGroups";
+import TypesModel from "./types";
+import DestinationsModel from "./destinations";
 import getFilteredCards from "../utils/filter/getFilteredCards";
 
 export default class CardsListModel {
-  constructor() {
-    this._mock = new CardsMock();
-    this._allTypes = createTypesGroups(this.getAllTypes());
-    this._allCities = this.getAllCities();
+  constructor(api) {
+    this._api = api;
 
-    this.getDestinationInfo = this.getDestinationInfo.bind(this);
+    this._typesModel = null;
+    this._typesGroups = [];
+    this._destinationsModel = null;
+    this._allCities = [];
 
-    this._cards = this._createCards(this.getAllCards());
+    this.getDestinationInfo = null;
+    this.getOffersByType = null;
 
+    this._cards = [];
     this._filter = Filters.EVERYTHING;
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];
+    this._dataLoadHandlers = [];
   }
 
-  _createCards(data) {
-    return data.map((card) => new CardModel(card, this._allTypes, this.getDestinationInfo));
+  _createCards(cards) {
+    return cards.map((card) => new CardModel(card, this._typesGroups, this.getDestinationInfo, this.getOffersByType));
   }
 
   _checkIsEmpty() {
@@ -33,54 +36,43 @@ export default class CardsListModel {
     handlers.forEach((handler) => handler());
   }
 
-  getAllCards() {
-    return getAllCards(this._mock);
-  }
+  getAllData() {
+    this._api.getAllData()
+      .then(([cards, types, destinations]) => {
+        this.types = types;
+        this.destinations = destinations;
+        this.cards = cards;
 
-  getCardById(id) {
-    return getCardById(id, this._mock);
-  }
-
-  getAllCities() {
-    return getAllCities();
-  }
-
-  getAllTypes() {
-    return getAllTypes();
+        this._callHandlers(this._dataLoadHandlers);
+      });
   }
 
   getOffersByType(type) {
-    const offers = getOffersByType(type);
-
-    offers.map((offer, index) => {
-      offer.id = index;
-      return offer;
-    });
-
-    return offers;
+    return this._typesModel.getOffersByType(type);
   }
 
   getDestinationInfo(name) {
-    return this._mock.getDestinationInfo(name);
+    return this._destinationsModel.getDestinationInfo(name);
   }
 
   sort() {
     this._cards.sort((cardOne, cardTwo) => Date.parse(cardOne.dateFrom) - Date.parse(cardTwo.dateFrom));
   }
 
-  updateModelById(modelId, newCardData) {
-    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
-    let newCardModel = null;
+  updateModelById(modelId, sendCardModel) {
+    return this._api.updateCard(modelId, sendCardModel)
+      .then((newCardData) => {
+        let newCardModel = null;
+        const cardIndex = this._cards.findIndex((card) => card.id === modelId);
 
-    if (cardIndex > -1) {
-      const oldCardModel = this._cards.find((card) => card.id === modelId);
+        if (cardIndex > -1) {
+          // потому что данные с сервера могут прийти обновлённые
+          newCardModel = new CardModel(newCardData, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
+          this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
+        }
 
-      newCardModel = new CardModel(Object.assign({}, oldCardModel, newCardData), this._allTypes, this.getDestinationInfo);
-      newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
-      this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
-    }
-
-    return newCardModel;
+        return newCardModel;
+      });
   }
 
   deleteModelById(modelId) {
@@ -98,11 +90,11 @@ export default class CardsListModel {
   }
 
   createEmptyCardModel() {
-    return new CardModel(EmptyCard, this._allTypes, this.getDestinationInfo);
+    return new CardModel(EmptyCard, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
   }
 
   addModel(cardData) {
-    const newCardModel = new CardModel(Object.assign({}, cardData), this._allTypes, this.getDestinationInfo);
+    const newCardModel = new CardModel(Object.assign({}, cardData), this._typesGroups, this.getDestinationInfo, this.getOffersByType);
 
     newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
     this._cards = [].concat(newCardModel, this._cards);
@@ -125,6 +117,10 @@ export default class CardsListModel {
     this._dataChangeHandlers.push(handler);
   }
 
+  setDataLoadHandler(handler) {
+    this._dataLoadHandlers.push(handler);
+  }
+
   get cards() {
     return getFilteredCards(this._cards, this._filter);
   }
@@ -138,7 +134,7 @@ export default class CardsListModel {
   }
 
   get allTypes() {
-    return this._allTypes;
+    return this._typesGroups;
   }
 
   get allCities() {
@@ -147,5 +143,19 @@ export default class CardsListModel {
 
   set cards(cards) {
     this._cards = this._createCards(Array.from(cards));
+    this._callHandlers(this._dataChangeHandlers);
+    this.sort();
+  }
+
+  set types(types) {
+    this._typesModel = TypesModel.parseTypes(types);
+    this._typesGroups = this._typesModel.groups;
+    this.getOffersByType = this._typesModel.getOffersByType;
+  }
+
+  set destinations(destinations) {
+    this._destinationsModel = DestinationsModel.parseDestinations(destinations);
+    this._allCities = this._destinationsModel.cities;
+    this.getDestinationInfo = this._destinationsModel.getDestinationInfo;
   }
 }

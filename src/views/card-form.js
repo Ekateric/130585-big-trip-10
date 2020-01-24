@@ -4,29 +4,6 @@ import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
 import he from "he";
 
-const getCheckedOffers = (checkedOffers, allOffers) => {
-  return checkedOffers.map((offer) => {
-    return {
-      title: offer,
-      price: allOffers.find((item) => item.title === offer).price
-    };
-  });
-};
-
-const parseFormData = (formData, allOffers) => {
-  return {
-    type: formData.get(`event-type`),
-    destination: {
-      name: formData.get(`event-destination`)
-    },
-    dateFrom: formData.get(`event-start-time`),
-    dateTo: formData.get(`event-end-time`),
-    price: Number(formData.get(`event-price`)),
-    offers: getCheckedOffers(formData.getAll(`event-offer`), allOffers),
-    isFavorite: !!formData.get(`event-favorite`)
-  };
-};
-
 const isFilledInput = (value) => {
   return typeof value !== `undefined`
     && value !== null
@@ -138,11 +115,15 @@ const createOffersSectionTemplate = (allOffers, offers, cardId) => {
   );
 };
 
-const createPhotoTemplate = (photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`;
+const createPhotoTemplate = (picture) => {
+  const {src, description} = picture;
 
-const createDestinationTemplate = (description, photos) => {
-  const photosListTemplate = photos
-    .map((photo) => createPhotoTemplate(photo))
+  return `<img class="event__photo" src="${src}" alt="${description}">`;
+};
+
+const createDestinationTemplate = (description, pictures) => {
+  const photosListTemplate = pictures
+    .map((picture) => createPhotoTemplate(picture))
     .join(`\n`);
 
   return (
@@ -160,11 +141,11 @@ const createDestinationTemplate = (description, photos) => {
 };
 
 const createCardFormInnerTemplate = (card, data, mode) => {
-  const {id, type, destination, offers, isFavorite, placeholder} = card;
+  const {id, type, destination, offers, isFavorite, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
   let {name} = destination;
-  const {allTypes, allCities, allOffers} = data;
+  const {allTypes, allCities} = data;
 
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
@@ -402,9 +383,7 @@ export default class CardFormView extends AbstractSmartView {
       cardForm = cardForm.querySelector(`form`);
     }
 
-    const formData = new FormData(cardForm);
-
-    return parseFormData(formData, this._data.allOffers);
+    return new FormData(cardForm);
   }
 
   recoveryListeners() {

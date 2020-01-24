@@ -3,16 +3,23 @@ import getTypeGroup from "../utils/common/getTypeGroup";
 import getDurationText from "../utils/common/getDurationText";
 
 export default class CardModel {
-  constructor(data, allTypes, getDestinationInfo) {
-    this.id = typeof data.id !== `undefined` ? data.id : Math.random().toString().slice(2);
-    this.type = data.type;
-    this.destination = data.destination;
-    this.dateFrom = data.dateFrom;
-    this.dateTo = data.dateTo;
-    this.price = data.price;
-    this.offers = data.offers;
-    this.isFavorite = data.isFavorite;
+  constructor(card, allTypes, getDestinationInfo, getOffersByType) {
+    this.id = typeof card[`id`] !== `undefined` ? card[`id`] : Math.random().toString().slice(2);
+    this.type = card[`type`];
+    this.destination = {
+      name: card[`destination`][`name`],
+      description: card[`destination`][`description`],
+      pictures: card[`destination`][`pictures`]
+    };
+    this.dateFrom = new Date(card[`date_from`]);
+    this.dateTo = new Date(card[`date_to`]);
+    this.price = card[`base_price`];
+    this.offers = card[`offers`];
+    this.isFavorite = Boolean(card[`is_favorite`]);
+
     this._allTypes = allTypes;
+    this.getDestinationInfo = getDestinationInfo;
+    this.getOffersByType = getOffersByType;
 
     this.correctDateFrom = getCorrectTime(this.dateFrom);
     this.correctDateTo = getCorrectTime(this.dateTo);
@@ -20,16 +27,28 @@ export default class CardModel {
     this.durationText = this._getDurationText(this.duration);
     this.typeGroup = this.getTypeGroup(this.type);
     this.placeholder = this.getPlaceholder(this.typeGroup);
-
-    this.getDestinationInfo = getDestinationInfo;
+    this.allOffers = this.getOffersByType(this.type);
   }
 
-  _countDuration() {
-    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
+  get allTypes() {
+    return this._allTypes;
   }
 
-  _getDurationText(milliseconds) {
-    return getDurationText(milliseconds);
+  toRAW() {
+    return {
+      'id': this.id,
+      'type': this.type,
+      'destination': {
+        'name': this.destination.name,
+        'description': this.destination.description,
+        'pictures': this.destination.pictures
+      },
+      'date_from': this.dateFrom.toISOString(),
+      'date_to': this.dateTo.toISOString(),
+      'base_price': this.price,
+      'offers': this.offers,
+      'is_favorite': this.isFavorite
+    };
   }
 
   getTypeGroup(type) {
@@ -45,5 +64,17 @@ export default class CardModel {
       default:
         return ``;
     }
+  }
+
+  _getDurationText(milliseconds) {
+    return getDurationText(milliseconds);
+  }
+
+  _countDuration() {
+    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
+  }
+
+  static clone(card) {
+    return new CardModel(card.toRAW(), card.allTypes, card.getDestinationInfo, card.getOffersByType);
   }
 }

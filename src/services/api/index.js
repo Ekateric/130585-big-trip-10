@@ -1,7 +1,68 @@
-import getAllCards from "./getAllCards";
-import getCardById from "./getCardById";
-import getAllCities from "./getAllCities";
-import getAllTypes from "./getAllTypes";
-import getOffersByType from "./getOffersByType";
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
 
-export {getAllCards, getCardById, getAllCities, getAllTypes, getOffersByType};
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
+};
+
+export default class Api {
+  constructor(endPoint, authorization) {
+    this._endPoint = endPoint;
+    this._authorization = authorization;
+  }
+
+  getCards() {
+    return this._load({url: `points`})
+      .then((response) => response.json());
+  }
+
+  getOffers() {
+    return this._load({url: `offers`})
+      .then((response) => response.json());
+  }
+
+  getDestinations() {
+    return this._load({url: `destinations`})
+      .then((response) => response.json());
+  }
+
+  getAllData() {
+    return Promise.all([this.getCards(), this.getOffers(), this.getDestinations()]);
+  }
+
+  updateCard(id, card) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(card.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
+  }
+
+  /* createCard(card) {
+
+  }
+
+  deleteCard(id) {
+
+  }*/
+
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(checkStatus)
+      .catch((err) => {
+        throw err;
+      });
+  }
+}

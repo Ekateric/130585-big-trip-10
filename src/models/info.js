@@ -1,5 +1,4 @@
 import moment from "moment";
-import countSumByField from "../utils/common/countSumByField";
 
 export default class InfoModel {
   constructor(cardsListModel) {
@@ -10,8 +9,6 @@ export default class InfoModel {
     this.title = null;
     this.datesInterval = null;
     this.sum = 0;
-
-    this.countInfo();
   }
 
   _createCities() {
@@ -78,7 +75,11 @@ export default class InfoModel {
 
   _countTripSum() {
     return this._cards.reduce((cardsAccumulator, currentCard) => {
-      const offersSum = countSumByField(currentCard.offers, `price`);
+      const offersSum = currentCard.offers.reduce((offersAccumulator, currentOffer) => {
+        const realOfferCost = currentCard.allOffers.find((realOffer) => realOffer.title === currentOffer.title).price;
+
+        return offersAccumulator + realOfferCost;
+      }, 0);
 
       return cardsAccumulator + currentCard.price + offersSum;
     }, 0);

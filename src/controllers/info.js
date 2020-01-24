@@ -14,6 +14,8 @@ export default class InfoController {
   }
 
   render(position) {
+    this._model.countInfo();
+
     const oldView = this._view;
 
     this._position = position;
@@ -28,7 +30,6 @@ export default class InfoController {
   }
 
   update() {
-    this._model.countInfo();
     this.render(this._position);
   }
 }

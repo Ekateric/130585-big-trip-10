@@ -1,9 +1,31 @@
 import Mode from "../data/mode";
+import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
 import render from "../utils/common/render";
 import replace from "../utils/common/replace";
 import remove from "../utils/common/remove";
+
+const getCheckedOffers = (checkedOffers, allOffers) => {
+  return checkedOffers.map((offer) => {
+    return {
+      title: offer,
+      price: allOffers.find((item) => item.title === offer).price
+    };
+  });
+};
+
+const parseFormData = (formData, cardModel) => {
+  return new CardModel({
+    'type': formData.get(`event-type`),
+    'destination': cardModel.getDestinationInfo(formData.get(`event-destination`)),
+    'date_from': formData.get(`event-start-time`),
+    'date_to': formData.get(`event-end-time`),
+    'base_price': Number(formData.get(`event-price`)),
+    'offers': getCheckedOffers(formData.getAll(`event-offer`), cardModel.allOffers),
+    'is_favorite': !!formData.get(`event-favorite`)
+  }, cardModel.allTypes, cardModel.getDestinationInfo, cardModel.getOffersByType);
+};
 
 export default class CardController {
   constructor(cardModel, options) {
@@ -11,11 +33,9 @@ export default class CardController {
 
     this._onDataChange = options.onDataChange;
     this._onViewChange = options.onViewChange;
-    this._getOffersByType = options.getOffersByType;
     this._data = {
       allTypes: options.allTypes,
-      allCities: options.allCities,
-      allOffers: this._getOffersByType(this._model.type)
+      allCities: options.allCities
     };
 
     this._containerElement = null;
@@ -51,7 +71,6 @@ export default class CardController {
 
   _resetFormData() {
     this._formViewModel = Object.assign({}, this._model);
-    this._data.allOffers = this._getOffersByType(this._model.type);
     this._formView.reset(this._formViewModel, this._data);
   }
 
@@ -69,7 +88,7 @@ export default class CardController {
     this._formViewModel.type = newType;
     this._formViewModel.typeGroup = newTypeGroup;
     this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
-    this._data.allOffers = this._getOffersByType(newType);
+    this._formViewModel.allOffers = this._model.getOffersByType(newType);
   }
 
   _destinationChange(name) {
@@ -96,15 +115,16 @@ export default class CardController {
     this._formView.setSubmitFormHandler((event) => {
       event.preventDefault();
 
-      const formData = this._formView.getData();
+      const formData = parseFormData(this._formView.getData(), this._model);
+
       this._onDataChange(this, formData, this._mode);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
+      const newCard = CardModel.clone(this._model);
+      newCard.isFavorite = !newCard.isFavorite;
       this._formViewModel.isFavorite = !this._model.isFavorite;
-      this._onDataChange(this, {
-        isFavorite: !this._model.isFavorite
-      }, this._mode, false);
+      this._onDataChange(this, newCard, this._mode, false);
     });
 
     this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null, this._mode));

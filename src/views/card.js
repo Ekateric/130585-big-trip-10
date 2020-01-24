@@ -14,12 +14,16 @@ const createOfferTemplate = (offer) => {
 };
 
 const createCardTemplate = (card) => {
-  const {type, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder} = card;
+  const {type, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
   const offersTemplate = Array.from(offers)
-    .map((offer) => createOfferTemplate(offer))
+    .map((offer) => {
+      // потому что цены могут отличаться
+      offer = allOffers.find((item) => item.title === offer.title);
+      return createOfferTemplate(offer);
+    })
     .join(`\n`);
 
   const name = he.encode(destination.name.toString());

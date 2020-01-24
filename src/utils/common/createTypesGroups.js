@@ -12,10 +12,10 @@ const typesGroups = [
 ];
 
 export default (types) => {
-  types.forEach((type) => {
-    const group = getTypeGroup(type);
+  types.forEach((item) => {
+    const group = getTypeGroup(item.type);
 
-    typesGroups.find((typeGroup) => typeGroup.group === group).types.push(type);
+    typesGroups.find((typeGroup) => typeGroup.group === group).types.push(item.type);
   });
 
   return typesGroups;

@@ -1,3 +1,4 @@
+import Api from "./services/api";
 import MenuItems from "./data/menu-items";
 import CardsListModel from "./models/cards-list";
 import MenuController from "./controllers/menu";
@@ -6,22 +7,28 @@ import TripController from "./controllers/trip";
 import StatsController from "./controllers/stats";
 import RenderPosition from "./data/render-position";
 
+const AUTHORIZATION = `Basic eo0w580ik28889a=`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+const api = new Api(END_POINT, AUTHORIZATION);
+
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 const pageMainContainerElement = document.querySelector(`.page-main .page-body__container`);
 
-const cardsListModel = new CardsListModel();
+const cardsListModel = new CardsListModel(api);
 const tripController = new TripController(cardsListModel, pageMainContainerElement, tripMainElement);
 
 const menuController = new MenuController(tripControlsElement.querySelector(`h2`));
 const filtersController = new FiltersController(cardsListModel, tripControlsElement);
-
 const statsController = new StatsController(pageMainContainerElement, cardsListModel);
 
-menuController.render(RenderPosition.AFTEREND);
-filtersController.render();
-tripController.render();
+cardsListModel.setDataLoadHandler(() => {
+  filtersController.render();
+  tripController.render();
+});
+cardsListModel.getAllData();
 
+menuController.render(RenderPosition.AFTEREND);
 menuController.setClickMenuHandler((menuItem) => {
   switch (menuItem) {
     case MenuItems.TABLE:
