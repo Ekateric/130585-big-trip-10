@@ -93,15 +93,15 @@ export default class CardsListModel {
     return new CardModel(EmptyCard, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
   }
 
-  addModel(cardData) {
-    const newCardModel = new CardModel(Object.assign({}, cardData), this._typesGroups, this.getDestinationInfo, this.getOffersByType);
+  addModel(sendCardModel) {
+    return this._api.addCard(sendCardModel)
+      .then((newCardData) => {
+        const newCardModel = new CardModel(newCardData, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
 
-    newCardModel.destination = this.getDestinationInfo(newCardModel.destination.name);
-    this._cards = [].concat(newCardModel, this._cards);
-    this.sort();
-    this._callHandlers(this._dataChangeHandlers);
-
-    return newCardModel;
+        this._cards = [].concat(newCardModel, this._cards);
+        this.sort();
+        this._callHandlers(this._dataChangeHandlers);
+      });
   }
 
   setFilter(filterName) {

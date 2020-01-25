@@ -48,11 +48,17 @@ export default class Api {
       .then((response) => response.json());
   }
 
-  /* createCard(card) {
-
+  addCard(card) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(card.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json());
   }
 
-  deleteCard(id) {
+  /* deleteCard(id) {
 
   }*/
 

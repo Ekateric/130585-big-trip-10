@@ -16,13 +16,16 @@ const getCheckedOffers = (checkedOffers, allOffers) => {
 };
 
 const parseFormData = (formData, cardModel) => {
+  // При создании новой точки ещё нет типа в модели, а соответственно - и списка доступных офферов
+  const allOffers = cardModel.allOffers.length ? cardModel.allOffers : cardModel.getOffersByType(formData.get(`event-type`));
+
   return new CardModel({
     'type': formData.get(`event-type`),
     'destination': cardModel.getDestinationInfo(formData.get(`event-destination`)),
     'date_from': formData.get(`event-start-time`),
     'date_to': formData.get(`event-end-time`),
     'base_price': Number(formData.get(`event-price`)),
-    'offers': getCheckedOffers(formData.getAll(`event-offer`), cardModel.allOffers),
+    'offers': getCheckedOffers(formData.getAll(`event-offer`), allOffers),
     'is_favorite': !!formData.get(`event-favorite`)
   }, cardModel.allTypes, cardModel.getDestinationInfo, cardModel.getOffersByType);
 };
@@ -115,9 +118,9 @@ export default class CardController {
     this._formView.setSubmitFormHandler((event) => {
       event.preventDefault();
 
-      const formData = parseFormData(this._formView.getData(), this._model);
+      const newCard = parseFormData(this._formView.getData(), this._model);
 
-      this._onDataChange(this, formData, this._mode);
+      this._onDataChange(this, newCard, this._mode);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {

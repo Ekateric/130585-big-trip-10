@@ -27,24 +27,24 @@ export default class CardsListController {
     this._cardControllerOptions = null;
   }
 
-  _onDataChange(cardController, newData, mode = Mode.EDIT, withRender = true) {
+  _onDataChange(cardController, newCard, mode = Mode.EDIT, withRender = true) {
     if (mode === Mode.ADD) {
       this._creatingCard = null;
+      cardController.destroy();
 
-      if (newData === null) {
-        cardController.destroy();
+      if (newCard === null) {
         this._handlers.onDeleteCard();
         this._showedCardsControllers = this._showedCardsControllers.slice(1);
 
       } else {
-        cardController.destroy();
-
-        this._cardsListModel.addModel(newData);
-        this.updateCards();
-        this._handlers.onAddCard();
+        this._cardsListModel.addModel(newCard)
+          .then(() => {
+            this.updateCards();
+            this._handlers.onAddCard();
+          });
       }
 
-    } else if (newData === null) {
+    } else if (newCard === null) {
       const isDeleted = this._cardsListModel.deleteModelById(cardController.model.id);
 
       if (isDeleted) {
@@ -53,7 +53,7 @@ export default class CardsListController {
       }
 
     } else {
-      this._cardsListModel.updateModelById(cardController.model.id, newData)
+      this._cardsListModel.updateModelById(cardController.model.id, newCard)
         .then((newCardModel) => {
           if (newCardModel) {
             cardController.model = newCardModel;

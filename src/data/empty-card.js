@@ -1,11 +1,13 @@
 export default {
-  type: ``,
-  destination: {
-    name: ``
+  'type': ``,
+  'destination': {
+    'name': ``,
+    'description': ``,
+    'pictures': ``
   },
-  dateFrom: null,
-  dateTo: null,
-  price: ``,
-  offers: [],
-  isFavorite: false
+  'date_from': null,
+  'date_to': null,
+  'base_price': ``,
+  'offers': [],
+  'is_favorite': false
 };
