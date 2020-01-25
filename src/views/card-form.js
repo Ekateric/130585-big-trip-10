@@ -210,7 +210,7 @@ const createCardFormInnerTemplate = (card, data, mode) => {
       </div>
 
       <button class="event__save-btn btn btn--blue" type="submit"${isDisabledSaveButton ? ` disabled` : ``}>Save</button>
-      <button class="event__reset-btn" type="reset">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
+      <button class="event__reset-btn" type="button">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
 
       ${mode === Mode.DEFAULT ? `
         <input id="event-favorite-${id}" class="event__favorite-checkbox visually-hidden" type="checkbox" name="event-favorite"${isFavorite ? ` checked` : ``}>

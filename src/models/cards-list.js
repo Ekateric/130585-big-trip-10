@@ -75,18 +75,16 @@ export default class CardsListModel {
       });
   }
 
-  deleteModelById(modelId) {
-    const cardIndex = this._cards.findIndex((card) => card.id === modelId);
-    let isDeleted = false;
+  deleteModelById(id) {
+    return this._api.deleteCard(id)
+      .then(() => {
+        const deletedCardIndex = this._cards.findIndex((card) => card.id === id);
 
-    if (cardIndex > -1) {
-      this._cards = [].concat(this._cards.slice(0, cardIndex), this._cards.slice(cardIndex + 1));
-      this._callHandlers(this._dataChangeHandlers);
-
-      isDeleted = true;
-    }
-
-    return isDeleted;
+        if (deletedCardIndex > -1) {
+          this._cards = [].concat(this._cards.slice(0, deletedCardIndex), this._cards.slice(deletedCardIndex + 1));
+          this._callHandlers(this._dataChangeHandlers);
+        }
+      });
   }
 
   createEmptyCardModel() {

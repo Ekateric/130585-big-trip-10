@@ -45,12 +45,11 @@ export default class CardsListController {
       }
 
     } else if (newCard === null) {
-      const isDeleted = this._cardsListModel.deleteModelById(cardController.model.id);
-
-      if (isDeleted) {
-        this.updateCards();
-        this._handlers.onDeleteCard();
-      }
+      this._cardsListModel.deleteModelById(cardController.model.id)
+        .then(() => {
+          this.updateCards();
+          this._handlers.onDeleteCard();
+        });
 
     } else {
       this._cardsListModel.updateModelById(cardController.model.id, newCard)

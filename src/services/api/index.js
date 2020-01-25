@@ -58,9 +58,12 @@ export default class Api {
       .then((response) => response.json());
   }
 
-  /* deleteCard(id) {
-
-  }*/
+  deleteCard(id) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.DELETE
+    });
+  }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
