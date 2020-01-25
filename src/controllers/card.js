@@ -1,4 +1,5 @@
 import Mode from "../data/mode";
+import ButtonsText from "../data/buttons-text";
 import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
@@ -121,6 +122,9 @@ export default class CardController {
       const newCard = parseFormData(this._formView.getData(), this._model);
 
       this._onDataChange(this, newCard, this._mode);
+      this._formView.setButtonsText({
+        save: ButtonsText.SAVE_LOADING,
+      });
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
@@ -130,7 +134,13 @@ export default class CardController {
       this._onDataChange(this, newCard, this._mode, false);
     });
 
-    this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null, this._mode));
+    this._formView.setClickDeleteButtonHandler(() => {
+      this._onDataChange(this, null, this._mode);
+      this._formView.setButtonsText({
+        deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
+        deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
+      });
+    });
   }
 
   render(mode, containerElement, position) {

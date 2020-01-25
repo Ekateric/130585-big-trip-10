@@ -1,4 +1,5 @@
 import Mode from "../data/mode";
+import ButtonsText from "../data/buttons-text";
 import AbstractSmartView from "./abstract-smart";
 import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
@@ -140,7 +141,7 @@ const createDestinationTemplate = (description, pictures) => {
   );
 };
 
-const createCardFormInnerTemplate = (card, data, mode) => {
+const createCardFormInnerTemplate = (card, data, mode, buttonsText) => {
   const {id, type, destination, offers, isFavorite, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
@@ -164,6 +165,8 @@ const createCardFormInnerTemplate = (card, data, mode) => {
   const destinationTemplate = (description && description.length) ? createDestinationTemplate(description, pictures) : ``;
   const isShowDetailsSection = offersTemplate || destinationTemplate;
   const isDisabledSaveButton = isBlockSaveButton(card, allCities);
+  const deleteButtonText = mode === Mode.DEFAULT ? buttonsText.deleteOnDefault : buttonsText.deleteOnAdd;
+  const saveButtonText = buttonsText.save;
 
   return (
     `<header class="event__header">
@@ -209,8 +212,8 @@ const createCardFormInnerTemplate = (card, data, mode) => {
         <input class="event__input event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
       </div>
 
-      <button class="event__save-btn btn btn--blue" type="submit"${isDisabledSaveButton ? ` disabled` : ``}>Save</button>
-      <button class="event__reset-btn" type="button">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
+      <button class="event__save-btn btn btn--blue" type="submit"${isDisabledSaveButton ? ` disabled` : ``}>${saveButtonText}</button>
+      <button class="event__reset-btn" type="button">${deleteButtonText}</button>
 
       ${mode === Mode.DEFAULT ? `
         <input id="event-favorite-${id}" class="event__favorite-checkbox visually-hidden" type="checkbox" name="event-favorite"${isFavorite ? ` checked` : ``}>
@@ -235,8 +238,8 @@ const createCardFormInnerTemplate = (card, data, mode) => {
   );
 };
 
-const createCardFormTemplate = (card, data, mode) => {
-  const cardFormInnerTemplate = createCardFormInnerTemplate(card, data, mode);
+const createCardFormTemplate = (card, data, mode, buttonsText) => {
+  const cardFormInnerTemplate = createCardFormInnerTemplate(card, data, mode, buttonsText);
 
   if (mode === Mode.ADD) {
     return `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -260,6 +263,11 @@ export default class CardFormView extends AbstractSmartView {
     this._data = data;
     this._mode = mode;
     this._flatpickr = null;
+    this._buttonsText = {
+      deleteOnDefault: ButtonsText.DELETE_ON_DEFAULT,
+      deleteOnAdd: ButtonsText.DELETE_ON_ADD,
+      save: ButtonsText.SAVE
+    };
 
     this._eventTypeChange = methods.eventTypeChange;
     this._destinationChange = methods.destinationChange;
@@ -373,7 +381,7 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   getTemplate() {
-    return createCardFormTemplate(this._card, this._data, this._mode);
+    return createCardFormTemplate(this._card, this._data, this._mode, this._buttonsText);
   }
 
   getData() {
@@ -384,6 +392,11 @@ export default class CardFormView extends AbstractSmartView {
     }
 
     return new FormData(cardForm);
+  }
+
+  setButtonsText(buttonsText) {
+    this._buttonsText = Object.assign({}, this._buttonsText, buttonsText);
+    this.rerender();
   }
 
   recoveryListeners() {
