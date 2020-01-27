@@ -44,7 +44,7 @@ export default class CardsListController {
             this._handlers.onAddCard();
           })
           .catch(() => {
-            cardController.shake();
+            cardController.showError();
           });
       }
 
@@ -55,7 +55,7 @@ export default class CardsListController {
           this._handlers.onDeleteCard();
         })
         .catch(() => {
-          cardController.shake();
+          cardController.showError();
         });
 
     } else {
@@ -73,7 +73,7 @@ export default class CardsListController {
           }
         })
         .catch(() => {
-          cardController.shake();
+          cardController.showError();
         });
     }
   }

@@ -5,6 +5,8 @@ import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import flatpickr from "flatpickr";
 import he from "he";
 
+const FORM_ERROR_CLASS = `event--error`;
+
 const isFilledInput = (value) => {
   return typeof value !== `undefined`
     && value !== null
@@ -186,7 +188,7 @@ const createCardFormInnerTemplate = (card, data, mode, buttonsText) => {
         <label class="event__label event__type-output" for="event-destination-${id}">
           ${type ? firstCharUpperCaseType : `Destination`} ${placeholder}
         </label>
-        <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}">
+        <input class="event__input event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${name}" list="destination-list-${id}" placeholder="choose...">
         <datalist id="destination-list-${id}">
           ${citiesOptionsTemplate}
         </datalist>
@@ -279,6 +281,16 @@ export default class CardFormView extends AbstractSmartView {
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+  }
+
+  _getForm() {
+    let cardForm = this.getElement();
+
+    if (this._mode === Mode.DEFAULT) {
+      cardForm = cardForm.querySelector(`form`);
+    }
+
+    return cardForm;
   }
 
   _applyFlatpickr() {
@@ -385,11 +397,7 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   getData() {
-    let cardForm = this.getElement();
-
-    if (this._mode === Mode.DEFAULT) {
-      cardForm = cardForm.querySelector(`form`);
-    }
+    const cardForm = this._getForm();
 
     return new FormData(cardForm);
   }
@@ -453,5 +461,29 @@ export default class CardFormView extends AbstractSmartView {
     this._card = card;
     this._data = data;
     this.rerender();
+  }
+
+  disableForm(isDisable) {
+    const cardForm = this._getForm();
+    const cardFormInputs = cardForm.querySelectorAll(`input`);
+    const cardFormButtons = cardForm.querySelectorAll(`button`);
+
+    [...cardFormInputs].forEach((input) => {
+      input.disabled = isDisable;
+    });
+
+    [...cardFormButtons].forEach((button) => {
+      button.disabled = isDisable;
+    });
+  }
+
+  showError(isError) {
+    const cardForm = this._getForm();
+
+    if (isError) {
+      cardForm.classList.add(FORM_ERROR_CLASS);
+    } else {
+      cardForm.classList.remove(FORM_ERROR_CLASS);
+    }
   }
 }

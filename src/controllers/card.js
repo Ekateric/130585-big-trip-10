@@ -126,6 +126,8 @@ export default class CardController {
       this._formView.setButtonsText({
         save: ButtonsText.SAVE_LOADING,
       });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
@@ -141,6 +143,8 @@ export default class CardController {
         deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
         deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
       });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
     });
   }
 
@@ -195,7 +199,7 @@ export default class CardController {
     document.removeEventListener(`keydown`, this._onExitForm);
   }
 
-  shake() {
+  showError() {
     shakeElement(this._view.getElement());
     shakeElement(this._formView.getElement(), () => {
       this._formView.setButtonsText({
@@ -203,6 +207,7 @@ export default class CardController {
         deleteOnAdd: ButtonsText.DELETE_ON_ADD,
         save: ButtonsText.SAVE
       });
+      this._formView.showError(true);
     });
   }
 

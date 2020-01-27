@@ -551,6 +551,9 @@ main {
     border-radius: 18px;
     -webkit-box-shadow: 0 11px 20px rgba(0, 0, 0, 0.043);
             box-shadow: 0 11px 20px rgba(0, 0, 0, 0.043); }
+.event--error {
+  -webkit-box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.57), 0 3px 12px rgba(244, 67, 54, 0.57);
+            box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.57), 0 3px 12px rgba(244, 67, 54, 0.57); }
 
 .event__header {
   display: -ms-flexbox;
@@ -954,5 +957,4 @@ main {
   margin-bottom: 78px; }
 
 .animation-shake {
-  animation: shake 0.6s;
-}
+  animation: shake 0.6s;}
