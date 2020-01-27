@@ -30,17 +30,21 @@ export default class CardsListController {
   _onDataChange(cardController, newCard, mode = Mode.EDIT, withRender = true) {
     if (mode === Mode.ADD) {
       this._creatingCard = null;
-      cardController.destroy();
 
       if (newCard === null) {
+        cardController.destroy();
         this._handlers.onDeleteCard();
         this._showedCardsControllers = this._showedCardsControllers.slice(1);
 
       } else {
         this._cardsListModel.addModel(newCard)
           .then(() => {
+            cardController.destroy();
             this.updateCards();
             this._handlers.onAddCard();
+          })
+          .catch(() => {
+            cardController.shake();
           });
       }
 
@@ -49,6 +53,9 @@ export default class CardsListController {
         .then(() => {
           this.updateCards();
           this._handlers.onDeleteCard();
+        })
+        .catch(() => {
+          cardController.shake();
         });
 
     } else {
@@ -64,6 +71,9 @@ export default class CardsListController {
             this._updateCardsData();
             this._handlers.onUpdateCard();
           }
+        })
+        .catch(() => {
+          cardController.shake();
         });
     }
   }

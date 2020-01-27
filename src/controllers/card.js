@@ -6,6 +6,7 @@ import CardFormView from "../views/card-form";
 import render from "../utils/common/render";
 import replace from "../utils/common/replace";
 import remove from "../utils/common/remove";
+import shakeElement from "../utils/common/shakeElement";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
   return checkedOffers.map((offer) => {
@@ -192,6 +193,17 @@ export default class CardController {
     remove(this._view);
     remove(this._formView);
     document.removeEventListener(`keydown`, this._onExitForm);
+  }
+
+  shake() {
+    shakeElement(this._view.getElement());
+    shakeElement(this._formView.getElement(), () => {
+      this._formView.setButtonsText({
+        deleteOnDefault: ButtonsText.DELETE_ON_DEFAULT,
+        deleteOnAdd: ButtonsText.DELETE_ON_ADD,
+        save: ButtonsText.SAVE
+      });
+    });
   }
 
   get model() {
