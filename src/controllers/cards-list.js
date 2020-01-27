@@ -27,33 +27,39 @@ export default class CardsListController {
     this._cardControllerOptions = null;
   }
 
-  _onDataChange(cardController, newData, mode = Mode.EDIT, withRender = true) {
+  _onDataChange(cardController, newCard, mode = Mode.EDIT, withRender = true) {
     if (mode === Mode.ADD) {
       this._creatingCard = null;
 
-      if (newData === null) {
+      if (newCard === null) {
         cardController.destroy();
         this._handlers.onDeleteCard();
         this._showedCardsControllers = this._showedCardsControllers.slice(1);
 
       } else {
-        cardController.destroy();
-
-        this._cardsListModel.addModel(newData);
-        this.updateCards();
-        this._handlers.onAddCard();
+        this._cardsListModel.addModel(newCard)
+          .then(() => {
+            cardController.destroy();
+            this.updateCards();
+            this._handlers.onAddCard();
+          })
+          .catch(() => {
+            cardController.showError();
+          });
       }
 
-    } else if (newData === null) {
-      const isDeleted = this._cardsListModel.deleteModelById(cardController.model.id);
-
-      if (isDeleted) {
-        this.updateCards();
-        this._handlers.onDeleteCard();
-      }
+    } else if (newCard === null) {
+      this._cardsListModel.deleteModelById(cardController.model.id)
+        .then(() => {
+          this.updateCards();
+          this._handlers.onDeleteCard();
+        })
+        .catch(() => {
+          cardController.showError();
+        });
 
     } else {
-      this._cardsListModel.updateModelById(cardController.model.id, newData)
+      this._cardsListModel.updateModelById(cardController.model.id, newCard)
         .then((newCardModel) => {
           if (newCardModel) {
             cardController.model = newCardModel;
@@ -65,6 +71,9 @@ export default class CardsListController {
             this._updateCardsData();
             this._handlers.onUpdateCard();
           }
+        })
+        .catch(() => {
+          cardController.showError();
         });
     }
   }

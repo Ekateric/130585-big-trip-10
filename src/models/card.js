@@ -11,8 +11,8 @@ export default class CardModel {
       description: card[`destination`][`description`],
       pictures: card[`destination`][`pictures`]
     };
-    this.dateFrom = new Date(card[`date_from`]);
-    this.dateTo = new Date(card[`date_to`]);
+    this.dateFrom = card[`date_from`] ? new Date(card[`date_from`]) : ``;
+    this.dateTo = card[`date_to`] ? new Date(card[`date_to`]) : ``;
     this.price = card[`base_price`];
     this.offers = card[`offers`];
     this.isFavorite = Boolean(card[`is_favorite`]);

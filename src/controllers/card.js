@@ -1,10 +1,12 @@
 import Mode from "../data/mode";
+import ButtonsText from "../data/buttons-text";
 import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
 import render from "../utils/common/render";
 import replace from "../utils/common/replace";
 import remove from "../utils/common/remove";
+import shakeElement from "../utils/common/shakeElement";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
   return checkedOffers.map((offer) => {
@@ -16,13 +18,16 @@ const getCheckedOffers = (checkedOffers, allOffers) => {
 };
 
 const parseFormData = (formData, cardModel) => {
+  // При создании новой точки ещё нет типа в модели, а соответственно - и списка доступных офферов
+  const allOffers = cardModel.allOffers.length ? cardModel.allOffers : cardModel.getOffersByType(formData.get(`event-type`));
+
   return new CardModel({
     'type': formData.get(`event-type`),
     'destination': cardModel.getDestinationInfo(formData.get(`event-destination`)),
     'date_from': formData.get(`event-start-time`),
     'date_to': formData.get(`event-end-time`),
     'base_price': Number(formData.get(`event-price`)),
-    'offers': getCheckedOffers(formData.getAll(`event-offer`), cardModel.allOffers),
+    'offers': getCheckedOffers(formData.getAll(`event-offer`), allOffers),
     'is_favorite': !!formData.get(`event-favorite`)
   }, cardModel.allTypes, cardModel.getDestinationInfo, cardModel.getOffersByType);
 };
@@ -115,9 +120,14 @@ export default class CardController {
     this._formView.setSubmitFormHandler((event) => {
       event.preventDefault();
 
-      const formData = parseFormData(this._formView.getData(), this._model);
+      const newCard = parseFormData(this._formView.getData(), this._model);
 
-      this._onDataChange(this, formData, this._mode);
+      this._onDataChange(this, newCard, this._mode);
+      this._formView.setButtonsText({
+        save: ButtonsText.SAVE_LOADING,
+      });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
     });
 
     this._formView.setChangeFavoriteInputHandler(() => {
@@ -127,7 +137,15 @@ export default class CardController {
       this._onDataChange(this, newCard, this._mode, false);
     });
 
-    this._formView.setClickDeleteButtonHandler(() => this._onDataChange(this, null, this._mode));
+    this._formView.setClickDeleteButtonHandler(() => {
+      this._onDataChange(this, null, this._mode);
+      this._formView.setButtonsText({
+        deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
+        deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
+      });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
+    });
   }
 
   render(mode, containerElement, position) {
@@ -179,6 +197,18 @@ export default class CardController {
     remove(this._view);
     remove(this._formView);
     document.removeEventListener(`keydown`, this._onExitForm);
+  }
+
+  showError() {
+    shakeElement(this._view.getElement());
+    shakeElement(this._formView.getElement(), () => {
+      this._formView.setButtonsText({
+        deleteOnDefault: ButtonsText.DELETE_ON_DEFAULT,
+        deleteOnAdd: ButtonsText.DELETE_ON_ADD,
+        save: ButtonsText.SAVE
+      });
+      this._formView.showError(true);
+    });
   }
 
   get model() {
