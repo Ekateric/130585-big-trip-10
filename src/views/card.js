@@ -13,20 +13,27 @@ const createOfferTemplate = (offer) => {
   );
 };
 
+const createOffersTemplate = (checkedOffers, allOffers) => {
+  const showedOffersCount = checkedOffers.length <= 3 ? checkedOffers.length : 3;
+  let offersTemplate = ``;
+
+  for (let offersCounter = 0; offersCounter < showedOffersCount; offersCounter++) {
+    const offer = allOffers.find((item) => item.title === checkedOffers[offersCounter].title);
+
+    offersTemplate = `${offersTemplate}${createOfferTemplate(offer)}\n`;
+  }
+
+  return offersTemplate;
+};
+
 const createCardTemplate = (card) => {
   const {type, destination, correctDateFrom, correctDateTo, offers, durationText, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
+
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
-
-  const offersTemplate = Array.from(offers)
-    .map((offer) => {
-      // потому что цены могут отличаться
-      offer = allOffers.find((item) => item.title === offer.title);
-      return createOfferTemplate(offer);
-    })
-    .join(`\n`);
-
+  const offersTemplate = createOffersTemplate(offers, allOffers);
   const name = he.encode(destination.name.toString());
+
   dateFrom = dateFrom ? he.encode(dateFrom.toString()) : ``;
   dateTo = dateTo ? he.encode(dateTo.toString()) : ``;
   price = he.encode(price.toString());
