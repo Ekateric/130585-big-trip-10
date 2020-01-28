@@ -137,10 +137,6 @@ export default class CardsListModel {
     this._filterChangeHandlers.push(handler);
   }
 
-  setDataChangeHandler(handler) {
-    this._dataChangeHandlers.push(handler);
-  }
-
   setDataLoadHandler(handler) {
     this._dataLoadHandlers.push(handler);
   }
