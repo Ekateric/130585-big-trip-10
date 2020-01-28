@@ -5,27 +5,33 @@ import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import getEmojiIcon from "../utils/common/getEmojiIcon";
 import getDurationText from "../utils/common/getDurationText";
 
-const Colors = {
+const Color = {
   BACKGROUND: `#f2f2f2`,
   TEXT: `#000000`,
   BAR: `#ffffff`
 };
 
+const FontSize = {
+  LABELS: 12,
+  TITLE: 20,
+  TICKS: 14
+};
+
+const Percentage = {
+  BAR: 0.8,
+  CATEGORY: 1
+};
+
 const BAR_THICKNESS = 32;
-const BAR_PERCENTAGE = 0.8;
-const CATEGORY_PERCENTAGE = 1;
 const MIN_BAR_LENGTH = 80;
 const MIN_CTX_HEIGHT = 150;
-const LABELS_FONT_SIZE = 12;
 const LABELS_ANCHOR = `end`;
 const LABELS_ALIGN = `start`;
 const LAYOUT_PADDING_LEFT = 40;
-const TITLE_FONT_SIZE = 20;
 const TITLE_POSITION = `left`;
-const TICKS_FONT_SIZE = 14;
 
 const countCtxHeight = (barsCount) => {
-  return Math.max(barsCount * BAR_THICKNESS / BAR_PERCENTAGE, MIN_CTX_HEIGHT);
+  return Math.max(barsCount * BAR_THICKNESS / Percentage.BAR, MIN_CTX_HEIGHT);
 };
 
 const renderChart = (ctx, chartInfo, options) => {
@@ -38,9 +44,9 @@ const renderChart = (ctx, chartInfo, options) => {
       labels: chartInfo.labels,
       datasets: [{
         data: chartInfo.items,
-        backgroundColor: Colors.BAR,
-        barPercentage: BAR_PERCENTAGE,
-        categoryPercentage: CATEGORY_PERCENTAGE,
+        backgroundColor: Color.BAR,
+        barPercentage: Percentage.BAR,
+        categoryPercentage: Percentage.CATEGORY,
         minBarLength: MIN_BAR_LENGTH,
         barThickness: BAR_THICKNESS
       }]
@@ -54,9 +60,9 @@ const renderChart = (ctx, chartInfo, options) => {
             return options.datalabelsFormatter(val);
           },
           font: {
-            size: LABELS_FONT_SIZE
+            size: FontSize.LABELS
           },
-          color: Colors.TEXT,
+          color: Color.TEXT,
           anchor: LABELS_ANCHOR,
           align: LABELS_ALIGN
         }
@@ -69,8 +75,8 @@ const renderChart = (ctx, chartInfo, options) => {
       title: {
         display: true,
         text: options.title,
-        fontSize: TITLE_FONT_SIZE,
-        fontColor: Colors.TEXT,
+        fontSize: FontSize.TITLE,
+        fontColor: Color.TEXT,
         position: TITLE_POSITION
       },
       legend: {
@@ -81,8 +87,8 @@ const renderChart = (ctx, chartInfo, options) => {
         yAxes: [{
           ticks: {
             beginAtZero: true,
-            fontSize: TICKS_FONT_SIZE,
-            fontColor: Colors.TEXT,
+            fontSize: FontSize.TICKS,
+            fontColor: Color.TEXT,
             callback(val) {
               return options.yTicksCallback(val);
             }
