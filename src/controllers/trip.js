@@ -105,7 +105,7 @@ export default class TripController {
     this._updateInfo();
     this._setButtonAddDisabled(false);
 
-    if (this._cardsListModel.allCards.length === 1) {
+    if (this._cardsListModel.cards.length === 1) {
       this._removeNoCards();
       this._renderSort();
       this._renderCardsList();

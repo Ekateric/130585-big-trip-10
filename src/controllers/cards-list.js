@@ -113,7 +113,7 @@ export default class CardsListController {
   }
 
   _updateCardsData() {
-    this._cardsModels = this._cardsListModel.cards;
+    this._cardsModels = this._cardsListModel.filteredCards;
     this._days = this._cardsListModel.days;
   }
 

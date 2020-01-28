@@ -67,7 +67,7 @@ export default class StatsModel {
   }
 
   countStats() {
-    this._cards = this._cardsListModel.allCards;
+    this._cards = this._cardsListModel.cards;
     this._typesGroups = this._cardsListModel.allTypes;
 
     this.moneyInfo = this._createMoneyInfo();

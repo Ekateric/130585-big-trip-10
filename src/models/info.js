@@ -86,7 +86,7 @@ export default class InfoModel {
   }
 
   countInfo() {
-    this._cards = this._cardsListModel.allCards;
+    this._cards = this._cardsListModel.cards;
 
     if (this._cards.length > 0) {
       this._cities = this._createCities();

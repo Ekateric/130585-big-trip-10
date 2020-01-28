@@ -20,6 +20,7 @@ export default class CardsListModel {
     this.getOffersByType = null;
 
     this._cards = [];
+    this._filteredCards = [];
     this._filter = Filters.EVERYTHING;
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];
@@ -38,7 +39,7 @@ export default class CardsListModel {
     let days = [];
     let counter = 1;
 
-    this._cards.forEach((card) => {
+    this._filteredCards.forEach((card) => {
       const currentDay = card.correctDateFrom.date;
 
       if (days.find((day) => day.string === currentDay) === undefined) {
@@ -144,11 +145,13 @@ export default class CardsListModel {
     this._dataLoadHandlers.push(handler);
   }
 
-  get cards() {
-    return getFilteredCards(this._cards, this._filter);
+  get filteredCards() {
+    this._filteredCards = getFilteredCards(this._cards, this._filter);
+
+    return this._filteredCards;
   }
 
-  get allCards() {
+  get cards() {
     return this._cards;
   }
 
@@ -170,6 +173,7 @@ export default class CardsListModel {
 
   set cards(cards) {
     this._cards = this._createCards(Array.from(cards));
+    this._filteredCards = this._cards;
     this._callHandlers(this._dataChangeHandlers);
     this.sort();
   }
