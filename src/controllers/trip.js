@@ -5,8 +5,8 @@ import InfoController from "./info";
 import ButtonAddView from "../views/buttonAdd";
 import SortController from "./sort";
 import NoCardsView from "../views/no-cards";
-import render from "../utils/common/render";
-import remove from "../utils/common/remove";
+import render from "../utils/render/render";
+import remove from "../utils/render/remove";
 
 export default class TripController {
   constructor(cardsListModel, containerElement, tripMainElement) {

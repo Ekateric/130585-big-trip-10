@@ -1,5 +1,5 @@
 import TypeModel from "./type";
-import createTypesGroups from "../utils/common/createTypesGroups";
+import createTypesGroups from "../utils/types/createTypesGroups";
 
 export default class TypesModel {
   constructor(types) {

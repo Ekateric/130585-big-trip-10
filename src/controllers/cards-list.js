@@ -4,8 +4,8 @@ import Mode from "../data/mode";
 import DaysListView from "../views/days-list";
 import DayView from "../views/day";
 import CardController from "./card";
-import render from "../utils/common/render";
-import remove from "../utils/common/remove";
+import render from "../utils/render/render";
+import remove from "../utils/render/remove";
 
 export default class CardsListController {
   constructor(cardsListModel, containerElement, handlers) {

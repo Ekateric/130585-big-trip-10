@@ -1,7 +1,7 @@
 import MenuItems from "../data/menu-items";
 import MenuModel from "../models/menu";
 import MenuView from "../views/menu";
-import render from "../utils/common/render";
+import render from "../utils/render/render";
 
 export default class MenuController {
   constructor(containerElement) {

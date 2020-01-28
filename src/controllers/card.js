@@ -3,9 +3,9 @@ import ButtonsText from "../data/buttons-text";
 import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
-import render from "../utils/common/render";
-import replace from "../utils/common/replace";
-import remove from "../utils/common/remove";
+import render from "../utils/render/render";
+import replace from "../utils/render/replace";
+import remove from "../utils/render/remove";
 import shakeElement from "../utils/common/shakeElement";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {

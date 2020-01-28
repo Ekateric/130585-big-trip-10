@@ -1,5 +1,5 @@
 import getCorrectTime from "../utils/common/getCorrectTime";
-import getTypeGroup from "../utils/common/getTypeGroup";
+import getTypeGroup from "../utils/types/getTypeGroup";
 import getDurationText from "../utils/common/getDurationText";
 
 export default class CardModel {
