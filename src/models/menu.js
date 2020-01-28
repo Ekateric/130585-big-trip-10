@@ -4,8 +4,8 @@ export default class MenuModel {
     this._active = null;
   }
 
-  _createItems(data) {
-    return data.map((itemName) => {
+  _createItems(items) {
+    return items.map((itemName) => {
       return {
         name: itemName,
         isActive: false

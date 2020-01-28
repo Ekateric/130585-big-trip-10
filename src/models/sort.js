@@ -4,8 +4,8 @@ export default class SortModel {
     this._checkedId = null;
   }
 
-  _createItems(data) {
-    return data.map((sortId) => {
+  _createItems(items) {
+    return items.map((sortId) => {
       return {
         id: sortId,
         checked: false

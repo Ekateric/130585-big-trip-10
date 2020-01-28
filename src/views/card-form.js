@@ -143,12 +143,12 @@ const createDestinationTemplate = (description, pictures) => {
   );
 };
 
-const createCardFormInnerTemplate = (card, data, mode, buttonsText) => {
+const createCardFormInnerTemplate = (card, extraInfo, mode, buttonsText) => {
   const {id, type, destination, offers, isFavorite, placeholder, allOffers} = card;
   let {dateFrom, dateTo, price} = card;
   const {description, pictures} = destination;
   let {name} = destination;
-  const {allTypes, allCities} = data;
+  const {allTypes, allCities} = extraInfo;
 
   const firstCharUpperCaseType = makeFirstCharUpperCase(type);
 
@@ -240,8 +240,8 @@ const createCardFormInnerTemplate = (card, data, mode, buttonsText) => {
   );
 };
 
-const createCardFormTemplate = (card, data, mode, buttonsText) => {
-  const cardFormInnerTemplate = createCardFormInnerTemplate(card, data, mode, buttonsText);
+const createCardFormTemplate = (card, extraInfo, mode, buttonsText) => {
+  const cardFormInnerTemplate = createCardFormInnerTemplate(card, extraInfo, mode, buttonsText);
 
   if (mode === Mode.ADD) {
     return `<form class="trip-events__item event event--edit" action="#" method="post">
@@ -258,11 +258,11 @@ const createCardFormTemplate = (card, data, mode, buttonsText) => {
 };
 
 export default class CardFormView extends AbstractSmartView {
-  constructor(card, data, mode, methods) {
+  constructor(card, extraInfo, mode, methods) {
     super();
 
     this._card = card;
-    this._data = data;
+    this._extraInfo = extraInfo;
     this._mode = mode;
     this._flatpickr = null;
     this._buttonsText = {
@@ -361,8 +361,8 @@ export default class CardFormView extends AbstractSmartView {
       .querySelectorAll(`.event__type-input`);
 
     [...eventTypesInputs].forEach((input) => {
-      input.addEventListener(`change`, (event) => {
-        const newType = event.target.value;
+      input.addEventListener(`change`, (evt) => {
+        const newType = evt.target.value;
 
         this._eventTypeChange(newType);
         this.rerender();
@@ -373,8 +373,8 @@ export default class CardFormView extends AbstractSmartView {
   _onDestinationChange() {
     this.getElement()
       .querySelector(`.event__input--destination`)
-      .addEventListener(`change`, (event) => {
-        this._destinationChange(event.target.value);
+      .addEventListener(`change`, (evt) => {
+        this._destinationChange(evt.target.value);
         this.rerender();
       });
   }
@@ -382,8 +382,8 @@ export default class CardFormView extends AbstractSmartView {
   _onPriceChange() {
     this.getElement()
       .querySelector(`.event__input--price`)
-      .addEventListener(`change`, (event) => {
-        this._card.price = Number(event.target.value);
+      .addEventListener(`change`, (evt) => {
+        this._card.price = Number(evt.target.value);
         this._checkSaveButton();
       });
   }
@@ -397,11 +397,11 @@ export default class CardFormView extends AbstractSmartView {
   _checkSaveButton() {
     const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
 
-    saveButtonElement.disabled = isBlockSaveButton(this._card, this._data.allCities);
+    saveButtonElement.disabled = isBlockSaveButton(this._card, this._extraInfo.allCities);
   }
 
   getTemplate() {
-    return createCardFormTemplate(this._card, this._data, this._mode, this._buttonsText);
+    return createCardFormTemplate(this._card, this._extraInfo, this._mode, this._buttonsText);
   }
 
   getData() {
@@ -465,9 +465,9 @@ export default class CardFormView extends AbstractSmartView {
     this.applyFlatpickr();
   }
 
-  reset(card, data) {
+  reset(card, extraInfo) {
     this._card = card;
-    this._data = data;
+    this._extraInfo = extraInfo;
     this.rerender();
   }
 

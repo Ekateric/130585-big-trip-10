@@ -1,12 +1,12 @@
 import getCardsByType from "../utils/filter/getCardsByType";
 import countSumByField from "../utils/common/countSumByField";
 
-const prepareStatsData = (statsData) => {
-  statsData.sort((itemOne, itemTwo) => itemTwo[1] - itemOne[1]);
+const prepareStatsData = (statsItems) => {
+  statsItems.sort((itemOne, itemTwo) => itemTwo[1] - itemOne[1]);
 
   return {
-    labels: statsData.reduce((acc, item) => item[1] > 0 ? acc.concat(item[0]) : acc, []),
-    data: statsData.reduce((acc, item) => item[1] > 0 ? acc.concat(item[1]) : acc, [])
+    labels: statsItems.reduce((acc, item) => item[1] > 0 ? acc.concat(item[0]) : acc, []),
+    items: statsItems.reduce((acc, item) => item[1] > 0 ? acc.concat(item[1]) : acc, [])
   };
 };
 

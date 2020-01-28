@@ -37,7 +37,7 @@ const renderChart = (ctx, chartInfo, options) => {
     data: {
       labels: chartInfo.labels,
       datasets: [{
-        data: chartInfo.data,
+        data: chartInfo.items,
         backgroundColor: Colors.BAR,
         barPercentage: BAR_PERCENTAGE,
         categoryPercentage: CATEGORY_PERCENTAGE,

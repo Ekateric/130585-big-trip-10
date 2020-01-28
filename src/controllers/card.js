@@ -38,7 +38,7 @@ export default class CardController {
 
     this._onDataChange = options.onDataChange;
     this._onViewChange = options.onViewChange;
-    this._data = {
+    this._extraInfo = {
       allTypes: options.allTypes,
       allCities: options.allCities
     };
@@ -78,11 +78,11 @@ export default class CardController {
 
   _resetFormData() {
     this._formViewModel = Object.assign({}, this._model);
-    this._formView.reset(this._formViewModel, this._data);
+    this._formView.reset(this._formViewModel, this._extraInfo);
   }
 
-  _onExitForm(event) {
-    const isEscKey = event.key === `Escape` || event.key === `Esc`;
+  _onExitForm(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
       this._replaceEditToView();
@@ -119,8 +119,8 @@ export default class CardController {
       this._replaceEditToView();
     });
 
-    this._formView.setSubmitFormHandler((event) => {
-      event.preventDefault();
+    this._formView.setSubmitFormHandler((evt) => {
+      evt.preventDefault();
 
       const newCard = parseFormData(this._formView.getData(), this._model);
 
@@ -159,7 +159,7 @@ export default class CardController {
 
     this._formViewModel = Object.assign({}, this._model);
     this._view = new CardView(this._model);
-    this._formView = new CardFormView(this._formViewModel, this._data, mode, {
+    this._formView = new CardFormView(this._formViewModel, this._extraInfo, mode, {
       eventTypeChange: this._eventTypeChange,
       destinationChange: this._destinationChange
     });

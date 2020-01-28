@@ -49,7 +49,7 @@ export default class SortView extends AbstractView {
 
   setChangeSortHandler(handler) {
     [...this._inputsElements].forEach((input) => {
-      input.addEventListener(`change`, (event) => handler(event.target.value));
+      input.addEventListener(`change`, (evt) => handler(evt.target.value));
     });
   }
 }
