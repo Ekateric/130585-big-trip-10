@@ -2,7 +2,6 @@ import SortTypes from "../data/sort-types";
 import RenderPosition from "../data/render-position";
 import Mode from "../data/mode";
 import DaysListView from "../views/days-list";
-import DayModel from "../models/day";
 import DayView from "../views/day";
 import CardController from "./card";
 import render from "../utils/common/render";
@@ -113,23 +112,9 @@ export default class CardsListController {
       .sort((cardOne, cardTwo) => cardTwo.price - cardOne.price);
   }
 
-  _createDays() {
-    let days = [];
-
-    this._cardsModels.forEach((card) => {
-      const dateString = card.correctDateFrom.date;
-
-      if (days.find((day) => day.string === dateString) === undefined) {
-        days.push(new DayModel(dateString));
-      }
-    });
-
-    return days;
-  }
-
   _updateCardsData() {
     this._cardsModels = this._cardsListModel.cards;
-    this._days = this._createDays();
+    this._days = this._cardsListModel.days;
   }
 
   _getCardControllerOptions() {

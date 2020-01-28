@@ -3,7 +3,9 @@ import EmptyCard from "../data/empty-card";
 import CardModel from "./card";
 import TypesModel from "./types";
 import DestinationsModel from "./destinations";
+import DayModel from "./day";
 import getFilteredCards from "../utils/filter/getFilteredCards";
+import moment from "moment";
 
 export default class CardsListModel {
   constructor(api) {
@@ -30,6 +32,29 @@ export default class CardsListModel {
 
   _checkIsEmpty() {
     return this._cards.length === 0;
+  }
+
+  _createDays() {
+    let days = [];
+    let counter = 1;
+
+    this._cards.forEach((card) => {
+      const currentDay = card.correctDateFrom.date;
+
+      if (days.find((day) => day.string === currentDay) === undefined) {
+        if (days.length) {
+          const previousDay = days[days.length - 1].string;
+          const dayMoment = moment(currentDay, `DD/MM/YYYY`);
+          const previousDayMoment = moment(previousDay, `DD/MM/YYYY`);
+          const daysBetween = dayMoment.diff(previousDayMoment, `days`);
+
+          counter += daysBetween;
+        }
+        days.push(new DayModel(currentDay, counter));
+      }
+    });
+
+    return days;
   }
 
   _callHandlers(handlers) {
@@ -137,6 +162,10 @@ export default class CardsListModel {
 
   get allCities() {
     return this._allCities;
+  }
+
+  get days() {
+    return this._createDays();
   }
 
   set cards(cards) {
