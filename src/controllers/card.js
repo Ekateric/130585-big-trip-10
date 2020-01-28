@@ -58,6 +58,7 @@ export default class CardController {
   _replaceViewToEdit() {
     this._onViewChange();
     replace(this._formView, this._view);
+    this._formView.applyFlatpickr();
     this._mode = Mode.EDIT;
   }
 
@@ -68,6 +69,7 @@ export default class CardController {
     } else {
       this._resetFormData();
       replace(this._view, this._formView);
+      this._formView.destroyFlatpickr();
       this._mode = Mode.DEFAULT;
     }
 
@@ -169,6 +171,7 @@ export default class CardController {
         if (oldCardView && oldCardFormView) {
           replace(this._view, oldCardView);
           replace(this._formView, oldCardFormView);
+          oldCardFormView.destroyFlatpickr();
 
           if (this._mode === Mode.EDIT) {
             this._replaceEditToView();
@@ -186,6 +189,7 @@ export default class CardController {
         }
         this._onViewChange();
         render(this._containerElement, this._formView, this._position);
+        this._formView.applyFlatpickr();
         document.addEventListener(`keydown`, this._onExitForm);
         break;
     }
@@ -195,6 +199,7 @@ export default class CardController {
 
   destroy() {
     remove(this._view);
+    this._formView.destroyFlatpickr();
     remove(this._formView);
     document.removeEventListener(`keydown`, this._onExitForm);
   }

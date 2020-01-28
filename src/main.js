@@ -6,6 +6,7 @@ import FiltersController from "./controllers/filters";
 import TripController from "./controllers/trip";
 import StatsController from "./controllers/stats";
 import RenderPosition from "./data/render-position";
+import "flatpickr/dist/flatpickr.css";
 
 const AUTHORIZATION = `Basic eo0w580ik28889a=`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;

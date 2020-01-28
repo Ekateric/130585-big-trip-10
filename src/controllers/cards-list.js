@@ -51,6 +51,7 @@ export default class CardsListController {
     } else if (newCard === null) {
       this._cardsListModel.deleteModelById(cardController.model.id)
         .then(() => {
+          cardController.destroy();
           this.updateCards();
           this._handlers.onDeleteCard();
         })

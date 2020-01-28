@@ -279,7 +279,6 @@ export default class CardFormView extends AbstractSmartView {
     this._clickDeleteButtonHandler = null;
     this._changeFavoriteHandler = null;
 
-    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -293,13 +292,8 @@ export default class CardFormView extends AbstractSmartView {
     return cardForm;
   }
 
-  _applyFlatpickr() {
-    if (this._flatpickr) {
-      this._flatpickr.from.destroy();
-      this._flatpickr.to.destroy();
-      this._flatpickr.from = null;
-      this._flatpickr.to = null;
-    }
+  applyFlatpickr() {
+    this.destroyFlatpickr();
 
     this._flatpickr = {};
 
@@ -346,6 +340,20 @@ export default class CardFormView extends AbstractSmartView {
             }
         )
     );
+  }
+
+  destroyFlatpickr() {
+    if (this._flatpickr) {
+      if (this._flatpickr.from) {
+        this._flatpickr.from.destroy();
+        this._flatpickr.from = null;
+      }
+
+      if (this._flatpickr.to) {
+        this._flatpickr.to.destroy();
+        this._flatpickr.to = null;
+      }
+    }
   }
 
   _onEventTypeChange() {
@@ -454,7 +462,7 @@ export default class CardFormView extends AbstractSmartView {
   rerender() {
     super.rerender();
 
-    this._applyFlatpickr();
+    this.applyFlatpickr();
   }
 
   reset(card, data) {
