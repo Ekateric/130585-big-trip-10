@@ -3,23 +3,23 @@ import castTimeFormat from "./castTimeFormat";
 
 export default (milliseconds) => {
   const duration = moment.duration(milliseconds);
-  let durationString = `00M`;
+  let durationText = `00M`;
 
   const durationInMinutes = duration.asMinutes();
 
   if (durationInMinutes > 0) {
-    durationString = `${castTimeFormat(duration.minutes())}M`;
+    durationText = `${castTimeFormat(duration.minutes())}M`;
   }
 
   if (durationInMinutes >= 60) {
     const durationInHours = duration.asHours();
-    durationString = `${castTimeFormat(duration.hours())}H ${durationString}`;
+    durationText = `${castTimeFormat(duration.hours())}H ${durationText}`;
 
     if (durationInHours >= 24) {
       const durationInDays = Math.floor(duration.asDays());
-      durationString = `${castTimeFormat(durationInDays)}D ${durationString}`;
+      durationText = `${castTimeFormat(durationInDays)}D ${durationText}`;
     }
   }
 
-  return durationString;
+  return durationText;
 };
