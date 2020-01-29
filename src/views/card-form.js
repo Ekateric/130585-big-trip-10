@@ -373,8 +373,17 @@ export default class CardFormView extends AbstractSmartView {
   _onDestinationChange() {
     this.getElement()
       .querySelector(`.event__input--destination`)
-      .addEventListener(`change`, (evt) => {
-        this._destinationChange(evt.target.value);
+      .addEventListener(`input`, (evt) => {
+        const destination = evt.target.value;
+
+        this._card.destination.name = destination;
+
+        if (!isSelectedAtList(destination, this._extraInfo.allCities)) {
+          this._checkSaveButton();
+          return;
+        }
+
+        this._destinationChange(destination);
         this.rerender();
       });
   }

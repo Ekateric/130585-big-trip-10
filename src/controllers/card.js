@@ -14,15 +14,17 @@ const getCheckedOffers = (checkedOffers, allOffers) => {
       title: offer,
       price: allOffers.find((item) => item.title === offer).price
     };
-  });
+  })
+    .filter((offer) => offer !== null);
 };
 
 const parseFormData = (formData, cardModel) => {
+  const type = formData.get(`event-type`);
   // При создании новой точки ещё нет типа в модели, а соответственно - и списка доступных офферов
-  const allOffers = cardModel.allOffers.length ? cardModel.allOffers : cardModel.getOffersByType(formData.get(`event-type`));
+  const allOffers = cardModel.allOffers.length ? cardModel.allOffers : cardModel.getOffersByType(type);
 
   return new CardModel({
-    'type': formData.get(`event-type`),
+    'type': type,
     'destination': cardModel.getDestinationInfo(formData.get(`event-destination`)),
     'date_from': formData.get(`event-start-time`),
     'date_to': formData.get(`event-end-time`),
