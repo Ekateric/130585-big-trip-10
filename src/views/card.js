@@ -2,6 +2,8 @@ import AbstractView from "./abstract";
 import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
 import he from "he";
 
+const MAX_SHOWN_OFFERS_COUNT = 3;
+
 const createOfferTemplate = (offer) => {
   const {title, price} = offer;
   return (
@@ -14,7 +16,7 @@ const createOfferTemplate = (offer) => {
 };
 
 const createOffersTemplate = (checkedOffers, allOffers) => {
-  const showedOffersCount = checkedOffers.length <= 3 ? checkedOffers.length : 3;
+  const showedOffersCount = checkedOffers.length <= MAX_SHOWN_OFFERS_COUNT ? checkedOffers.length : MAX_SHOWN_OFFERS_COUNT;
   let offersTemplate = ``;
 
   for (let offersCounter = 0; offersCounter < showedOffersCount; offersCounter++) {
