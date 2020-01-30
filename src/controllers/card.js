@@ -51,6 +51,7 @@ export default class CardController {
     this._formExitHandler = this._formExitHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._eventOfferChangeHandler = this._eventOfferChangeHandler.bind(this);
   }
 
   _replaceViewToEdit() {
@@ -93,11 +94,28 @@ export default class CardController {
     this._formViewModel.type = newType;
     this._formViewModel.typeGroup = newTypeGroup;
     this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
+    this._formViewModel.offers = [];
     this._formViewModel.allOffers = this._model.getOffersByType(newType);
   }
 
   _destinationChangeHandler(name) {
     this._formViewModel.destination = this._model.getDestinationInfo(name);
+  }
+
+  _eventOfferChangeHandler(offerTitle, offerIsChecked) {
+    if (offerIsChecked) {
+      const currentOffer = this._formViewModel.allOffers.find((offer) => offer.title === offerTitle);
+
+      this._formViewModel.offers.push({
+        title: offerTitle,
+        price: currentOffer.price
+      });
+
+    } else {
+      const currentOfferIndex = this._formViewModel.offers.findIndex((offer) => offer.title === offerTitle);
+
+      this._formViewModel.offers = [...this._formViewModel.offers.slice(0, currentOfferIndex), ...this._formViewModel.offers.slice(currentOfferIndex + 1, this._formViewModel.offers.length)];
+    }
   }
 
   setDefaultView() {
@@ -159,7 +177,8 @@ export default class CardController {
     this._view = new CardView(this._model);
     this._formView = new CardFormView(this._formViewModel, this._extraInfo, mode, {
       eventTypeChangeHandler: this._eventTypeChangeHandler,
-      destinationChangeHandler: this._destinationChangeHandler
+      destinationChangeHandler: this._destinationChangeHandler,
+      eventOfferChangeHandler: this._eventOfferChangeHandler
     });
 
     this.setHandlers();

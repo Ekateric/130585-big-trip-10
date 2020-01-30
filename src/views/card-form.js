@@ -273,6 +273,7 @@ export default class CardFormView extends AbstractSmartView {
 
     this._eventTypeChangeHandler = methods.eventTypeChangeHandler;
     this._destinationChangeHandler = methods.destinationChangeHandler;
+    this._eventOfferChangeHandler = methods.eventOfferChangeHandler;
 
     this._upButtonClickHandler = null;
     this._formSubmitHandler = null;
@@ -397,10 +398,22 @@ export default class CardFormView extends AbstractSmartView {
       });
   }
 
+  _setOffersChangeHandler() {
+    const offersInputs = this.getElement()
+      .querySelectorAll(`.event__offer-checkbox`);
+
+    [...offersInputs].forEach((input) => {
+      input.addEventListener(`change`, (evt) => {
+        this._eventOfferChangeHandler(evt.target.value, evt.target.checked);
+      });
+    });
+  }
+
   _setHandlers() {
     this._setEventTypeChangeHandler();
     this._setDestinationChangeHandler();
     this._setPriceChangeHandler();
+    this._setOffersChangeHandler();
   }
 
   _checkSaveButton() {
