@@ -24,6 +24,15 @@ export default class StatsModel {
     this.countStats();
   }
 
+  countStats() {
+    this._cards = this._cardsListModel.cards;
+    this._typesGroups = this._cardsListModel.allTypes;
+
+    this.moneyInfo = this._createMoneyInfo();
+    this.transportInfo = this._createTransportInfo();
+    this.timeInfo = this._createTimeInfo();
+  }
+
   _createMoneyInfo() {
     const types = this._typesGroups.reduce((acc, typesGroup) => acc.concat(typesGroup.types), []);
     const typesWithSums = types.map((type) => {
@@ -64,14 +73,5 @@ export default class StatsModel {
     });
 
     return prepareStatsData(typesWithTimes);
-  }
-
-  countStats() {
-    this._cards = this._cardsListModel.cards;
-    this._typesGroups = this._cardsListModel.allTypes;
-
-    this.moneyInfo = this._createMoneyInfo();
-    this.transportInfo = this._createTransportInfo();
-    this.timeInfo = this._createTimeInfo();
   }
 }

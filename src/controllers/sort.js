@@ -14,13 +14,8 @@ export default class SortController {
     this._view = new SortView(this._model.items, this._model.checked);
   }
 
-  setHandlers() {
-    this._view.setSortChangeHandler((sortType) => {
-      if (this._model.checked !== sortType) {
-        this._model.checked = sortType;
-        this._sortTypeChangeHandler();
-      }
-    });
+  get checked() {
+    return this._model.checked;
   }
 
   render() {
@@ -32,7 +27,12 @@ export default class SortController {
     remove(this._view);
   }
 
-  get checked() {
-    return this._model.checked;
+  setHandlers() {
+    this._view.setSortChangeHandler((sortType) => {
+      if (this._model.checked !== sortType) {
+        this._model.checked = sortType;
+        this._sortTypeChangeHandler();
+      }
+    });
   }
 }

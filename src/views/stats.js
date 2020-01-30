@@ -146,6 +146,19 @@ export default class StatsView extends AbstractSmartComponent {
     this._renderCharts();
   }
 
+  getTemplate() {
+    return createStatsTemplate();
+  }
+
+  recoveryListeners() {}
+
+  rerender() {
+    super.rerender();
+
+    this._resetCharts();
+    this._renderCharts();
+  }
+
   _renderCharts() {
     const element = this.getElement();
     const moneyCtx = element.querySelector(`.statistics__chart--money`);
@@ -200,18 +213,5 @@ export default class StatsView extends AbstractSmartComponent {
       this._timeChart.destroy();
       this._timeChart = null;
     }
-  }
-
-  getTemplate() {
-    return createStatsTemplate();
-  }
-
-  recoveryListeners() {}
-
-  rerender() {
-    super.rerender();
-
-    this._resetCharts();
-    this._renderCharts();
   }
 }

@@ -81,13 +81,13 @@ export default class CardView extends AbstractView {
     this._card = card;
   }
 
+  getTemplate() {
+    return createCardTemplate(this._card);
+  }
+
   setEditButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
-  }
-
-  getTemplate() {
-    return createCardTemplate(this._card);
   }
 }

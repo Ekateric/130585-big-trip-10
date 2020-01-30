@@ -11,6 +11,23 @@ export default class InfoModel {
     this.sum = 0;
   }
 
+  countInfo() {
+    this._cards = this._cardsListModel.cards;
+
+    if (this._cards.length > 0) {
+      this._cities = this._createCities();
+      this.title = this._calcInfoTitle();
+      this.datesInterval = this._calcInfoDates();
+      this.sum = this._countTripSum();
+
+    } else {
+      this._cities = [];
+      this.title = null;
+      this.datesInterval = null;
+      this.sum = 0;
+    }
+  }
+
   _createCities() {
     let cities = [];
 
@@ -83,22 +100,5 @@ export default class InfoModel {
 
       return cardsAccumulator + currentCard.price + offersSum;
     }, 0);
-  }
-
-  countInfo() {
-    this._cards = this._cardsListModel.cards;
-
-    if (this._cards.length > 0) {
-      this._cities = this._createCities();
-      this.title = this._calcInfoTitle();
-      this.datesInterval = this._calcInfoDates();
-      this.sum = this._countTripSum();
-
-    } else {
-      this._cities = [];
-      this.title = null;
-      this.datesInterval = null;
-      this.sum = 0;
-    }
   }
 }

@@ -283,14 +283,33 @@ export default class CardFormView extends AbstractSmartView {
     this._setHandlers();
   }
 
-  _getForm() {
-    let cardForm = this.getElement();
+  getTemplate() {
+    return createCardFormTemplate(this._card, this._extraInfo, this._mode, this._buttonsText);
+  }
 
-    if (this._mode === Mode.DEFAULT) {
-      cardForm = cardForm.querySelector(`form`);
-    }
+  rerender() {
+    super.rerender();
 
-    return cardForm;
+    this.applyFlatpickr();
+  }
+
+  recoveryListeners() {
+    this._setHandlers();
+    this.setUpButtonClickHandler(this._upButtonClickHandler);
+    this.setFormSubmitHandler(this._formSubmitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setFavoriteInputChangeHandler(this._favoriteChangeHandler);
+  }
+
+  getData() {
+    const cardForm = this._getForm();
+
+    return new FormData(cardForm);
+  }
+
+  setButtonsText(buttonsText) {
+    this._buttonsText = Object.assign({}, this._buttonsText, buttonsText);
+    this.rerender();
   }
 
   applyFlatpickr() {
@@ -357,6 +376,95 @@ export default class CardFormView extends AbstractSmartView {
     }
   }
 
+  reset(card, extraInfo) {
+    this._card = card;
+    this._extraInfo = extraInfo;
+    this.rerender();
+  }
+
+  disableForm(isDisable) {
+    const cardForm = this._getForm();
+    const cardFormInputs = cardForm.querySelectorAll(`input`);
+    const cardFormButtons = cardForm.querySelectorAll(`button`);
+
+    [...cardFormInputs].forEach((input) => {
+      input.disabled = isDisable;
+    });
+
+    [...cardFormButtons].forEach((button) => {
+      button.disabled = isDisable;
+    });
+  }
+
+  showError(isError) {
+    const cardForm = this._getForm();
+
+    if (isError) {
+      cardForm.classList.add(FORM_ERROR_CLASS);
+    } else {
+      cardForm.classList.remove(FORM_ERROR_CLASS);
+    }
+  }
+
+  setUpButtonClickHandler(handler) {
+    const clickUpButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
+
+    if (clickUpButtonElement) {
+      clickUpButtonElement.addEventListener(`click`, handler);
+
+      this._upButtonClickHandler = handler;
+    }
+  }
+
+  setFormSubmitHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__save-btn`)
+      .addEventListener(`click`, handler);
+
+    this._formSubmitHandler = handler;
+  }
+
+  setDeleteButtonClickHandler(handler) {
+    this.getElement()
+      .querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, handler);
+
+    this._deleteButtonClickHandler = handler;
+  }
+
+  setFavoriteInputChangeHandler(handler) {
+    const favoriteInputElement = this.getElement().querySelector(`.event__favorite-checkbox`);
+
+    if (favoriteInputElement) {
+      favoriteInputElement.addEventListener(`change`, handler);
+
+      this._favoriteChangeHandler = handler;
+    }
+  }
+
+  _getForm() {
+    let cardForm = this.getElement();
+
+    if (this._mode === Mode.DEFAULT) {
+      cardForm = cardForm.querySelector(`form`);
+    }
+
+    return cardForm;
+  }
+
+  _checkSaveButton() {
+    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
+
+    saveButtonElement.disabled = isBlockSaveButton(this._card, this._extraInfo.allCities);
+  }
+
+  _setHandlers() {
+    this._setEventTypeChangeHandler();
+    this._setDestinationChangeHandler();
+    this._setPriceChangeHandler();
+    this._setOffersChangeHandler();
+  }
+
   _setEventTypeChangeHandler() {
     const eventTypesInputs = this.getElement()
       .querySelectorAll(`.event__type-input`);
@@ -407,113 +515,5 @@ export default class CardFormView extends AbstractSmartView {
         this._eventOfferChangeHandler(evt.target.value, evt.target.checked);
       });
     });
-  }
-
-  _setHandlers() {
-    this._setEventTypeChangeHandler();
-    this._setDestinationChangeHandler();
-    this._setPriceChangeHandler();
-    this._setOffersChangeHandler();
-  }
-
-  _checkSaveButton() {
-    const saveButtonElement = this.getElement().querySelector(`.event__save-btn`);
-
-    saveButtonElement.disabled = isBlockSaveButton(this._card, this._extraInfo.allCities);
-  }
-
-  getTemplate() {
-    return createCardFormTemplate(this._card, this._extraInfo, this._mode, this._buttonsText);
-  }
-
-  getData() {
-    const cardForm = this._getForm();
-
-    return new FormData(cardForm);
-  }
-
-  setButtonsText(buttonsText) {
-    this._buttonsText = Object.assign({}, this._buttonsText, buttonsText);
-    this.rerender();
-  }
-
-  recoveryListeners() {
-    this._setHandlers();
-    this.setUpButtonClickHandler(this._upButtonClickHandler);
-    this.setFormSubmitHandler(this._formSubmitHandler);
-    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
-    this.setFavoriteInputChangeHandler(this._favoriteChangeHandler);
-  }
-
-  setUpButtonClickHandler(handler) {
-    const clickUpButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
-
-    if (clickUpButtonElement) {
-      clickUpButtonElement.addEventListener(`click`, handler);
-
-      this._upButtonClickHandler = handler;
-    }
-  }
-
-  setFormSubmitHandler(handler) {
-    this.getElement()
-      .querySelector(`.event__save-btn`)
-      .addEventListener(`click`, handler);
-
-    this._formSubmitHandler = handler;
-  }
-
-  setDeleteButtonClickHandler(handler) {
-    this.getElement()
-      .querySelector(`.event__reset-btn`)
-      .addEventListener(`click`, handler);
-
-    this._deleteButtonClickHandler = handler;
-  }
-
-  setFavoriteInputChangeHandler(handler) {
-    const favoriteInputElement = this.getElement().querySelector(`.event__favorite-checkbox`);
-
-    if (favoriteInputElement) {
-      favoriteInputElement.addEventListener(`change`, handler);
-
-      this._favoriteChangeHandler = handler;
-    }
-  }
-
-  rerender() {
-    super.rerender();
-
-    this.applyFlatpickr();
-  }
-
-  reset(card, extraInfo) {
-    this._card = card;
-    this._extraInfo = extraInfo;
-    this.rerender();
-  }
-
-  disableForm(isDisable) {
-    const cardForm = this._getForm();
-    const cardFormInputs = cardForm.querySelectorAll(`input`);
-    const cardFormButtons = cardForm.querySelectorAll(`button`);
-
-    [...cardFormInputs].forEach((input) => {
-      input.disabled = isDisable;
-    });
-
-    [...cardFormButtons].forEach((button) => {
-      button.disabled = isDisable;
-    });
-  }
-
-  showError(isError) {
-    const cardForm = this._getForm();
-
-    if (isError) {
-      cardForm.classList.add(FORM_ERROR_CLASS);
-    } else {
-      cardForm.classList.remove(FORM_ERROR_CLASS);
-    }
   }
 }

@@ -12,6 +12,14 @@ export default class MenuController {
     this._view = new MenuView(this._model.items, this._model.active);
   }
 
+  get active() {
+    return this._model.active;
+  }
+
+  render(position) {
+    render(this._containerElement, this._view, position);
+  }
+
   setMenuClickHandler(handler) {
     this._view.setMenuClickHandler((activeItem) => {
       if (this._model.active !== activeItem) {
@@ -20,13 +28,5 @@ export default class MenuController {
         handler(activeItem);
       }
     });
-  }
-
-  render(position) {
-    render(this._containerElement, this._view, position);
-  }
-
-  get active() {
-    return this._model.active;
   }
 }

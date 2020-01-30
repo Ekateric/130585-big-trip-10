@@ -15,17 +15,6 @@ export default class FiltersController {
     this._filterChangeHandler = this._filterChangeHandler.bind(this);
   }
 
-  _filterChangeHandler(filterName) {
-    if (this._model.checked !== filterName) {
-      this._model.checked = filterName;
-      this._cardsListModel.setFilter(filterName);
-    }
-  }
-
-  setHandlers() {
-    this._view.setFilterChangeHandler((filterTitle) => this._filterChangeHandler(filterTitle));
-  }
-
   render() {
     render(this._containerElement, this._view);
     this.setHandlers();
@@ -37,5 +26,16 @@ export default class FiltersController {
 
   show() {
     this._view.show();
+  }
+
+  setHandlers() {
+    this._view.setFilterChangeHandler((filterTitle) => this._filterChangeHandler(filterTitle));
+  }
+
+  _filterChangeHandler(filterName) {
+    if (this._model.checked !== filterName) {
+      this._model.checked = filterName;
+      this._cardsListModel.setFilter(filterName);
+    }
   }
 }

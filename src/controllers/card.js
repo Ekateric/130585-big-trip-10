@@ -54,116 +54,18 @@ export default class CardController {
     this._eventOfferChangeHandler = this._eventOfferChangeHandler.bind(this);
   }
 
-  _replaceViewToEdit() {
-    this._viewChangeHandler();
-    replace(this._formView, this._view);
-    this._formView.applyFlatpickr();
-    this._mode = Mode.EDIT;
+  get model() {
+    return this._model;
   }
 
-  _replaceEditToView() {
-    if (this._mode === Mode.ADD) {
-      this._dataChangeHandler(this, null, this._mode);
-
-    } else {
-      this._resetFormData();
-      replace(this._view, this._formView);
-      this._formView.destroyFlatpickr();
-      this._mode = Mode.DEFAULT;
-    }
-
-    document.removeEventListener(`keydown`, this._formExitHandler);
-  }
-
-  _resetFormData() {
-    this._formViewModel = Object.assign({}, this._model);
-    this._formView.reset(this._formViewModel, this._extraInfo);
-  }
-
-  _formExitHandler(evt) {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      this._replaceEditToView();
-    }
-  }
-
-  _eventTypeChangeHandler(newType) {
-    const newTypeGroup = this._model.getTypeGroup(newType);
-
-    this._formViewModel.type = newType;
-    this._formViewModel.typeGroup = newTypeGroup;
-    this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
-    this._formViewModel.offers = [];
-    this._formViewModel.allOffers = this._model.getOffersByType(newType);
-  }
-
-  _destinationChangeHandler(name) {
-    this._formViewModel.destination = this._model.getDestinationInfo(name);
-  }
-
-  _eventOfferChangeHandler(offerTitle, offerIsChecked) {
-    if (offerIsChecked) {
-      const currentOffer = this._formViewModel.allOffers.find((offer) => offer.title === offerTitle);
-
-      this._formViewModel.offers.push({
-        title: offerTitle,
-        price: currentOffer.price
-      });
-
-    } else {
-      const currentOfferIndex = this._formViewModel.offers.findIndex((offer) => offer.title === offerTitle);
-
-      this._formViewModel.offers = [...this._formViewModel.offers.slice(0, currentOfferIndex), ...this._formViewModel.offers.slice(currentOfferIndex + 1, this._formViewModel.offers.length)];
-    }
+  set model(newModel) {
+    this._model = newModel;
   }
 
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToView();
     }
-  }
-
-  setHandlers() {
-    this._view.setEditButtonClickHandler(() => {
-      this._replaceViewToEdit();
-
-      document.addEventListener(`keydown`, this._formExitHandler);
-    });
-
-    this._formView.setUpButtonClickHandler(() => {
-      this._replaceEditToView();
-    });
-
-    this._formView.setFormSubmitHandler((evt) => {
-      evt.preventDefault();
-
-      const newCard = parseFormData(this._formView.getData(), this._formViewModel);
-
-      this._dataChangeHandler(this, newCard, this._mode);
-      this._formView.setButtonsText({
-        save: ButtonsText.SAVE_LOADING,
-      });
-      this._formView.showError(false);
-      this._formView.disableForm(true);
-    });
-
-    this._formView.setFavoriteInputChangeHandler(() => {
-      const newCard = CardModel.clone(this._model);
-      newCard.isFavorite = !newCard.isFavorite;
-      this._formViewModel.isFavorite = !this._model.isFavorite;
-      this._dataChangeHandler(this, newCard, this._mode, false);
-    });
-
-    this._formView.setDeleteButtonClickHandler(() => {
-      this._dataChangeHandler(this, null, this._mode);
-      this._formView.setButtonsText({
-        deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
-        deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
-      });
-      this._formView.showError(false);
-      this._formView.disableForm(true);
-    });
   }
 
   render(mode, containerElement, position) {
@@ -233,11 +135,109 @@ export default class CardController {
     });
   }
 
-  get model() {
-    return this._model;
+  setHandlers() {
+    this._view.setEditButtonClickHandler(() => {
+      this._replaceViewToEdit();
+
+      document.addEventListener(`keydown`, this._formExitHandler);
+    });
+
+    this._formView.setUpButtonClickHandler(() => {
+      this._replaceEditToView();
+    });
+
+    this._formView.setFormSubmitHandler((evt) => {
+      evt.preventDefault();
+
+      const newCard = parseFormData(this._formView.getData(), this._formViewModel);
+
+      this._dataChangeHandler(this, newCard, this._mode);
+      this._formView.setButtonsText({
+        save: ButtonsText.SAVE_LOADING,
+      });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
+    });
+
+    this._formView.setFavoriteInputChangeHandler(() => {
+      const newCard = CardModel.clone(this._model);
+      newCard.isFavorite = !newCard.isFavorite;
+      this._formViewModel.isFavorite = !this._model.isFavorite;
+      this._dataChangeHandler(this, newCard, this._mode, false);
+    });
+
+    this._formView.setDeleteButtonClickHandler(() => {
+      this._dataChangeHandler(this, null, this._mode);
+      this._formView.setButtonsText({
+        deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
+        deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
+      });
+      this._formView.showError(false);
+      this._formView.disableForm(true);
+    });
   }
 
-  set model(newModel) {
-    this._model = newModel;
+  _replaceViewToEdit() {
+    this._viewChangeHandler();
+    replace(this._formView, this._view);
+    this._formView.applyFlatpickr();
+    this._mode = Mode.EDIT;
+  }
+
+  _replaceEditToView() {
+    if (this._mode === Mode.ADD) {
+      this._dataChangeHandler(this, null, this._mode);
+
+    } else {
+      this._resetFormData();
+      replace(this._view, this._formView);
+      this._formView.destroyFlatpickr();
+      this._mode = Mode.DEFAULT;
+    }
+
+    document.removeEventListener(`keydown`, this._formExitHandler);
+  }
+
+  _resetFormData() {
+    this._formViewModel = Object.assign({}, this._model);
+    this._formView.reset(this._formViewModel, this._extraInfo);
+  }
+
+  _formExitHandler(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this._replaceEditToView();
+    }
+  }
+
+  _eventTypeChangeHandler(newType) {
+    const newTypeGroup = this._model.getTypeGroup(newType);
+
+    this._formViewModel.type = newType;
+    this._formViewModel.typeGroup = newTypeGroup;
+    this._formViewModel.placeholder = this._model.getPlaceholder(newTypeGroup);
+    this._formViewModel.offers = [];
+    this._formViewModel.allOffers = this._model.getOffersByType(newType);
+  }
+
+  _destinationChangeHandler(name) {
+    this._formViewModel.destination = this._model.getDestinationInfo(name);
+  }
+
+  _eventOfferChangeHandler(offerTitle, offerIsChecked) {
+    if (offerIsChecked) {
+      const currentOffer = this._formViewModel.allOffers.find((offer) => offer.title === offerTitle);
+
+      this._formViewModel.offers.push({
+        title: offerTitle,
+        price: currentOffer.price
+      });
+
+    } else {
+      const currentOfferIndex = this._formViewModel.offers.findIndex((offer) => offer.title === offerTitle);
+
+      this._formViewModel.offers = [...this._formViewModel.offers.slice(0, currentOfferIndex), ...this._formViewModel.offers.slice(currentOfferIndex + 1, this._formViewModel.offers.length)];
+    }
   }
 }

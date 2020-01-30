@@ -35,6 +35,47 @@ export default class TripController {
     this._cardsListModel.setFilterChangeHandler(this._filterChangeHandler);
   }
 
+  render() {
+    this._renderInfo();
+    this._renderButtonAdd();
+
+    if (this._cardsListModel.isEmpty) {
+      this._renderNoCards();
+
+    } else {
+      this._renderSort();
+      this._renderCardsList();
+    }
+
+    this.setHandlers();
+
+    render(this._containerElement, this._view);
+  }
+
+  hide() {
+    this._view.hide();
+    this._setButtonAddDisabled(true);
+  }
+
+  show() {
+    this._view.show();
+    this._setButtonAddDisabled(false);
+  }
+
+  setHandlers() {
+    this._buttonAddView.setButtonClickHandler(() => {
+      this._setButtonAddDisabled(true);
+
+      if (this._cardsListModel.isEmpty) {
+        this._cardsController.createCard(this._element, RenderPosition.BEFOREEND);
+        this._removeNoCards();
+
+      } else {
+        this._cardsController.createCard();
+      }
+    });
+  }
+
   _renderInfo() {
     this._infoController.render(RenderPosition.AFTERBEGIN);
   }
@@ -114,46 +155,5 @@ export default class TripController {
 
   _cardUpdateHandler() {
     this._updateInfo();
-  }
-
-  setHandlers() {
-    this._buttonAddView.setButtonClickHandler(() => {
-      this._setButtonAddDisabled(true);
-
-      if (this._cardsListModel.isEmpty) {
-        this._cardsController.createCard(this._element, RenderPosition.BEFOREEND);
-        this._removeNoCards();
-
-      } else {
-        this._cardsController.createCard();
-      }
-    });
-  }
-
-  render() {
-    this._renderInfo();
-    this._renderButtonAdd();
-
-    if (this._cardsListModel.isEmpty) {
-      this._renderNoCards();
-
-    } else {
-      this._renderSort();
-      this._renderCardsList();
-    }
-
-    this.setHandlers();
-
-    render(this._containerElement, this._view);
-  }
-
-  hide() {
-    this._view.hide();
-    this._setButtonAddDisabled(true);
-  }
-
-  show() {
-    this._view.show();
-    this._setButtonAddDisabled(false);
   }
 }

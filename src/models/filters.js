@@ -4,15 +4,6 @@ export default class FiltersModel {
     this._checkedId = null;
   }
 
-  _createFilters(filtersNames) {
-    return filtersNames.map((filterName) => {
-      return {
-        name: filterName,
-        checked: false
-      };
-    });
-  }
-
   get filters() {
     return this._filters;
   }
@@ -27,5 +18,14 @@ export default class FiltersModel {
     }
     this._checkedId = name;
     this._filters.find((filter) => filter.name === name).checked = true;
+  }
+
+  _createFilters(filtersNames) {
+    return filtersNames.map((filterName) => {
+      return {
+        name: filterName,
+        checked: false
+      };
+    });
   }
 }

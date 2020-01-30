@@ -27,39 +27,49 @@ export default class CardsListModel {
     this._dataLoadHandlers = [];
   }
 
-  _createCards(cards) {
-    return cards.map((card) => new CardModel(card, this._typesGroups, this.getDestinationInfo, this.getOffersByType));
+  get filteredCards() {
+    this._filteredCards = getFilteredCards(this._cards, this._filter);
+
+    return this._filteredCards;
   }
 
-  _checkIsEmpty() {
-    return this._cards.length === 0;
+  get cards() {
+    return this._cards;
   }
 
-  _createDays() {
-    let days = [];
-    let counter = 1;
-
-    this._filteredCards.forEach((card) => {
-      const currentDay = card.correctDateFrom.date;
-
-      if (days.find((day) => day.string === currentDay) === undefined) {
-        if (days.length) {
-          const previousDay = days[days.length - 1].string;
-          const dayMoment = moment(currentDay, `DD/MM/YYYY`);
-          const previousDayMoment = moment(previousDay, `DD/MM/YYYY`);
-          const daysBetween = dayMoment.diff(previousDayMoment, `days`);
-
-          counter += daysBetween;
-        }
-        days.push(new DayModel(currentDay, counter));
-      }
-    });
-
-    return days;
+  get isEmpty() {
+    return this._checkIsEmpty();
   }
 
-  _callHandlers(handlers) {
-    handlers.forEach((handler) => handler());
+  get allTypes() {
+    return this._typesGroups;
+  }
+
+  get allCities() {
+    return this._allCities;
+  }
+
+  get days() {
+    return this._createDays();
+  }
+
+  set cards(cards) {
+    this._cards = this._createCards(Array.from(cards));
+    this._filteredCards = this._cards;
+    this._callHandlers(this._dataChangeHandlers);
+    this.sort();
+  }
+
+  set types(types) {
+    this._typesModel = TypesModel.parseTypes(types);
+    this._typesGroups = this._typesModel.groups;
+    this.getOffersByType = this._typesModel.getOffersByType;
+  }
+
+  set destinations(destinations) {
+    this._destinationsModel = DestinationsModel.parseDestinations(destinations);
+    this._allCities = this._destinationsModel.cities;
+    this.getDestinationInfo = this._destinationsModel.getDestinationInfo;
   }
 
   getAllData() {
@@ -79,6 +89,19 @@ export default class CardsListModel {
 
   getDestinationInfo(name) {
     return this._destinationsModel.getDestinationInfo(name);
+  }
+
+  setFilter(filterName) {
+    this._filter = filterName;
+    this._callHandlers(this._filterChangeHandlers);
+  }
+
+  setFilterChangeHandler(handler) {
+    this._filterChangeHandlers.push(handler);
+  }
+
+  setDataLoadHandler(handler) {
+    this._dataLoadHandlers.push(handler);
   }
 
   sort() {
@@ -128,61 +151,38 @@ export default class CardsListModel {
       });
   }
 
-  setFilter(filterName) {
-    this._filter = filterName;
-    this._callHandlers(this._filterChangeHandlers);
+  _createCards(cards) {
+    return cards.map((card) => new CardModel(card, this._typesGroups, this.getDestinationInfo, this.getOffersByType));
   }
 
-  setFilterChangeHandler(handler) {
-    this._filterChangeHandlers.push(handler);
+  _checkIsEmpty() {
+    return this._cards.length === 0;
   }
 
-  setDataLoadHandler(handler) {
-    this._dataLoadHandlers.push(handler);
+  _createDays() {
+    let days = [];
+    let counter = 1;
+
+    this._filteredCards.forEach((card) => {
+      const currentDay = card.correctDateFrom.date;
+
+      if (days.find((day) => day.string === currentDay) === undefined) {
+        if (days.length) {
+          const previousDay = days[days.length - 1].string;
+          const dayMoment = moment(currentDay, `DD/MM/YYYY`);
+          const previousDayMoment = moment(previousDay, `DD/MM/YYYY`);
+          const daysBetween = dayMoment.diff(previousDayMoment, `days`);
+
+          counter += daysBetween;
+        }
+        days.push(new DayModel(currentDay, counter));
+      }
+    });
+
+    return days;
   }
 
-  get filteredCards() {
-    this._filteredCards = getFilteredCards(this._cards, this._filter);
-
-    return this._filteredCards;
-  }
-
-  get cards() {
-    return this._cards;
-  }
-
-  get isEmpty() {
-    return this._checkIsEmpty();
-  }
-
-  get allTypes() {
-    return this._typesGroups;
-  }
-
-  get allCities() {
-    return this._allCities;
-  }
-
-  get days() {
-    return this._createDays();
-  }
-
-  set cards(cards) {
-    this._cards = this._createCards(Array.from(cards));
-    this._filteredCards = this._cards;
-    this._callHandlers(this._dataChangeHandlers);
-    this.sort();
-  }
-
-  set types(types) {
-    this._typesModel = TypesModel.parseTypes(types);
-    this._typesGroups = this._typesModel.groups;
-    this.getOffersByType = this._typesModel.getOffersByType;
-  }
-
-  set destinations(destinations) {
-    this._destinationsModel = DestinationsModel.parseDestinations(destinations);
-    this._allCities = this._destinationsModel.cities;
-    this.getDestinationInfo = this._destinationsModel.getDestinationInfo;
+  _callHandlers(handlers) {
+    handlers.forEach((handler) => handler());
   }
 }

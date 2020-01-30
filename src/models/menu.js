@@ -4,15 +4,6 @@ export default class MenuModel {
     this._active = null;
   }
 
-  _createItems(items) {
-    return items.map((itemName) => {
-      return {
-        name: itemName,
-        isActive: false
-      };
-    });
-  }
-
   get items() {
     return this._items;
   }
@@ -27,5 +18,14 @@ export default class MenuModel {
     }
     this._active = name;
     this._items.find((item) => item.name === this._active).isActive = true;
+  }
+
+  _createItems(items) {
+    return items.map((itemName) => {
+      return {
+        name: itemName,
+        isActive: false
+      };
+    });
   }
 }

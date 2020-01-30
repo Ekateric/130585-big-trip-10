@@ -4,15 +4,6 @@ export default class SortModel {
     this._checkedId = null;
   }
 
-  _createItems(items) {
-    return items.map((sortId) => {
-      return {
-        id: sortId,
-        checked: false
-      };
-    });
-  }
-
   get items() {
     return this._items;
   }
@@ -27,5 +18,14 @@ export default class SortModel {
     }
     this._checkedId = id;
     this._items.find((item) => item.id === this._checkedId).checked = true;
+  }
+
+  _createItems(items) {
+    return items.map((sortId) => {
+      return {
+        id: sortId,
+        checked: false
+      };
+    });
   }
 }
