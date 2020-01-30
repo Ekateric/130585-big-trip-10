@@ -19,17 +19,13 @@ const getCheckedOffers = (checkedOffers, allOffers) => {
 };
 
 const parseFormData = (formData, cardModel) => {
-  const type = formData.get(`event-type`);
-  // При создании новой точки ещё нет типа в модели, а соответственно - и списка доступных офферов
-  const allOffers = cardModel.allOffers.length ? cardModel.allOffers : cardModel.getOffersByType(type);
-
   return new CardModel({
-    'type': type,
+    'type': formData.get(`event-type`),
     'destination': cardModel.getDestinationInfo(formData.get(`event-destination`)),
     'date_from': formData.get(`event-start-time`),
     'date_to': formData.get(`event-end-time`),
     'base_price': Number(formData.get(`event-price`)),
-    'offers': getCheckedOffers(formData.getAll(`event-offer`), allOffers),
+    'offers': getCheckedOffers(formData.getAll(`event-offer`), cardModel.allOffers),
     'is_favorite': !!formData.get(`event-favorite`)
   }, cardModel.allTypes, cardModel.getDestinationInfo, cardModel.getOffersByType);
 };
@@ -38,8 +34,8 @@ export default class CardController {
   constructor(cardModel, options) {
     this._model = cardModel;
 
-    this._onDataChange = options.onDataChange;
-    this._onViewChange = options.onViewChange;
+    this._dataChangeHandler = options.dataChangeHandler;
+    this._viewChangeHandler = options.viewChangeHandler;
     this._extraInfo = {
       allTypes: options.allTypes,
       allCities: options.allCities
@@ -52,13 +48,13 @@ export default class CardController {
     this._formView = null;
     this._mode = Mode.DEFAULT;
 
-    this._onExitForm = this._onExitForm.bind(this);
-    this._eventTypeChange = this._eventTypeChange.bind(this);
-    this._destinationChange = this._destinationChange.bind(this);
+    this._formExitHandler = this._formExitHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
   }
 
   _replaceViewToEdit() {
-    this._onViewChange();
+    this._viewChangeHandler();
     replace(this._formView, this._view);
     this._formView.applyFlatpickr();
     this._mode = Mode.EDIT;
@@ -66,7 +62,7 @@ export default class CardController {
 
   _replaceEditToView() {
     if (this._mode === Mode.ADD) {
-      this._onDataChange(this, null, this._mode);
+      this._dataChangeHandler(this, null, this._mode);
 
     } else {
       this._resetFormData();
@@ -75,7 +71,7 @@ export default class CardController {
       this._mode = Mode.DEFAULT;
     }
 
-    document.removeEventListener(`keydown`, this._onExitForm);
+    document.removeEventListener(`keydown`, this._formExitHandler);
   }
 
   _resetFormData() {
@@ -83,7 +79,7 @@ export default class CardController {
     this._formView.reset(this._formViewModel, this._extraInfo);
   }
 
-  _onExitForm(evt) {
+  _formExitHandler(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
@@ -91,7 +87,7 @@ export default class CardController {
     }
   }
 
-  _eventTypeChange(newType) {
+  _eventTypeChangeHandler(newType) {
     const newTypeGroup = this._model.getTypeGroup(newType);
 
     this._formViewModel.type = newType;
@@ -100,7 +96,7 @@ export default class CardController {
     this._formViewModel.allOffers = this._model.getOffersByType(newType);
   }
 
-  _destinationChange(name) {
+  _destinationChangeHandler(name) {
     this._formViewModel.destination = this._model.getDestinationInfo(name);
   }
 
@@ -111,22 +107,22 @@ export default class CardController {
   }
 
   setHandlers() {
-    this._view.setClickEditButtonHandler(() => {
+    this._view.setEditButtonClickHandler(() => {
       this._replaceViewToEdit();
 
-      document.addEventListener(`keydown`, this._onExitForm);
+      document.addEventListener(`keydown`, this._formExitHandler);
     });
 
-    this._formView.setClickUpButtonHandler(() => {
+    this._formView.setUpButtonClickHandler(() => {
       this._replaceEditToView();
     });
 
-    this._formView.setSubmitFormHandler((evt) => {
+    this._formView.setFormSubmitHandler((evt) => {
       evt.preventDefault();
 
-      const newCard = parseFormData(this._formView.getData(), this._model);
+      const newCard = parseFormData(this._formView.getData(), this._formViewModel);
 
-      this._onDataChange(this, newCard, this._mode);
+      this._dataChangeHandler(this, newCard, this._mode);
       this._formView.setButtonsText({
         save: ButtonsText.SAVE_LOADING,
       });
@@ -134,15 +130,15 @@ export default class CardController {
       this._formView.disableForm(true);
     });
 
-    this._formView.setChangeFavoriteInputHandler(() => {
+    this._formView.setFavoriteInputChangeHandler(() => {
       const newCard = CardModel.clone(this._model);
       newCard.isFavorite = !newCard.isFavorite;
       this._formViewModel.isFavorite = !this._model.isFavorite;
-      this._onDataChange(this, newCard, this._mode, false);
+      this._dataChangeHandler(this, newCard, this._mode, false);
     });
 
-    this._formView.setClickDeleteButtonHandler(() => {
-      this._onDataChange(this, null, this._mode);
+    this._formView.setDeleteButtonClickHandler(() => {
+      this._dataChangeHandler(this, null, this._mode);
       this._formView.setButtonsText({
         deleteOnDefault: ButtonsText.DELETE_LOADING_ON_DEFAULT,
         deleteOnAdd: ButtonsText.DELETE_LOADING_ON_ADD
@@ -162,8 +158,8 @@ export default class CardController {
     this._formViewModel = Object.assign({}, this._model);
     this._view = new CardView(this._model);
     this._formView = new CardFormView(this._formViewModel, this._extraInfo, mode, {
-      eventTypeChange: this._eventTypeChange,
-      destinationChange: this._destinationChange
+      eventTypeChangeHandler: this._eventTypeChangeHandler,
+      destinationChangeHandler: this._destinationChangeHandler
     });
 
     this.setHandlers();
@@ -189,10 +185,10 @@ export default class CardController {
           remove(oldCardView);
           remove(oldCardFormView);
         }
-        this._onViewChange();
+        this._viewChangeHandler();
         render(this._containerElement, this._formView, this._position);
         this._formView.applyFlatpickr();
-        document.addEventListener(`keydown`, this._onExitForm);
+        document.addEventListener(`keydown`, this._formExitHandler);
         break;
     }
 
@@ -203,7 +199,7 @@ export default class CardController {
     remove(this._view);
     this._formView.destroyFlatpickr();
     remove(this._formView);
-    document.removeEventListener(`keydown`, this._onExitForm);
+    document.removeEventListener(`keydown`, this._formExitHandler);
   }
 
   showError() {

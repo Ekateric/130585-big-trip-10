@@ -47,7 +47,7 @@ export default class SortView extends AbstractView {
     return createSortTemplate(this._items, this._checkedId);
   }
 
-  setChangeSortHandler(handler) {
+  setSortChangeHandler(handler) {
     [...this._inputsElements].forEach((input) => {
       input.addEventListener(`change`, (evt) => handler(evt.target.value));
     });

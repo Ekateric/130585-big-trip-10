@@ -12,8 +12,8 @@ export default class MenuController {
     this._view = new MenuView(this._model.items, this._model.active);
   }
 
-  setClickMenuHandler(handler) {
-    this._view.setClickMenuHandler((activeItem) => {
+  setMenuClickHandler(handler) {
+    this._view.setMenuClickHandler((activeItem) => {
       if (this._model.active !== activeItem) {
         this._model.active = activeItem;
         this._view.setActiveItem(activeItem);

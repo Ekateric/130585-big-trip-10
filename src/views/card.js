@@ -81,7 +81,7 @@ export default class CardView extends AbstractView {
     this._card = card;
   }
 
-  setClickEditButtonHandler(handler) {
+  setEditButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);

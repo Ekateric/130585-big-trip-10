@@ -5,9 +5,9 @@ import render from "../utils/render/render";
 import remove from "../utils/render/remove";
 
 export default class SortController {
-  constructor(containerElement, changeSortTypeHandler) {
+  constructor(containerElement, sortTypeChangeHandler) {
     this._containerElement = containerElement;
-    this._changeSortTypeHandler = changeSortTypeHandler;
+    this._sortTypeChangeHandler = sortTypeChangeHandler;
 
     this._model = new SortModel(Object.values(SortTypes));
     this._model.checked = SortTypes.EVENT;
@@ -15,10 +15,10 @@ export default class SortController {
   }
 
   setHandlers() {
-    this._view.setChangeSortHandler((sortType) => {
+    this._view.setSortChangeHandler((sortType) => {
       if (this._model.checked !== sortType) {
         this._model.checked = sortType;
-        this._changeSortTypeHandler();
+        this._sortTypeChangeHandler();
       }
     });
   }

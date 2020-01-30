@@ -17,13 +17,13 @@ export default class TripController {
     this._view = new TripView();
     this._element = this._view.getElement();
 
-    this._onSortTypeChange = this._onSortTypeChange.bind(this);
-    this._onFilterChange = this._onFilterChange.bind(this);
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._filterChangeHandler = this._filterChangeHandler.bind(this);
 
     this._cardsControllerHandlers = {
-      onDeleteCard: this._onDeleteCard.bind(this),
-      onAddCard: this._onAddCard.bind(this),
-      onUpdateCard: this._onUpdateCard.bind(this)
+      cardDeleteHandler: this._cardDeleteHandler.bind(this),
+      cardAddHandler: this._cardAddHandler.bind(this),
+      cardUpdateHandler: this._cardUpdateHandler.bind(this)
     };
 
     this._sortController = null;
@@ -32,7 +32,7 @@ export default class TripController {
     this._infoController = new InfoController(this._cardsListModel, this._tripMainElement);
     this._buttonAddView = new ButtonAddView();
 
-    this._cardsListModel.setFilterChangeHandler(this._onFilterChange);
+    this._cardsListModel.setFilterChangeHandler(this._filterChangeHandler);
   }
 
   _renderInfo() {
@@ -52,7 +52,7 @@ export default class TripController {
   }
 
   _renderSort() {
-    this._sortController = new SortController(this._element, this._onSortTypeChange);
+    this._sortController = new SortController(this._element, this._sortTypeChangeHandler);
     this._sortController.render();
   }
 
@@ -78,7 +78,7 @@ export default class TripController {
     remove(this._noCardsView);
   }
 
-  _onSortTypeChange() {
+  _sortTypeChangeHandler() {
     if (this._sortController) {
       this._cardsController.clear();
       this._cardsController.sort(this._sortController.checked);
@@ -86,11 +86,11 @@ export default class TripController {
     }
   }
 
-  _onFilterChange() {
+  _filterChangeHandler() {
     this._cardsController.updateCards();
   }
 
-  _onDeleteCard() {
+  _cardDeleteHandler() {
     this._updateInfo();
     this._setButtonAddDisabled(false);
 
@@ -101,7 +101,7 @@ export default class TripController {
     }
   }
 
-  _onAddCard() {
+  _cardAddHandler() {
     this._updateInfo();
     this._setButtonAddDisabled(false);
 
@@ -112,12 +112,12 @@ export default class TripController {
     }
   }
 
-  _onUpdateCard() {
+  _cardUpdateHandler() {
     this._updateInfo();
   }
 
   setHandlers() {
-    this._buttonAddView.setClickButtonHandler(() => {
+    this._buttonAddView.setButtonClickHandler(() => {
       this._setButtonAddDisabled(true);
 
       if (this._cardsListModel.isEmpty) {

@@ -271,15 +271,15 @@ export default class CardFormView extends AbstractSmartView {
       save: ButtonsText.SAVE
     };
 
-    this._eventTypeChange = methods.eventTypeChange;
-    this._destinationChange = methods.destinationChange;
+    this._eventTypeChangeHandler = methods.eventTypeChangeHandler;
+    this._destinationChangeHandler = methods.destinationChangeHandler;
 
-    this._clickUpButtonHandler = null;
-    this._submitHandler = null;
-    this._clickDeleteButtonHandler = null;
-    this._changeFavoriteHandler = null;
+    this._upButtonClickHandler = null;
+    this._formSubmitHandler = null;
+    this._deleteButtonClickHandler = null;
+    this._favoriteChangeHandler = null;
 
-    this._subscribeOnEvents();
+    this._setHandlers();
   }
 
   _getForm() {
@@ -356,7 +356,7 @@ export default class CardFormView extends AbstractSmartView {
     }
   }
 
-  _onEventTypeChange() {
+  _setEventTypeChangeHandler() {
     const eventTypesInputs = this.getElement()
       .querySelectorAll(`.event__type-input`);
 
@@ -364,13 +364,13 @@ export default class CardFormView extends AbstractSmartView {
       input.addEventListener(`change`, (evt) => {
         const newType = evt.target.value;
 
-        this._eventTypeChange(newType);
+        this._eventTypeChangeHandler(newType);
         this.rerender();
       });
     });
   }
 
-  _onDestinationChange() {
+  _setDestinationChangeHandler() {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`input`, (evt) => {
@@ -383,12 +383,12 @@ export default class CardFormView extends AbstractSmartView {
           return;
         }
 
-        this._destinationChange(destination);
+        this._destinationChangeHandler(destination);
         this.rerender();
       });
   }
 
-  _onPriceChange() {
+  _setPriceChangeHandler() {
     this.getElement()
       .querySelector(`.event__input--price`)
       .addEventListener(`change`, (evt) => {
@@ -397,10 +397,10 @@ export default class CardFormView extends AbstractSmartView {
       });
   }
 
-  _subscribeOnEvents() {
-    this._onEventTypeChange();
-    this._onDestinationChange();
-    this._onPriceChange();
+  _setHandlers() {
+    this._setEventTypeChangeHandler();
+    this._setDestinationChangeHandler();
+    this._setPriceChangeHandler();
   }
 
   _checkSaveButton() {
@@ -425,46 +425,46 @@ export default class CardFormView extends AbstractSmartView {
   }
 
   recoveryListeners() {
-    this._subscribeOnEvents();
-    this.setClickUpButtonHandler(this._clickUpButtonHandler);
-    this.setSubmitFormHandler(this._submitHandler);
-    this.setClickDeleteButtonHandler(this._clickDeleteButtonHandler);
-    this.setChangeFavoriteInputHandler(this._changeFavoriteHandler);
+    this._setHandlers();
+    this.setUpButtonClickHandler(this._upButtonClickHandler);
+    this.setFormSubmitHandler(this._formSubmitHandler);
+    this.setDeleteButtonClickHandler(this._deleteButtonClickHandler);
+    this.setFavoriteInputChangeHandler(this._favoriteChangeHandler);
   }
 
-  setClickUpButtonHandler(handler) {
+  setUpButtonClickHandler(handler) {
     const clickUpButtonElement = this.getElement().querySelector(`.event__rollup-btn`);
 
     if (clickUpButtonElement) {
       clickUpButtonElement.addEventListener(`click`, handler);
 
-      this._clickUpButtonHandler = handler;
+      this._upButtonClickHandler = handler;
     }
   }
 
-  setSubmitFormHandler(handler) {
+  setFormSubmitHandler(handler) {
     this.getElement()
       .querySelector(`.event__save-btn`)
       .addEventListener(`click`, handler);
 
-    this._submitHandler = handler;
+    this._formSubmitHandler = handler;
   }
 
-  setClickDeleteButtonHandler(handler) {
+  setDeleteButtonClickHandler(handler) {
     this.getElement()
       .querySelector(`.event__reset-btn`)
       .addEventListener(`click`, handler);
 
-    this._clickDeleteButtonHandler = handler;
+    this._deleteButtonClickHandler = handler;
   }
 
-  setChangeFavoriteInputHandler(handler) {
+  setFavoriteInputChangeHandler(handler) {
     const favoriteInputElement = this.getElement().querySelector(`.event__favorite-checkbox`);
 
     if (favoriteInputElement) {
       favoriteInputElement.addEventListener(`change`, handler);
 
-      this._changeFavoriteHandler = handler;
+      this._favoriteChangeHandler = handler;
     }
   }
 

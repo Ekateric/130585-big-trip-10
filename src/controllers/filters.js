@@ -12,10 +12,10 @@ export default class FiltersController {
     this._model.checked = Filters.EVERYTHING;
     this._view = new FiltersView(this._model.filters);
 
-    this._changeFilterHandler = this._changeFilterHandler.bind(this);
+    this._filterChangeHandler = this._filterChangeHandler.bind(this);
   }
 
-  _changeFilterHandler(filterName) {
+  _filterChangeHandler(filterName) {
     if (this._model.checked !== filterName) {
       this._model.checked = filterName;
       this._cardsListModel.setFilter(filterName);
@@ -23,7 +23,7 @@ export default class FiltersController {
   }
 
   setHandlers() {
-    this._view.setChangeFilterHandler((filterTitle) => this._changeFilterHandler(filterTitle));
+    this._view.setFilterChangeHandler((filterTitle) => this._filterChangeHandler(filterTitle));
   }
 
   render() {

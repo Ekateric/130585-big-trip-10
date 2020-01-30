@@ -26,13 +26,13 @@ export default class CardsListController {
     this._cardControllerOptions = null;
   }
 
-  _onDataChange(cardController, newCard, mode = Mode.EDIT, withRender = true) {
+  _dataChangeHandler(cardController, newCard, mode = Mode.EDIT, withRender = true) {
     if (mode === Mode.ADD) {
       this._creatingCard = null;
 
       if (newCard === null) {
         cardController.destroy();
-        this._handlers.onDeleteCard();
+        this._handlers.cardDeleteHandler();
         this._showedCardsControllers = this._showedCardsControllers.slice(1);
 
       } else {
@@ -40,7 +40,7 @@ export default class CardsListController {
           .then(() => {
             cardController.destroy();
             this.updateCards();
-            this._handlers.onAddCard();
+            this._handlers.cardAddHandler();
           })
           .catch(() => {
             cardController.showError();
@@ -52,7 +52,7 @@ export default class CardsListController {
         .then(() => {
           cardController.destroy();
           this.updateCards();
-          this._handlers.onDeleteCard();
+          this._handlers.cardDeleteHandler();
         })
         .catch(() => {
           cardController.showError();
@@ -69,7 +69,7 @@ export default class CardsListController {
             }
 
             this._updateCardsData();
-            this._handlers.onUpdateCard();
+            this._handlers.cardUpdateHandler();
           }
         })
         .catch(() => {
@@ -78,7 +78,7 @@ export default class CardsListController {
     }
   }
 
-  _onViewChange() {
+  _viewChangeHandler() {
     this._showedCardsControllers.forEach((card) => card.setDefaultView());
   }
 
@@ -121,8 +121,8 @@ export default class CardsListController {
     return {
       allTypes: this._cardsListModel.allTypes,
       allCities: this._cardsListModel.allCities,
-      onDataChange: this._onDataChange.bind(this),
-      onViewChange: this._onViewChange.bind(this)
+      dataChangeHandler: this._dataChangeHandler.bind(this),
+      viewChangeHandler: this._viewChangeHandler.bind(this)
     };
   }
 

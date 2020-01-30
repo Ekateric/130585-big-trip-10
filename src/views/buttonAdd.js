@@ -7,7 +7,7 @@ export default class ButtonAddView extends AbstractView {
     return createButtonAddTemplate();
   }
 
-  setClickButtonHandler(handler) {
+  setButtonClickHandler(handler) {
     this.getElement().addEventListener(`click`, handler);
   }
 

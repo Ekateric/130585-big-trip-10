@@ -48,7 +48,7 @@ export default class MenuView extends AbstractView {
     }
   }
 
-  setClickMenuHandler(handler) {
+  setMenuClickHandler(handler) {
     [...this._itemsElements].forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();

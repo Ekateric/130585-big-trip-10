@@ -30,7 +30,7 @@ cardsListModel.setDataLoadHandler(() => {
 cardsListModel.getAllData();
 
 menuController.render(RenderPosition.AFTEREND);
-menuController.setClickMenuHandler((menuItem) => {
+menuController.setMenuClickHandler((menuItem) => {
   switch (menuItem) {
     case MenuItems.TABLE:
       statsController.hide();
