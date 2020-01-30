@@ -9,13 +9,14 @@ import remove from "../utils/render/remove";
 import shakeElement from "../utils/common/shakeElement";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
-  return checkedOffers.map((offer) => {
-    return {
-      title: offer,
-      price: allOffers.find((item) => item.title === offer).price
-    };
-  })
-    .filter((offer) => offer !== null);
+  return checkedOffers
+    .filter((offer) => offer !== null)
+    .map((offer) => {
+      return {
+        title: offer,
+        price: allOffers.find((item) => item.title === offer).price
+      };
+    });
 };
 
 const parseFormData = (formData, cardModel) => {
