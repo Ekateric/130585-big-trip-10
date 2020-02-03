@@ -76,7 +76,7 @@ export default class CardController {
     const oldCardView = this._view;
     const oldCardFormView = this._formView;
 
-    this._formViewModel = Object.assign({}, this._model);
+    this._formViewModel = CardModel.clone(this._model);
     this._view = new CardView(this._model);
     this._formView = new CardFormView(this._formViewModel, this._extraInfo, mode, {
       eventTypeChangeHandler: this._eventTypeChangeHandler,
@@ -200,7 +200,7 @@ export default class CardController {
   }
 
   _resetFormData() {
-    this._formViewModel = Object.assign({}, this._model);
+    this._formViewModel = CardModel.clone(this._model);
     this._formView.reset(this._formViewModel, this._extraInfo);
   }
 

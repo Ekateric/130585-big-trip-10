@@ -41,12 +41,12 @@ export default class CardModel {
       'destination': {
         'name': this.destination.name,
         'description': this.destination.description,
-        'pictures': this.destination.pictures
+        'pictures': [...this.destination.pictures]
       },
       'date_from': this.dateFrom.toISOString(),
       'date_to': this.dateTo.toISOString(),
       'base_price': this.price,
-      'offers': this.offers,
+      'offers': [...this.offers],
       'is_favorite': this.isFavorite
     };
   }
