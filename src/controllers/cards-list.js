@@ -82,7 +82,6 @@ export default class CardsListController {
 
   render() {
     this._element = this._view.getElement();
-    this._cardControllerOptions = this._getCardControllerOptions();
     this._updateCardsData();
     this._sortedCardsModels = this._cardsModels.slice();
 
@@ -93,6 +92,10 @@ export default class CardsListController {
 
   destroy() {
     remove(this._view);
+  }
+
+  init() {
+    this._cardControllerOptions = this._getCardControllerOptions();
   }
 
   _renderDayItem(dayData, dayCardModels) {
@@ -152,7 +155,11 @@ export default class CardsListController {
         this._cardsListModel.addModel(newCard)
           .then(() => {
             cardController.destroy();
-            this.updateCards();
+
+            if (this._cardsModels.length) {
+              this.updateCards();
+            }
+
             this._handlers.cardAddHandler();
           })
           .catch(() => {

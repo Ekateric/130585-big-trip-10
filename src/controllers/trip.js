@@ -41,6 +41,7 @@ export default class TripController {
 
     if (this._cardsListModel.isEmpty) {
       this._renderNoCards();
+      this._cardsController.init();
 
     } else {
       this._renderSort();
@@ -98,11 +99,14 @@ export default class TripController {
   }
 
   _removeSort() {
-    this._sortController.destroy();
-    this._sortController = null;
+    if (this._sortController) {
+      this._sortController.destroy();
+      this._sortController = null;
+    }
   }
 
   _renderCardsList() {
+    this._cardsController.init();
     this._cardsController.render();
   }
 
