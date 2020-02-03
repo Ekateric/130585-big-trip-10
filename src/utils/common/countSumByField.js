@@ -1,5 +1,5 @@
-export default (arr, fieldName) => {
-  return arr.reduce((acc, item) => {
+export default (items, fieldName) => {
+  return items.reduce((acc, item) => {
     return acc + item[fieldName];
   }, 0);
 };
