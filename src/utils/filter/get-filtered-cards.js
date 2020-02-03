@@ -1,14 +1,14 @@
-import Filters from "../../data/filters";
+import {Filter} from "../../data";
 import getFutureCards from "./get-future-cards";
 import getPastCards from "./get-past-cards";
 
 export default (cards, filterTitle) => {
   switch (filterTitle) {
-    case Filters.EVERYTHING:
+    case Filter.EVERYTHING:
       return cards;
-    case Filters.FUTURE:
+    case Filter.FUTURE:
       return getFutureCards(cards, Date.now());
-    case Filters.PAST:
+    case Filter.PAST:
       return getPastCards(cards, Date.now());
     default:
       return cards;

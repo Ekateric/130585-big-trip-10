@@ -1,4 +1,4 @@
-import SortTypes from "../data/sort-types";
+import {SortType} from "../data";
 import SortModel from "../models/sort";
 import SortView from "../views/sort";
 import render from "../utils/render/render";
@@ -9,8 +9,8 @@ export default class SortController {
     this._containerElement = containerElement;
     this._sortTypeChangeHandler = sortTypeChangeHandler;
 
-    this._model = new SortModel(Object.values(SortTypes));
-    this._model.checked = SortTypes.EVENT;
+    this._model = new SortModel(Object.values(SortType));
+    this._model.checked = SortType.EVENT;
     this._view = new SortView(this._model.items, this._model.checked);
   }
 

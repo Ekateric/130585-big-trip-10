@@ -1,4 +1,4 @@
-import RenderPosition from "../../data/render-position";
+import {RenderPosition} from "../../data";
 
 export default (containerElement, view, place = RenderPosition.BEFOREEND) => {
   const parentContainerElement = containerElement.parentNode;

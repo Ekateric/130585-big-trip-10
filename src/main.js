@@ -1,11 +1,10 @@
+import {MenuItem, RenderPosition} from "./data";
 import Api from "./services/api";
-import MenuItems from "./data/menu-items";
 import CardsListModel from "./models/cards-list";
 import MenuController from "./controllers/menu";
 import FiltersController from "./controllers/filters";
 import TripController from "./controllers/trip";
 import StatsController from "./controllers/stats";
-import RenderPosition from "./data/render-position";
 import "flatpickr/dist/flatpickr.css";
 
 const AUTHORIZATION = `Basic eo0w580ik28889a=`;
@@ -32,12 +31,12 @@ cardsListModel.getAllData();
 menuController.render(RenderPosition.AFTEREND);
 menuController.setMenuClickHandler((menuItem) => {
   switch (menuItem) {
-    case MenuItems.TABLE:
+    case MenuItem.TABLE:
       statsController.hide();
       tripController.show();
       filtersController.show();
       break;
-    case MenuItems.STATS:
+    case MenuItem.STATS:
       tripController.hide();
       filtersController.hide();
       statsController.show();

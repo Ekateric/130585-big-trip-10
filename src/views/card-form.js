@@ -1,5 +1,4 @@
-import Mode from "../data/mode";
-import ButtonsText from "../data/buttons-text";
+import {Mode, ButtonsText} from "../data";
 import AbstractSmartView from "./abstract-smart";
 import makeFirstCharUpperCase from "../utils/common/make-first-char-upper-case";
 import flatpickr from "flatpickr";

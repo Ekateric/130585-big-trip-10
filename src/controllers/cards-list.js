@@ -1,6 +1,4 @@
-import SortTypes from "../data/sort-types";
-import RenderPosition from "../data/render-position";
-import Mode from "../data/mode";
+import {SortType, RenderPosition, Mode} from "../data";
 import DaysListView from "../views/days-list";
 import DayView from "../views/day";
 import CardController from "./card";
@@ -17,7 +15,7 @@ export default class CardsListController {
     this._cardsModels = []; // всегда отсортированы по дате
     this._sortedCardsModels = [];
     this._days = [];
-    this._sortType = SortTypes.EVENT;
+    this._sortType = SortType.EVENT;
     this._showedCardsControllers = [];
     this._creatingCard = null;
 
@@ -31,15 +29,15 @@ export default class CardsListController {
     this._sortType = sortType;
 
     switch (sortType) {
-      case SortTypes.EVENT:
+      case SortType.EVENT:
         this._sortByEvent();
         break;
 
-      case SortTypes.TIME:
+      case SortType.TIME:
         this._sortByTime();
         break;
 
-      case SortTypes.PRICE:
+      case SortType.PRICE:
         this._sortByPrice();
         break;
     }
@@ -68,7 +66,7 @@ export default class CardsListController {
   }
 
   renderDays() {
-    if (this._sortType === SortTypes.EVENT) {
+    if (this._sortType === SortType.EVENT) {
       this._days.forEach((day) => {
         const dayCardModels = this._sortedCardsModels.filter((cardModel) => cardModel.correctDateFrom.date === day.string);
 
@@ -182,9 +180,9 @@ export default class CardsListController {
       this._cardsListModel.updateModelById(cardController.model.id, newCard)
         .then((newCardModel) => {
           if (newCardModel) {
-            const isRenderAllList = (cardController.model.price !== newCardModel.price && this._sortType === SortTypes.PRICE)
+            const isRenderAllList = (cardController.model.price !== newCardModel.price && this._sortType === SortType.PRICE)
               || (moment(cardController.model.dateFrom).diff(moment(newCardModel.dateFrom)))
-              || (moment(cardController.model.dateTo).diff(moment(newCardModel.dateTo)) && this._sortType === SortTypes.TIME);
+              || (moment(cardController.model.dateTo).diff(moment(newCardModel.dateTo)) && this._sortType === SortType.TIME);
 
             cardController.model = newCardModel;
 

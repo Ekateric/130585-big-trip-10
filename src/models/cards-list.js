@@ -1,5 +1,4 @@
-import Filters from "../data/filters";
-import EmptyCard from "../data/empty-card";
+import {Filter, EmptyCard} from "../data";
 import CardModel from "./card";
 import TypesModel from "./types";
 import DestinationsModel from "./destinations";
@@ -21,7 +20,7 @@ export default class CardsListModel {
 
     this._cards = [];
     this._filteredCards = [];
-    this._filter = Filters.EVERYTHING;
+    this._filter = Filter.EVERYTHING;
     this._filterChangeHandlers = [];
     this._dataChangeHandlers = [];
     this._dataLoadHandlers = [];

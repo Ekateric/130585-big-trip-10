@@ -1,4 +1,4 @@
-import RenderPosition from "../data/render-position";
+import {RenderPosition} from "../data";
 import TripView from "../views/trip";
 import CardsListController from "./cards-list";
 import InfoController from "./info";

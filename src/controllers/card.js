@@ -1,5 +1,4 @@
-import Mode from "../data/mode";
-import ButtonsText from "../data/buttons-text";
+import {Mode, ButtonsText} from "../data";
 import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
