@@ -118,6 +118,7 @@ export default class CardsListModel {
           // потому что данные с сервера могут прийти обновлённые
           newCardModel = new CardModel(newCardData, this._typesGroups, this.getDestinationInfo, this.getOffersByType);
           this._cards = [].concat(this._cards.slice(0, cardIndex), newCardModel, this._cards.slice(cardIndex + 1));
+          this.sort();
         }
 
         return newCardModel;

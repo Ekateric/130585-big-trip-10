@@ -6,6 +6,7 @@ import DayView from "../views/day";
 import CardController from "./card";
 import render from "../utils/render/render";
 import remove from "../utils/render/remove";
+import moment from "moment";
 
 export default class CardsListController {
   constructor(cardsListModel, containerElement, handlers) {
@@ -174,13 +175,23 @@ export default class CardsListController {
       this._cardsListModel.updateModelById(cardController.model.id, newCard)
         .then((newCardModel) => {
           if (newCardModel) {
+            const isRenderAllList = (cardController.model.price !== newCardModel.price && this._sortType === SortTypes.PRICE)
+              || (moment(cardController.model.dateFrom).diff(moment(newCardModel.dateFrom)))
+              || (moment(cardController.model.dateTo).diff(moment(newCardModel.dateTo)) && this._sortType === SortTypes.TIME);
+
             cardController.model = newCardModel;
 
-            if (withRender) {
-              cardController.render(Mode.DEFAULT);
+            if (isRenderAllList) {
+              this.updateCards();
+
+            } else {
+              if (withRender) {
+                cardController.render(Mode.DEFAULT);
+              }
+
+              this._updateCardsData();
             }
 
-            this._updateCardsData();
             this._handlers.cardUpdateHandler();
           }
         })
