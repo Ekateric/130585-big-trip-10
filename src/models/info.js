@@ -46,16 +46,10 @@ export default class InfoModel {
 
   _calcInfoTitle() {
     const pointsLength = this._cities.length;
-    let title = ``;
 
-    if (pointsLength > MAX_CITIES_INFO_COUNT) {
-      title = `${this._cities[0]} &mdash; ... &mdash; ${this._cities[pointsLength - 1]}`;
-
-    } else {
-      title = this._cities.join(` &mdash; `);
-    }
-
-    return title;
+    return pointsLength > MAX_CITIES_INFO_COUNT
+      ? `${this._cities[0]} &mdash; ... &mdash; ${this._cities[pointsLength - 1]}`
+      : this._cities.join(` &mdash; `);
   }
 
   _calcInfoDates() {

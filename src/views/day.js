@@ -33,10 +33,6 @@ export default class DayView extends AbstractView {
   }
 
   getTemplate() {
-    if (this._date) {
-      return createDayTemplate(this._date);
-    }
-
-    return createEmptyDayTemplate();
+    return this._date ? createDayTemplate(this._date) : createEmptyDayTemplate();
   }
 }
