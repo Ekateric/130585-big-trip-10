@@ -29,7 +29,7 @@ export default class InfoModel {
   }
 
   _createCities() {
-    let cities = [];
+    const cities = [];
 
     this._cards.forEach((card) => {
       const city = card.destination.name;

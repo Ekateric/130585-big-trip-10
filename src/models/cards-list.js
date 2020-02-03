@@ -161,7 +161,7 @@ export default class CardsListModel {
   }
 
   _createDays() {
-    let days = [];
+    const days = [];
     let counter = 1;
 
     this._filteredCards.forEach((card) => {
