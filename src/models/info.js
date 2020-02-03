@@ -1,5 +1,7 @@
 import moment from "moment";
 
+const MAX_CITIES_INFO_COUNT = 3;
+
 export default class InfoModel {
   constructor(cardsListModel) {
     this._cardsListModel = cardsListModel;
@@ -46,7 +48,7 @@ export default class InfoModel {
     const pointsLength = this._cities.length;
     let title = ``;
 
-    if (pointsLength > 3) {
+    if (pointsLength > MAX_CITIES_INFO_COUNT) {
       title = `${this._cities[0]} &mdash; ... &mdash; ${this._cities[pointsLength - 1]}`;
 
     } else {
