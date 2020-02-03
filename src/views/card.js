@@ -1,5 +1,5 @@
 import AbstractView from "./abstract";
-import makeFirstCharUpperCase from "../utils/common/makeFirstCharUpperCase";
+import makeFirstCharUpperCase from "../utils/common/make-first-char-upper-case";
 import he from "he";
 
 const MAX_SHOWN_OFFERS_COUNT = 3;

@@ -1,5 +1,5 @@
 import emoji from "../../data/emoji";
-import getRandomInt from "./getRandomInt";
+import getRandomInt from "./get-random-int";
 
 export default (name) => {
   let icon = emoji[name];

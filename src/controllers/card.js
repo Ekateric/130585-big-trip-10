@@ -6,7 +6,7 @@ import CardFormView from "../views/card-form";
 import render from "../utils/render/render";
 import replace from "../utils/render/replace";
 import remove from "../utils/render/remove";
-import shakeElement from "../utils/common/shakeElement";
+import shakeElement from "../utils/common/shake-element";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
   return checkedOffers

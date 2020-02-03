@@ -1,6 +1,6 @@
 import Filters from "../../data/filters";
-import getFutureCards from "./getFutureCards";
-import getPastCards from "./getPastCards";
+import getFutureCards from "./get-future-cards";
+import getPastCards from "./get-past-cards";
 
 export default (cards, filterTitle) => {
   switch (filterTitle) {

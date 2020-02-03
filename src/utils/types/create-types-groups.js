@@ -1,4 +1,4 @@
-import getTypeGroup from "./getTypeGroup";
+import getTypeGroup from "./get-type-group";
 
 const typesGroups = [
   {

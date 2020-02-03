@@ -2,7 +2,7 @@ import RenderPosition from "../data/render-position";
 import TripView from "../views/trip";
 import CardsListController from "./cards-list";
 import InfoController from "./info";
-import ButtonAddView from "../views/buttonAdd";
+import ButtonAddView from "../views/button-add";
 import SortController from "./sort";
 import NoCardsView from "../views/no-cards";
 import render from "../utils/render/render";

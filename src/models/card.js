@@ -1,6 +1,6 @@
-import getCorrectTime from "../utils/common/getCorrectTime";
-import getTypeGroup from "../utils/types/getTypeGroup";
-import getDurationText from "../utils/common/getDurationText";
+import getCorrectTime from "../utils/common/get-correct-time";
+import getTypeGroup from "../utils/types/get-type-group";
+import getDurationText from "../utils/common/get-duration-text";
 
 export default class CardModel {
   constructor(card, allTypes, getDestinationInfo, getOffersByType) {

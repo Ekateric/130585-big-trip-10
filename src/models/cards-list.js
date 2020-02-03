@@ -4,7 +4,7 @@ import CardModel from "./card";
 import TypesModel from "./types";
 import DestinationsModel from "./destinations";
 import DayModel from "./day";
-import getFilteredCards from "../utils/filter/getFilteredCards";
+import getFilteredCards from "../utils/filter/get-filtered-cards";
 import moment from "moment";
 
 export default class CardsListModel {

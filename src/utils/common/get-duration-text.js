@@ -1,5 +1,5 @@
 import moment from "moment";
-import castTimeFormat from "./castTimeFormat";
+import castTimeFormat from "./cast-time-format";
 
 export default (milliseconds) => {
   const duration = moment.duration(milliseconds);
