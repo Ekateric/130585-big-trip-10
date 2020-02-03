@@ -2,8 +2,7 @@ import {SortType, RenderPosition, Mode} from "../data";
 import DaysListView from "../views/days-list";
 import DayView from "../views/day";
 import CardController from "./card";
-import render from "../utils/render/render";
-import remove from "../utils/render/remove";
+import {render, remove} from "../utils/render";
 import moment from "moment";
 
 export default class CardsListController {

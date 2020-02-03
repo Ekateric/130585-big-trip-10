@@ -1,5 +1,5 @@
-import getCardsByType from "../utils/filter/get-cards-by-type";
-import countSumByField from "../utils/common/count-sum-by-field";
+import {countSumByField} from "../utils/common";
+import {getCardsByType} from "../utils/filter";
 
 const prepareStatsData = (statsItems) => {
   statsItems.sort((itemOne, itemTwo) => itemTwo[1] - itemOne[1]);

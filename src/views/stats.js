@@ -1,9 +1,7 @@
 import AbstractSmartComponent from "./abstract-smart";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import makeFirstCharUpperCase from "../utils/common/make-first-char-upper-case";
-import getEmojiIcon from "../utils/common/get-emoji-icon";
-import getDurationText from "../utils/common/get-duration-text";
+import {makeFirstCharUpperCase, getEmojiIcon, getDurationText} from "../utils/common";
 
 const Color = {
   BACKGROUND: `#f2f2f2`,

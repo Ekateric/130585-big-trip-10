@@ -2,10 +2,8 @@ import {Mode, ButtonsText} from "../data";
 import CardModel from "../models/card";
 import CardView from "../views/card";
 import CardFormView from "../views/card-form";
-import render from "../utils/render/render";
-import replace from "../utils/render/replace";
-import remove from "../utils/render/remove";
-import shakeElement from "../utils/common/shake-element";
+import {render, replace, remove} from "../utils/render";
+import {shakeElement} from "../utils/common";
 
 const getCheckedOffers = (checkedOffers, allOffers) => {
   return checkedOffers

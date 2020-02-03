@@ -1,7 +1,7 @@
 import {Filter} from "../data";
 import FiltersModel from "../models/filters";
 import FiltersView from "../views/filters";
-import render from "../utils/render/render";
+import {render} from "../utils/render";
 
 export default class FiltersController {
   constructor(cardsListModel, containerElement) {

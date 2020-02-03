@@ -1,6 +1,6 @@
 import StatsModel from "../models/stats";
 import StatsView from "../views/stats";
-import render from "../utils/render/render";
+import {render} from "../utils/render";
 
 export default class StatsController {
   constructor(containerElement, cardsListModel) {

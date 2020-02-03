@@ -1,8 +1,7 @@
 import {SortType} from "../data";
 import SortModel from "../models/sort";
 import SortView from "../views/sort";
-import render from "../utils/render/render";
-import remove from "../utils/render/remove";
+import {render, remove} from "../utils/render";
 
 export default class SortController {
   constructor(containerElement, sortTypeChangeHandler) {

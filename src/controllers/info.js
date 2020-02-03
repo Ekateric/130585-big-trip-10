@@ -1,7 +1,6 @@
 import InfoModel from "../models/info";
 import InfoView from "../views/info";
-import render from "../utils/render/render";
-import replace from "../utils/render/replace";
+import {render, replace} from "../utils/render";
 
 export default class InfoController {
   constructor(cardsListModel, containerElement) {

@@ -1,5 +1,3 @@
-import getTypeGroup from "./get-type-group";
-
 const typesGroups = [
   {
     group: `transfer`,
@@ -11,7 +9,17 @@ const typesGroups = [
   }
 ];
 
-export default (types) => {
+export const getTypeGroup = (type) => {
+  let group = ``;
+
+  if (type) {
+    group = (type === `check-in` || type === `sightseeing` || type === `restaurant`) ? `activity` : `transfer`;
+  }
+
+  return group;
+};
+
+export const createTypesGroups = (types) => {
   types.forEach((item) => {
     const group = getTypeGroup(item.type);
 

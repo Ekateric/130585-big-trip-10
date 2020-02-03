@@ -1,4 +1,4 @@
-import createElement from "../utils/render/create-element";
+import {createElement} from "../utils/render";
 
 const createNoCardsTemplate = () => `<p class="trip-events__msg">Click New Event to create your first point</p>`;
 
