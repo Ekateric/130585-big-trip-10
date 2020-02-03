@@ -105,7 +105,7 @@ export default class CardsListModel {
   }
 
   sort() {
-    this._cards.sort((cardOne, cardTwo) => Date.parse(cardOne.dateFrom) - Date.parse(cardTwo.dateFrom));
+    this._cards.sort((cardOne, cardTwo) => cardOne.correctDateFrom.dateMoment.diff(cardTwo.correctDateFrom.dateMoment));
   }
 
   updateModelById(modelId, sendCardModel) {

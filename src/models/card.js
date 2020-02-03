@@ -43,8 +43,8 @@ export default class CardModel {
         'description': this.destination.description,
         'pictures': [...this.destination.pictures]
       },
-      'date_from': this.dateFrom.toISOString(),
-      'date_to': this.dateTo.toISOString(),
+      'date_from': this.dateFrom instanceof Date ? this.dateFrom.toISOString() : this.dateFrom,
+      'date_to': this.dateTo instanceof Date ? this.dateTo.toISOString() : this.dateTo,
       'base_price': this.price,
       'offers': [...this.offers],
       'is_favorite': this.isFavorite
@@ -71,7 +71,7 @@ export default class CardModel {
   }
 
   _countDuration() {
-    return Date.parse(this.dateTo) - Date.parse(this.dateFrom);
+    return this.correctDateTo.dateMoment.diff(this.correctDateFrom.dateMoment);
   }
 
   static clone(card) {
