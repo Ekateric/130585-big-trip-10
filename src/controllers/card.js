@@ -49,7 +49,7 @@ export default class CardController {
     this._formView = null;
     this._mode = Mode.DEFAULT;
 
-    this._formExitHandler = this._formExitHandler.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._eventOfferChangeHandler = this._eventOfferChangeHandler.bind(this);
@@ -110,7 +110,7 @@ export default class CardController {
         this._viewChangeHandler();
         render(this._containerElement, this._formView, this._position);
         this._formView.applyFlatpickr();
-        document.addEventListener(`keydown`, this._formExitHandler);
+        document.addEventListener(`keydown`, this._escKeyDownHandler);
         break;
     }
 
@@ -121,7 +121,7 @@ export default class CardController {
     remove(this._view);
     this._formView.destroyFlatpickr();
     remove(this._formView);
-    document.removeEventListener(`keydown`, this._formExitHandler);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   showError() {
@@ -140,7 +140,7 @@ export default class CardController {
     this._view.setEditButtonClickHandler(() => {
       this._replaceViewToEdit();
 
-      document.addEventListener(`keydown`, this._formExitHandler);
+      document.addEventListener(`keydown`, this._escKeyDownHandler);
     });
 
     this._formView.setUpButtonClickHandler(() => {
@@ -196,7 +196,7 @@ export default class CardController {
       this._mode = Mode.DEFAULT;
     }
 
-    document.removeEventListener(`keydown`, this._formExitHandler);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
   _resetFormData() {
@@ -204,7 +204,7 @@ export default class CardController {
     this._formView.reset(this._formViewModel, this._extraInfo);
   }
 
-  _formExitHandler(evt) {
+  _escKeyDownHandler(evt) {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
