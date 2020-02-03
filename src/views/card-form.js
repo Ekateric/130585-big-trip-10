@@ -247,14 +247,13 @@ const createCardFormTemplate = (card, extraInfo, mode, buttonsText) => {
     return `<form class="trip-events__item event event--edit" action="#" method="post">
       ${cardFormInnerTemplate}
     </form>`;
-
-  } else {
-    return `<li class="trip-events__item">
-      <form class="event event--edit" action="#" method="post">
-        ${cardFormInnerTemplate}
-      </form>
-    </li>`;
   }
+
+  return `<li class="trip-events__item">
+    <form class="event event--edit" action="#" method="post">
+      ${cardFormInnerTemplate}
+    </form>
+  </li>`;
 };
 
 export default class CardFormView extends AbstractSmartView {
